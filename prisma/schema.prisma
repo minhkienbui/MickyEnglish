@@ -1,0 +1,205 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id               String                 @id @default(cuid())
+  name             String?
+  email            String                 @unique
+  hashedPassword   String?
+  image            String?
+  emailVerified    DateTime?
+  streak           Int                    @default(1)
+  wordsLearned     Int                    @default(0)
+  dictationMinutes Int                    @default(0)
+  examsCompleted   Int                    @default(0)
+  lastActive       DateTime               @default(now())
+  createdAt        DateTime               @default(now())
+  updatedAt        DateTime               @default(now()) @updatedAt
+
+  vocabularySets   VocabularySet[]
+  wordProgresses   UserWordProgress[]
+  dictationResults UserDictationResult[]
+  examAttempts     UserExamAttempt[]
+  passwordResets   PasswordResetToken[]
+
+  @@index([email])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([token])
+  @@index([userId])
+}
+
+model VocabularySet {
+  id          String           @id @default(cuid())
+  userId      String?
+  user        User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  isPublic    Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @default(now()) @updatedAt
+
+  words       VocabularyWord[]
+
+  @@index([userId])
+}
+
+model VocabularyWord {
+  id         String             @id @default(cuid())
+  setId      String
+  set        VocabularySet      @relation(fields: [setId], references: [id], onDelete: Cascade)
+  word       String
+  meaning    String
+  phonetic   String?
+  example    String?
+  audioUrl   String?
+  createdAt  DateTime           @default(now())
+
+  progresses UserWordProgress[]
+
+  @@index([setId])
+  @@index([word])
+}
+
+model UserWordProgress {
+  id             String         @id @default(cuid())
+  userId         String
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  wordId         String
+  word           VocabularyWord @relation(fields: [wordId], references: [id], onDelete: Cascade)
+  easeFactor     Float          @default(2.5)
+  interval       Int            @default(0) // Số ngày cho đến lần ôn tiếp theo
+  repetitions    Int            @default(0) // Số lần ôn thành công liên tiếp
+  nextReviewDate DateTime       @default(now())
+  lastReviewedAt DateTime?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @default(now()) @updatedAt
+
+  @@unique([userId, wordId])
+  @@index([userId, nextReviewDate])
+}
+
+model ListeningLesson {
+  id          String                @id @default(cuid())
+  title       String
+  level       String                @default("Beginner") // Beginner | Intermediate | Advanced
+  topic       String
+  audioUrl    String
+  transcript  String
+  duration    Int                   @default(30) // Tính theo giây
+  createdAt   DateTime              @default(now())
+  updatedAt   DateTime              @default(now()) @updatedAt
+
+  results     UserDictationResult[]
+
+  @@index([topic])
+  @@index([level])
+}
+
+model UserDictationResult {
+  id           String          @id @default(cuid())
+  userId       String
+  user         User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId     String
+  lesson       ListeningLesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  userText     String
+  accuracy     Float
+  errorDetails Json            // { tokens: [], correct: 0, typo: 0, missing: 0, extra: 0 }
+  timeSpent    Int             @default(0)
+  createdAt    DateTime        @default(now())
+
+  @@index([userId])
+  @@index([lessonId])
+}
+
+model Exam {
+  id          String            @id @default(cuid())
+  title       String
+  type        String            // TOEIC | IELTS | VSTEP
+  description String?
+  duration    Int               @default(30) // Thời gian làm bài tính theo phút
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @default(now()) @updatedAt
+
+  sections    ExamSection[]
+  attempts    UserExamAttempt[]
+
+  @@index([type])
+}
+
+model ExamSection {
+  id        String         @id @default(cuid())
+  examId    String
+  exam      Exam           @relation(fields: [examId], references: [id], onDelete: Cascade)
+  name      String
+  order     Int            @default(1)
+  passage   String?
+  audioUrl  String?
+  createdAt DateTime       @default(now())
+
+  questions ExamQuestion[]
+
+  @@index([examId])
+}
+
+model ExamQuestion {
+  id            String           @id @default(cuid())
+  sectionId     String
+  section       ExamSection      @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  order         Int              @default(1)
+  questionText  String
+  options       Json             // Danh sách lựa chọn: ["A", "B", "C", "D"]
+  correctAnswer Int              // Index lựa chọn đúng (0, 1, 2, 3)
+  explanation   String
+  createdAt     DateTime         @default(now())
+
+  answers       UserExamAnswer[]
+
+  @@index([sectionId])
+}
+
+model UserExamAttempt {
+  id             String           @id @default(cuid())
+  userId         String
+  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  examId         String
+  exam           Exam             @relation(fields: [examId], references: [id], onDelete: Cascade)
+  score          Float
+  correctCount   Int              @default(0)
+  totalQuestions Int              @default(0)
+  startedAt      DateTime         @default(now())
+  submittedAt    DateTime?
+  createdAt      DateTime         @default(now())
+
+  answers        UserExamAnswer[]
+
+  @@index([userId])
+  @@index([examId])
+}
+
+model UserExamAnswer {
+  id         String          @id @default(cuid())
+  attemptId  String
+  attempt    UserExamAttempt @relation(fields: [attemptId], references: [id], onDelete: Cascade)
+  questionId String
+  question   ExamQuestion    @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  userAnswer Int
+  isCorrect  Boolean
+  createdAt  DateTime        @default(now())
+
+  @@index([attemptId])
+}
