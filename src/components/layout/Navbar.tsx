@@ -12,7 +12,7 @@ export default function Navbar() {
   const { user, isAuthenticated } = useAuthStore();
   const { theme, toggleTheme, isSidebarCollapsed } = useThemeStore();
 
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = Boolean(isAuthenticated && user?.role === 'admin');
   const isLight = theme === 'light';
 
   return (

@@ -6,8 +6,6 @@ export const ADMIN_EMAILS = [
   'admin@mickyenglish.com',
   'admin@gmail.com',
   'admin@bibung.com',
-  'kienbui@gmail.com',
-  'kienbui@mickyenglish.com',
 ];
 
 interface FailedLoginTracker {
@@ -20,7 +18,7 @@ interface AuthState {
   isAuthenticated: boolean;
   token: string | null;
   failedLogins: Record<string, FailedLoginTracker>; // keyed by username/email
-  
+
   // Actions
   login: (userOrIdentifier: UserProfile | string, password?: string, name?: string) => { success: boolean; error?: string; remainingSeconds?: number };
   recordFailedLogin: (identifier: string) => { isLocked: boolean; remainingSeconds: number; attemptsLeft: number };
@@ -37,30 +35,9 @@ interface AuthState {
 export const useAuthStore = create<AuthState>()(
   persist(
     (set, get) => ({
-      user: {
-        id: 'user-default-1',
-        username: 'kienbui',
-        email: 'kienbui@mickyenglish.com',
-        fullName: 'Bùi Kiên',
-        name: 'Bùi Kiên',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-        role: 'admin',
-        googleId: null,
-        diamonds: 250,
-        gems: 250,
-        streak: 5,
-        wordsLearned: 28,
-        dictationMinutes: 45,
-        shadowingMinutes: 20,
-        examsCompleted: 2,
-        isVerified: true,
-        isBanned: false,
-        createdAt: '2024-01-01T00:00:00.000Z',
-        lastLogin: new Date().toISOString(),
-        lastActive: new Date().toISOString(),
-      },
-      isAuthenticated: true,
-      token: 'jwt-token-active-demo-micky-2026',
+      user: null,
+      isAuthenticated: false,
+      token: null,
       failedLogins: {},
 
       recordFailedLogin: (identifier: string) => {
@@ -164,7 +141,7 @@ export const useAuthStore = create<AuthState>()(
           return { success: true };
         }
 
-        const isAdmin = ADMIN_EMAILS.includes(emailOrUser) || emailOrUser.startsWith('admin');
+        const isAdmin = ADMIN_EMAILS.includes(emailOrUser) || emailOrUser === 'admin';
         const username = emailOrUser.includes('@') ? emailOrUser.split('@')[0] : emailOrUser;
 
         const loggedInUser: UserProfile = {

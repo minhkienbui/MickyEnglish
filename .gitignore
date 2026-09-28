@@ -52,3 +52,7 @@ scratch/
 # superpowers brainstorm companion
 .superpowers/
 .neon
+
+# uploaded videos
+public/uploads/videos/*
+!public/uploads/videos/.gitkeep

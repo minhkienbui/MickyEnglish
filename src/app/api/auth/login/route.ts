@@ -102,7 +102,7 @@ export async function POST(request: Request) {
 
     const normalizedEmail = user?.email || (rawIdentifier.includes('@') ? rawIdentifier : `${rawIdentifier}@mickyenglish.com`);
     const cleanUsername = rawIdentifier.includes('@') ? rawIdentifier.split('@')[0] : rawIdentifier;
-    const isAdmin = ADMIN_EMAILS.includes(normalizedEmail);
+    const isAdmin = ADMIN_EMAILS.includes(normalizedEmail) || user?.role?.toUpperCase() === 'ADMIN' || rawIdentifier === 'admin';
 
     const userProfile = {
       id: user?.id || `user-${Date.now()}`,
@@ -111,7 +111,7 @@ export async function POST(request: Request) {
       fullName: user?.name || cleanUsername,
       name: user?.name || cleanUsername,
       avatar: user?.image || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
-      role: isAdmin ? 'admin' : 'user',
+      role: isAdmin ? 'admin' : (user?.role?.toLowerCase() || 'user'),
       googleId: null,
       diamonds: 100,
       gems: 100,

@@ -42,7 +42,7 @@ export default function Sidebar() {
     { name: 'Luyện thi', href: '/kho-de', icon: GraduationCap, badge: null },
   ];
 
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = Boolean(isAuthenticated && user?.role === 'admin');
   const isLight = theme === 'light';
 
   return (

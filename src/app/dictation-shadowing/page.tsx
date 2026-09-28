@@ -35,6 +35,7 @@ export default function DictationListPage() {
 
   const tags = [
     'Tất cả',
+    '# Video tải lên',
     '# Youtube video',
     '# TED',
     '# BBC learning english',
@@ -131,6 +132,7 @@ export default function DictationListPage() {
 
       const matchesTag =
         activeTag === 'Tất cả' ||
+        (activeTag === '# Video tải lên' && Boolean((lesson.videoUrl && !lesson.youtubeId) || lesson.tags?.some((t) => t.includes('tải lên')))) ||
         (lesson.tags && lesson.tags.includes(activeTag)) ||
         lesson.topic.toLowerCase().includes(activeTag.replace('#', '').trim().toLowerCase());
 
@@ -148,6 +150,11 @@ export default function DictationListPage() {
   }, [allLessons, searchQuery, activeTag, selectedLevel, selectedChannel]);
 
   // Nhóm bài học theo sections
+  const uploadsSection = useMemo(() => {
+    return filteredLessons.filter(
+      (l) => Boolean(l.videoUrl && !l.youtubeId) || (l.tags && l.tags.some((t) => t.includes('tải lên') || t.includes('Video của tôi')))
+    );
+  }, [filteredLessons]);
   const youtubeSection = useMemo(() => {
     return filteredLessons.filter(
       (l) =>
@@ -299,6 +306,38 @@ export default function DictationListPage() {
           })}
         </div>
       </section>
+
+      {/* SECTION: Video tải lên (Lưu trực tiếp trên website) */}
+      {uploadsSection.length > 0 && (
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <h2 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
+                <span>📁 Video của bạn (Lưu trên website)</span>
+              </h2>
+              <span className="px-2 py-0.5 bg-emerald-950 border border-emerald-500/40 text-emerald-400 text-xs font-bold rounded-full">
+                {uploadsSection.length}
+              </span>
+            </div>
+            <button
+              onClick={() => setActiveTag('# Video tải lên')}
+              className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
+            >
+              Xem tất cả
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {uploadsSection.map((lesson) => (
+              <VideoCard
+                key={lesson.id}
+                lesson={lesson}
+                onSelect={() => setSelectedLessonForPractice(lesson)}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* SECTION 2: Youtube video */}
       <section className="space-y-4">
@@ -473,6 +512,13 @@ function VideoCard({ lesson, onSelect }: { lesson: DictationLesson; onSelect: ()
           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+
+        {/* Local Video Upload Badge */}
+        {Boolean(lesson.videoUrl && !lesson.youtubeId) && (
+          <div className="absolute top-2.5 left-2.5 bg-emerald-600/90 text-white font-black text-[9px] px-2 py-0.5 rounded-full shadow-md flex items-center gap-1 z-10">
+            <span>📁 Tải lên</span>
+          </div>
+        )}
 
         {/* Level Badge (Xanh dương cho B1, Đỏ cho C1 như ảnh Bibung) */}
         <div

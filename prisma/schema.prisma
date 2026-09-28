@@ -14,6 +14,7 @@ model User {
   hashedPassword   String?
   image            String?
   emailVerified    DateTime?
+  role             String                 @default("USER")
   streak           Int                    @default(1)
   wordsLearned     Int                    @default(0)
   dictationMinutes Int                    @default(0)

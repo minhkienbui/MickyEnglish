@@ -157,11 +157,51 @@ function DictationLessonContent() {
      YOUTUBE IFRAME PLAYER API (HIGH-PRECISION REAL-TIME SYNC)
      ==================================================================== */
   const playerRef = useRef<any>(null);
+  const nativeVideoRef = useRef<HTMLVideoElement | null>(null);
   const ytTimerRef = useRef<NodeJS.Timeout | null>(null);
   const playerContainerRef = useRef<HTMLDivElement | null>(null);
   const [ytReady, setYtReady] = useState(false);
   const activeIndexRef = useRef(activeSentenceIndex);
   activeIndexRef.current = activeSentenceIndex;
+
+  // Handle native HTML5 video timeupdate
+  const handleNativeTimeUpdate = (e: React.SyntheticEvent<HTMLVideoElement>) => {
+    const t = e.currentTarget.currentTime;
+    setCurrentTime(t);
+
+    if (activeMode === 'dictation' || activeMode === 'xep-tu') {
+      const sentenceEndTime = currentSentence.endTime;
+      if (t >= sentenceEndTime - 0.08) {
+        nativeVideoRef.current?.pause();
+        setIsPlaying(false);
+        setIsAutoPausedBanner(true);
+      }
+
+      if (activeMode === 'dictation' && !isDictationPassed && t > sentenceEndTime + 0.3) {
+        if (nativeVideoRef.current) {
+          nativeVideoRef.current.currentTime = currentSentence.startTime;
+        }
+      }
+    } else if (activeMode === 'shadowing' && shadowingSubMode === 'step-by-step') {
+      const pauseTime = Math.min(currentSentence.endTime, currentSentence.startTime + 6);
+      if (t >= pauseTime - 0.08) {
+        nativeVideoRef.current?.pause();
+        setIsPlaying(false);
+        setIsAutoPausedBanner(true);
+      }
+    }
+
+    if (lessonSentences.length > 0) {
+      const nextAccurateIdx = getAccurateSentenceIndex(lessonSentences, t, 0.08);
+      if (nextAccurateIdx !== activeIndexRef.current) {
+        if (activeMode === 'dictation' && !isDictationPassed && nextAccurateIdx > activeIndexRef.current) {
+          // Keep current sentence until correct
+        } else {
+          setActiveSentenceIndex(nextAccurateIdx);
+        }
+      }
+    }
+  };
 
   useEffect(() => {
     if (!storeLesson.youtubeId) return;
@@ -311,7 +351,12 @@ function DictationLessonContent() {
       setIsAutoPausedBanner(false);
       setIsStrictGateBlocked(false);
 
-      if (playerRef.current?.seekTo) {
+      if (nativeVideoRef.current) {
+        nativeVideoRef.current.currentTime = s.startTime;
+        nativeVideoRef.current.playbackRate = playbackSpeed;
+        nativeVideoRef.current.play().catch(() => {});
+        setIsPlaying(true);
+      } else if (playerRef.current?.seekTo) {
         playerRef.current.seekTo(s.startTime, true);
         playerRef.current.playVideo();
       } else {
@@ -339,6 +384,9 @@ function DictationLessonContent() {
   };
 
   const stopPlaying = () => {
+    if (nativeVideoRef.current) {
+      nativeVideoRef.current.pause();
+    }
     if (playerRef.current?.pauseVideo) {
       playerRef.current.pauseVideo();
     }
@@ -359,7 +407,11 @@ function DictationLessonContent() {
       if (activeMode === 'dictation' && !isDictationPassed) {
         setIsStrictGateBlocked(true);
         // Tự động quay lại thời điểm ban đầu (startTime) của câu đó để phát lại
-        if (playerRef.current?.seekTo) {
+        if (nativeVideoRef.current) {
+          nativeVideoRef.current.currentTime = currentSentence.startTime;
+          nativeVideoRef.current.play().catch(() => {});
+          setIsPlaying(true);
+        } else if (playerRef.current?.seekTo) {
           playerRef.current.seekTo(currentSentence.startTime, true);
           playerRef.current.playVideo();
           setIsPlaying(true);
@@ -735,6 +787,9 @@ function DictationLessonContent() {
                     type="button"
                     onClick={() => {
                       setPlaybackSpeed(s);
+                      if (nativeVideoRef.current) {
+                        nativeVideoRef.current.playbackRate = s;
+                      }
                       if (playerRef.current?.setPlaybackRate) {
                         playerRef.current.setPlaybackRate(s);
                       }
@@ -758,6 +813,18 @@ function DictationLessonContent() {
           <div className="relative aspect-16/9 w-full bg-black rounded-3xl overflow-hidden border border-[#1e2d42] shadow-2xl group">
             {storeLesson.youtubeId ? (
               <div ref={playerContainerRef} className="w-full h-full" />
+            ) : storeLesson.videoUrl ? (
+              <video
+                ref={nativeVideoRef}
+                src={storeLesson.videoUrl}
+                className="w-full h-full object-contain bg-black"
+                playsInline
+                controls={false}
+                onTimeUpdate={handleNativeTimeUpdate}
+                onPlay={() => setIsPlaying(true)}
+                onPause={() => setIsPlaying(false)}
+                onEnded={() => setIsPlaying(false)}
+              />
             ) : (
               <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-gradient-to-b from-[#142338] to-[#0c1320] text-center space-y-3">
                 <img
