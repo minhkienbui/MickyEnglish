@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import ClientLayoutWrapper from '@/components/layout/ClientLayoutWrapper';
+import NextAuthProvider from '@/components/auth/NextAuthProvider';
 
 export const metadata: Metadata = {
   title: 'MickyEnglish - Học Tiếng Anh Mỗi Ngày',
@@ -26,7 +27,9 @@ export default function RootLayout({
         />
       </head>
       <body>
-        <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
+        <NextAuthProvider>
+          <ClientLayoutWrapper>{children}</ClientLayoutWrapper>
+        </NextAuthProvider>
       </body>
     </html>
   );

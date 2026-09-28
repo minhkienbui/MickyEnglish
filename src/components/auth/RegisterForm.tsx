@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { signIn } from 'next-auth/react';
 import {
   User,
   Mail,
@@ -301,33 +302,18 @@ export default function RegisterForm() {
     }
   };
 
-  // [6] Google OAuth Login Handler
+  // [6] Google OAuth Login Handler (Liên kết tài khoản Google thật)
   const handleGoogleSignup = async () => {
-    const mockEmail = `user.${Date.now().toString().slice(-4)}@gmail.com`;
-    const mockGoogleUser = {
-      email: mockEmail,
-      name: 'Học viên Google',
-      picture: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
-      googleId: `gid-${Date.now()}`,
-    };
-
     try {
-      const res = await fetch('/api/auth/google', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(mockGoogleUser),
-      });
-      const data = await res.json();
-
-      if (data.success && data.user) {
-        loginWithGoogle(mockGoogleUser);
-        setToastSuccess(`🎉 Chào mừng ${data.user.fullName}! Đã đăng nhập bằng Google.`);
-        setTimeout(() => {
-          router.push('/');
-        }, 1000);
+      const checkRes = await fetch('/api/auth/google/status');
+      const checkData = await checkRes.json();
+      if (checkData.configured) {
+        await signIn('google', { callbackUrl: '/' });
+      } else {
+        router.push('/login');
       }
-    } catch (err: any) {
-      alert('Đăng nhập Google thất bại');
+    } catch {
+      await signIn('google', { callbackUrl: '/' });
     }
   };
 
