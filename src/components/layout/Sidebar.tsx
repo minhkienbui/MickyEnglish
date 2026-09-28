@@ -25,11 +25,12 @@ import {
   Bell,
   Crown,
   Video,
+  LogOut,
 } from 'lucide-react';
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { user, isAuthenticated } = useAuthStore();
+  const { user, isAuthenticated, logout } = useAuthStore();
   const { theme, isSidebarCollapsed, toggleTheme, toggleSidebar } = useThemeStore();
   const [showPremiumModal, setShowPremiumModal] = useState(false);
 
@@ -73,90 +74,129 @@ export default function Sidebar() {
               ? 'bg-slate-50 border border-slate-200 shadow-xs'
               : 'bg-[#131d2b] border border-[#1e2d42] shadow-inner'
           }`}>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-md shrink-0 overflow-hidden border border-emerald-400/40">
-                  {isAuthenticated && user?.avatar ? (
-                    <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
-                  ) : (
-                    <span>{isAuthenticated && user ? (user.fullName || user.username || user.name || 'K').charAt(0) : 'K'}</span>
-                  )}
+            {!isAuthenticated ? (
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-full bg-slate-700/60 text-slate-300 flex items-center justify-center font-bold text-sm shadow-md shrink-0 border border-slate-600">
+                      <User className="w-4 h-4" />
+                    </div>
+                    {!isSidebarCollapsed && (
+                      <div className="leading-tight min-w-0">
+                        <span className={`text-[11px] font-semibold block ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>Tài khoản</span>
+                        <span className={`text-xs font-black block ${isLight ? 'text-slate-900' : 'text-white'}`}>Khách (Guest)</span>
+                      </div>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={toggleSidebar}
+                    className={`p-1 rounded-lg transition-colors cursor-pointer ${
+                      isLight ? 'text-slate-500 hover:text-slate-900 hover:bg-slate-200' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    }`}
+                    title={isSidebarCollapsed ? 'Mở rộng' : 'Thu gọn'}
+                  >
+                    {isSidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+                  </button>
                 </div>
+
                 {!isSidebarCollapsed && (
-                  <div className="leading-tight min-w-0">
-                    <div className="flex items-center gap-1">
-                      <span className={`text-[11px] font-semibold block ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>Xin chào</span>
-                      {isAdmin && (
-                        <span className="px-1.5 py-0.2 rounded-sm bg-purple-500/20 text-purple-600 dark:text-purple-300 text-[9px] font-black border border-purple-500/40">
-                          ADMIN
-                        </span>
+                  <Link
+                    href="/login"
+                    className="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-md flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                  >
+                    <User className="w-3.5 h-3.5" /> Đăng nhập
+                  </Link>
+                )}
+              </div>
+            ) : (
+              <>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-md shrink-0 overflow-hidden border border-emerald-400/40">
+                      {user?.avatar ? (
+                        <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                      ) : (
+                        <span>{(user?.fullName || user?.username || user?.name || 'U').charAt(0).toUpperCase()}</span>
                       )}
                     </div>
-                    <span className={`text-xs font-black truncate max-w-[110px] block ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                      {isAuthenticated && user ? user.fullName || user.username : 'Khách'}
+                    {!isSidebarCollapsed && (
+                      <div className="leading-tight min-w-0">
+                        <div className="flex items-center gap-1">
+                          <span className={`text-[11px] font-semibold block ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>Xin chào</span>
+                          {isAdmin && (
+                            <span className="px-1.5 py-0.2 rounded-sm bg-purple-500/20 text-purple-600 dark:text-purple-300 text-[9px] font-black border border-purple-500/40">
+                              ADMIN
+                            </span>
+                          )}
+                        </div>
+                        <span className={`text-xs font-black truncate max-w-[110px] block ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                          {user?.fullName || user?.username}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  <button
+                    onClick={toggleSidebar}
+                    className={`p-1 rounded-lg transition-colors cursor-pointer ${
+                      isLight ? 'text-slate-500 hover:text-slate-900 hover:bg-slate-200' : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                    }`}
+                    title={isSidebarCollapsed ? 'Mở rộng' : 'Thu gọn'}
+                  >
+                    {isSidebarCollapsed ? (
+                      <ChevronRight className="w-4 h-4" />
+                    ) : (
+                      <ChevronLeft className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
+
+                {/* Nút Premium Vàng Cam */}
+                {!isSidebarCollapsed && (
+                  <button
+                    onClick={() => setShowPremiumModal(true)}
+                    className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 hover:brightness-110 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 flex items-center justify-between transition-all cursor-pointer"
+                  >
+                    <span className="flex items-center gap-1.5">
+                      <Crown className="w-4 h-4 fill-slate-950" /> Premium
                     </span>
+                    <ChevronLeft className="w-3.5 h-3.5 text-slate-950/70" />
+                  </button>
+                )}
+
+                {/* 5 Biểu tượng chỉ số Gamification: 💎, 🔥, 📝, 🖥️, 🔔 */}
+                {!isSidebarCollapsed && (
+                  <div className={`flex items-center justify-between pt-2 border-t text-[11px] font-black ${
+                    isLight ? 'border-slate-200 text-slate-600' : 'border-[#1e2d42] text-slate-300'
+                  }`}>
+                    <span className="flex items-center gap-1 text-cyan-500 dark:text-cyan-400" title="Kim cương">
+                      <Gem className="w-3.5 h-3.5 fill-cyan-500 dark:fill-cyan-400" /> {user?.diamonds ?? 0}
+                    </span>
+                    <span className="flex items-center gap-1 text-amber-500 dark:text-amber-400" title="Chuỗi ngày streak">
+                      <Flame className="w-3.5 h-3.5 fill-amber-500 dark:fill-amber-400" /> {user?.streak ?? 0}
+                    </span>
+                    <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400" title="Sổ từ vựng">
+                      <FileText className="w-3.5 h-3.5" /> {user?.wordsLearned ?? 0}
+                    </span>
+                    <span className="flex items-center gap-1 text-blue-500 dark:text-blue-400" title="Thời gian học">
+                      <Monitor className="w-3.5 h-3.5" /> {user?.dictationMinutes ?? 0}
+                    </span>
+                    <button
+                      onClick={() => alert('Bạn không có thông báo mới.')}
+                      className={`relative p-0.5 rounded transition-colors cursor-pointer ${
+                        isLight ? 'text-slate-500 hover:text-slate-900' : 'text-slate-400 hover:text-white'
+                      }`}
+                      title="Thông báo"
+                    >
+                      <Bell className="w-3.5 h-3.5" />
+                      <span className={`absolute -top-1 -right-1 w-2 h-2 rounded-full ring-2 ${
+                        isLight ? 'bg-emerald-500 ring-white' : 'bg-white ring-[#131d2b]'
+                      }`} />
+                    </button>
                   </div>
                 )}
-              </div>
-
-              <button
-                onClick={toggleSidebar}
-                className={`p-1 rounded-lg transition-colors cursor-pointer ${
-                  isLight ? 'text-slate-500 hover:text-slate-900 hover:bg-slate-200' : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                }`}
-                title={isSidebarCollapsed ? 'Mở rộng' : 'Thu gọn'}
-              >
-                {isSidebarCollapsed ? (
-                  <ChevronRight className="w-4 h-4" />
-                ) : (
-                  <ChevronLeft className="w-4 h-4" />
-                )}
-              </button>
-            </div>
-
-            {/* Nút Premium Vàng Cam */}
-            {!isSidebarCollapsed && (
-              <button
-                onClick={() => setShowPremiumModal(true)}
-                className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 hover:brightness-110 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 flex items-center justify-between transition-all cursor-pointer"
-              >
-                <span className="flex items-center gap-1.5">
-                  <Crown className="w-4 h-4 fill-slate-950" /> Premium
-                </span>
-                <ChevronLeft className="w-3.5 h-3.5 text-slate-950/70" />
-              </button>
-            )}
-
-            {/* 5 Biểu tượng chỉ số Gamification chuẩn Bibung: 💎, 🔥, 📝, 🖥️, 🔔 */}
-            {!isSidebarCollapsed && (
-              <div className={`flex items-center justify-between pt-2 border-t text-[11px] font-black ${
-                isLight ? 'border-slate-200 text-slate-600' : 'border-[#1e2d42] text-slate-300'
-              }`}>
-                <span className="flex items-center gap-1 text-cyan-500 dark:text-cyan-400" title="Kim cương">
-                  <Gem className="w-3.5 h-3.5 fill-cyan-500 dark:fill-cyan-400" /> {user?.diamonds ?? 0}
-                </span>
-                <span className="flex items-center gap-1 text-amber-500 dark:text-amber-400" title="Chuỗi ngày streak">
-                  <Flame className="w-3.5 h-3.5 fill-amber-500 dark:fill-amber-400" /> {user?.streak ?? 0}
-                </span>
-                <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400" title="Sổ từ vựng">
-                  <FileText className="w-3.5 h-3.5" /> {user?.wordsLearned ?? 0}
-                </span>
-                <span className="flex items-center gap-1 text-blue-500 dark:text-blue-400" title="Thời gian học">
-                  <Monitor className="w-3.5 h-3.5" /> {user?.dictationMinutes ?? 0}
-                </span>
-                <button
-                  onClick={() => alert('Bạn không có thông báo mới.')}
-                  className={`relative p-0.5 rounded transition-colors cursor-pointer ${
-                    isLight ? 'text-slate-500 hover:text-slate-900' : 'text-slate-400 hover:text-white'
-                  }`}
-                  title="Thông báo"
-                >
-                  <Bell className="w-3.5 h-3.5" />
-                  <span className={`absolute -top-1 -right-1 w-2 h-2 rounded-full ring-2 ${
-                    isLight ? 'bg-emerald-500 ring-white' : 'bg-white ring-[#131d2b]'
-                  }`} />
-                </button>
-              </div>
+              </>
             )}
           </div>
 
@@ -260,6 +300,20 @@ export default function Sidebar() {
             <Settings className={`w-4 h-4 shrink-0 ${isLight ? 'text-slate-500' : 'text-slate-400'}`} />
             {!isSidebarCollapsed && <span>Cài đặt</span>}
           </Link>
+
+          {isAuthenticated && (
+            <button
+              type="button"
+              onClick={() => {
+                logout();
+                window.location.reload();
+              }}
+              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-950/20 transition-all cursor-pointer text-left"
+            >
+              <LogOut className="w-4 h-4 shrink-0" />
+              {!isSidebarCollapsed && <span>Đăng xuất</span>}
+            </button>
+          )}
         </div>
       </aside>
 

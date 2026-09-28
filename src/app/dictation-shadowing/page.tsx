@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
 import {
   Search,
   Plus,
@@ -17,11 +18,14 @@ import {
 } from 'lucide-react';
 import { useDictationStore } from '@/stores/useDictationStore';
 import { useAdminVideoStore } from '@/stores/useAdminVideoStore';
+import { useAuthStore } from '@/stores/useAuthStore';
 import AddVideoModal from '@/components/dictation/AddVideoModal';
 import PracticeModeModal from '@/components/dictation/PracticeModeModal';
 import { DictationLesson } from '@/lib/types';
 
 export default function DictationListPage() {
+  const router = useRouter();
+  const { isAuthenticated } = useAuthStore();
   const { lessons: dictationLessons } = useDictationStore();
   const { videos: adminVideos } = useAdminVideoStore();
 
@@ -231,7 +235,13 @@ export default function DictationListPage() {
           {/* Button + Thêm video */}
           <button
             type="button"
-            onClick={() => setShowAddVideoModal(true)}
+            onClick={() => {
+              if (!isAuthenticated) {
+                router.push('/login?redirect=/dictation-shadowing');
+                return;
+              }
+              setShowAddVideoModal(true);
+            }}
             className="py-2.5 px-5 bg-[#00c950] hover:bg-[#00b046] text-white text-xs font-black rounded-full flex items-center gap-1.5 shadow-lg shadow-emerald-600/20 transition-transform hover:scale-105 cursor-pointer shrink-0 whitespace-nowrap"
           >
             <Plus className="w-4 h-4" /> Thêm video

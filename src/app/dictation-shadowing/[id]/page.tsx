@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback, Suspense } from 'react';
+import Link from 'next/link';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useDictationStore } from '@/stores/useDictationStore';
 import { useAdminVideoStore } from '@/stores/useAdminVideoStore';
@@ -78,7 +79,7 @@ function DictationLessonContent() {
   } = useDictationStore();
 
   const { videos: adminVideos } = useAdminVideoStore();
-  const { incrementProgress } = useAuthStore();
+  const { incrementProgress, isAuthenticated } = useAuthStore();
 
   // Tìm kiếm bài học từ Zustand store (User + Admin) hoặc mock data
   const storeLesson =
@@ -715,9 +716,15 @@ function DictationLessonContent() {
 
           <button
             type="button"
-            onClick={() => setShowAddVideoModal(true)}
+            onClick={() => {
+              if (!isAuthenticated) {
+                router.push(`/login?redirect=/dictation-shadowing/${storeLesson.id}`);
+                return;
+              }
+              setShowAddVideoModal(true);
+            }}
             className="px-3.5 py-2 bg-[#00c950] hover:bg-[#00b046] active:scale-95 text-white text-xs font-black rounded-xl flex items-center gap-1.5 shadow-md shadow-emerald-500/25 transition-all cursor-pointer"
-            title="Thêm video YouTube mới"
+            title="Thêm video mới"
           >
             <Plus className="w-3.5 h-3.5" />
             <span className="hidden sm:inline">+ Thêm video</span>
@@ -762,6 +769,19 @@ function DictationLessonContent() {
           Quiz
         </button>
       </div>
+
+      {/* Banner thông báo chế độ Khách */}
+      {!isAuthenticated && (
+        <div className="bg-amber-500/10 border-b border-amber-500/30 px-4 py-2 text-center text-xs font-bold text-amber-300 flex items-center justify-center gap-2">
+          <span>💡 Bạn đang học ở chế độ Khách.</span>
+          <Link
+            href={`/login?redirect=/dictation-shadowing/${storeLesson.id}`}
+            className="text-emerald-400 hover:underline font-black"
+          >
+            Đăng nhập để lưu tiến độ và nhận 10 💎 kim cương →
+          </Link>
+        </div>
+      )}
 
       {/* 2. MAIN 2-COLUMN WORKSPACE */}
       <div className="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
