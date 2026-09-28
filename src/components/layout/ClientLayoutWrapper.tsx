@@ -1,7 +1,8 @@
 'use client';
 
 import { useThemeStore } from '@/stores/useThemeStore';
-import { usePathname } from 'next/navigation';
+import { useAuthStore } from '@/stores/useAuthStore';
+import { usePathname, useRouter } from 'next/navigation';
 import Sidebar from '@/components/layout/Sidebar';
 import Navbar from '@/components/layout/Navbar';
 import MobileNav from '@/components/layout/MobileNav';
@@ -10,7 +11,18 @@ import { useEffect } from 'react';
 
 export default function ClientLayoutWrapper({ children }: { children: React.ReactNode }) {
   const { theme, isSidebarCollapsed } = useThemeStore();
+  const { isAuthenticated, isHydrated } = useAuthStore();
   const pathname = usePathname();
+  const router = useRouter();
+
+  const isAuthPage =
+    pathname === '/login' ||
+    pathname === '/dang-nhap' ||
+    pathname === '/register' ||
+    pathname === '/dang-ky' ||
+    pathname === '/forgot-password' ||
+    pathname === '/reset-password';
+
   const isImmersiveStudio =
     pathname?.startsWith('/practice/see-write') ||
     pathname?.startsWith('/practice/reading') ||
@@ -31,9 +43,46 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
     }
   }, [theme]);
 
+  // Yêu cầu đăng nhập khi truy cập website (nếu chưa đăng nhập sẽ chuyển hướng đến /login)
+  useEffect(() => {
+    if (!isHydrated) return;
+    if (!isAuthenticated && !isAuthPage) {
+      const redirectParam = pathname && pathname !== '/' ? `?redirect=${encodeURIComponent(pathname)}` : '';
+      router.push(`/login${redirectParam}`);
+    }
+  }, [isHydrated, isAuthenticated, isAuthPage, pathname, router]);
+
   const bgWrapper = theme === 'light' ? 'bg-[#f8fafc] text-slate-900' : 'bg-[#0b0f17] text-slate-100';
   const mainBg = theme === 'light' ? 'bg-[#f8fafc]' : 'bg-[#0b0f17]';
 
+  // Chờ đọc trạng thái đăng nhập đã lưu trong máy
+  if (!isHydrated) {
+    return (
+      <div className={`min-h-screen flex items-center justify-center ${bgWrapper}`}>
+        <div className="w-7 h-7 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // Các trang đăng nhập / đăng ký
+  if (isAuthPage) {
+    return (
+      <div className={`min-h-screen flex items-center justify-center p-4 transition-colors duration-200 ${bgWrapper} ${theme}`}>
+        {children}
+      </div>
+    );
+  }
+
+  // Chưa đăng nhập -> hiển thị màn hình chờ chuyển hướng
+  if (!isAuthenticated) {
+    return (
+      <div className={`min-h-screen flex items-center justify-center ${bgWrapper}`}>
+        <div className="w-7 h-7 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // Chế độ luyện tập chuyên sâu
   if (isImmersiveStudio) {
     return (
       <div className={`min-h-screen transition-colors duration-200 ${bgWrapper} ${theme}`}>

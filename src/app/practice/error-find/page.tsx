@@ -1012,7 +1012,7 @@ export default function ErrorFindStudioPage() {
             <div className="space-y-1">
               <h2 className={`text-2xl font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>Hoàn thành lượt luyện!</h2>
               <p className={`text-xs sm:text-sm ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                Bạn vừa rèn luyện 10 câu tìm lỗi ngữ pháp theo chuẩn Bibung.com.
+                Bạn vừa rèn luyện 10 câu tìm lỗi ngữ pháp theo chuẩn MickyEnglish.com.
               </p>
             </div>
 

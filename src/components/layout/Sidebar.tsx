@@ -62,7 +62,7 @@ export default function Sidebar() {
               <span className={`text-xl font-black tracking-tight group-hover:text-emerald-500 transition-colors ${
                 isLight ? 'text-slate-900' : 'text-white'
               }`}>
-                Bibung<span className="text-emerald-500">English</span>
+                Micky<span className="text-emerald-500">English</span>
               </span>
             )}
           </Link>

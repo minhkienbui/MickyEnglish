@@ -8,6 +8,16 @@ export const ADMIN_EMAILS = [
   'admin@bibung.com',
 ];
 
+// Dọn dẹp cache admin cũ trong trình duyệt của người dùng trước đó
+if (typeof window !== 'undefined') {
+  try {
+    const legacy = localStorage.getItem('micky-auth-storage');
+    if (legacy && (legacy.includes('kienbui') || legacy.includes('user-default-1') || legacy.includes('admin-root-01'))) {
+      localStorage.removeItem('micky-auth-storage');
+    }
+  } catch {}
+}
+
 interface FailedLoginTracker {
   count: number;
   lockedUntil: number | null; // timestamp ms
@@ -17,9 +27,11 @@ interface AuthState {
   user: UserProfile | null;
   isAuthenticated: boolean;
   token: string | null;
+  isHydrated: boolean;
   failedLogins: Record<string, FailedLoginTracker>; // keyed by username/email
 
   // Actions
+  setHydrated: (val?: boolean) => void;
   login: (userOrIdentifier: UserProfile | string, password?: string, name?: string) => { success: boolean; error?: string; remainingSeconds?: number };
   recordFailedLogin: (identifier: string) => { isLocked: boolean; remainingSeconds: number; attemptsLeft: number };
   clearFailedLogin: (identifier: string) => void;
@@ -38,7 +50,10 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       isAuthenticated: false,
       token: null,
+      isHydrated: false,
       failedLogins: {},
+
+      setHydrated: (val = true) => set({ isHydrated: val }),
 
       recordFailedLogin: (identifier: string) => {
         const key = identifier.toLowerCase().trim();
@@ -254,6 +269,8 @@ export const useAuthStore = create<AuthState>()(
       logout: () => {
         set({ user: null, isAuthenticated: false, token: null });
         if (typeof window !== 'undefined') {
+          localStorage.removeItem('micky-auth-v2');
+          localStorage.removeItem('micky-auth-storage');
           localStorage.removeItem('micky_auth_token');
         }
       },
@@ -302,7 +319,10 @@ export const useAuthStore = create<AuthState>()(
       },
     }),
     {
-      name: 'micky-auth-storage',
+      name: 'micky-auth-v2',
+      onRehydrateStorage: () => (state) => {
+        state?.setHydrated(true);
+      },
     }
   )
 );

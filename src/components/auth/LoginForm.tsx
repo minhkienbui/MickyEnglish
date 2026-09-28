@@ -23,7 +23,7 @@ export default function LoginForm() {
   const searchParams = useSearchParams();
   const redirectUrl = searchParams.get('redirect') || '/';
 
-  const { login, recordFailedLogin, loginWithGoogle, failedLogins } = useAuthStore();
+  const { login, recordFailedLogin, loginWithGoogle, failedLogins, isAuthenticated, isHydrated } = useAuthStore();
 
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
@@ -33,6 +33,13 @@ export default function LoginForm() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  // Nếu người dùng đã đăng nhập từ trước, tự động chuyển vào trang chính
+  useEffect(() => {
+    if (isHydrated && isAuthenticated) {
+      router.push(redirectUrl);
+    }
+  }, [isHydrated, isAuthenticated, redirectUrl, router]);
 
   // Lockout countdown timer
   const [lockoutSeconds, setLockoutSeconds] = useState<number>(0);
