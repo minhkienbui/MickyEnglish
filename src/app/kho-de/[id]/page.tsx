@@ -1,8 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import { useExamStore, ExamMode } from '@/stores/useExamStore';
+import { useParams, useRouter } from 'next/navigation';
+import { useExamStore } from '@/stores/useExamStore';
 import { useAuthStore } from '@/stores/useAuthStore';
 import ExamTimer from '@/components/exam/ExamTimer';
 import QuestionNav from '@/components/exam/QuestionNav';
@@ -17,8 +17,6 @@ import {
   ChevronRight,
   Send,
   Volume2,
-  Settings2,
-  Sparkles,
   GraduationCap,
   Timer,
   Check,
@@ -27,57 +25,56 @@ import {
 
 export default function ExamSessionPage() {
   const params = useParams();
+  const router = useRouter();
   const examId = params.id as string;
 
   const {
     exams,
     activeExam,
     mode,
-    isUnlimitedTime,
     remainingSeconds,
+    elapsedSeconds,
     userAnswers,
     flaggedQuestions,
     isCompleted,
-    setMode,
-    setCustomDuration,
     startExam,
     selectAnswer,
     toggleFlagQuestion,
     setRemainingSeconds,
+    setElapsedSeconds,
     submitExam,
   } = useExamStore();
 
   const { incrementProgress } = useAuthStore();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  // Time & Settings Modal State
-  const [showTimeModal, setShowTimeModal] = useState(false);
-  const [tempMinutes, setTempMinutes] = useState<number | ''>(45);
-
   const targetExam = exams.find((e) => e.id === examId) || exams[0];
 
-  const [questionCount, setQuestionCount] = useState<number>(() => {
-    return targetExam && targetExam.questions.length > 50 ? 50 : targetExam?.questions.length || 30;
-  });
-
+  // Chỉ khởi tạo nếu chưa có activeExam từ modal cấu hình
   useEffect(() => {
-    if (!targetExam) return;
-    const slicedExam = {
-      ...targetExam,
-      questions: targetExam.questions.slice(0, questionCount),
-      totalQuestions: Math.min(questionCount, targetExam.questions.length),
-    };
-    startExam(slicedExam);
-  }, [examId, targetExam, questionCount, startExam]);
+    if (activeExam && (activeExam.id === examId || activeExam.id === targetExam?.id)) {
+      return;
+    }
+    if (targetExam) {
+      startExam(targetExam, { mode: 'practice' });
+    }
+  }, [examId, targetExam, activeExam, startExam]);
 
-  if (!activeExam) return null;
+  if (!activeExam) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-16 text-center text-white space-y-4">
+        <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto" />
+        <p className="text-xs text-slate-400">Đang tải đề thi...</p>
+      </div>
+    );
+  }
 
   if (isCompleted) {
     return (
       <ExamResultView
         exam={activeExam}
         userAnswers={userAnswers}
-        onRetry={() => startExam(activeExam)}
+        onRetry={() => startExam(activeExam, { mode })}
       />
     );
   }
@@ -94,48 +91,57 @@ export default function ExamSessionPage() {
     audio.play().catch((err) => console.log('Audio playback error:', err));
   };
 
-  const handleApplyTime = (minutes: number | null) => {
-    setCustomDuration(minutes);
-    setShowTimeModal(false);
+  const handleSubmit = async () => {
+    const unansweredCount = activeExam.questions.length - Object.keys(userAnswers).length;
+    const confirmMsg = unansweredCount > 0
+      ? `Bạn còn ${unansweredCount} câu chưa làm. Bạn có chắc chắn muốn nộp bài ngay?`
+      : 'Bạn có chắc chắn muốn nộp bài thi ngay bây giờ?';
+
+    if (confirm(confirmMsg)) {
+      handleFinalSubmit();
+    }
   };
 
-  const handleSubmit = async () => {
-    if (confirm('Bạn có chắc chắn muốn nộp bài thi ngay bây giờ?')) {
-      submitExam();
-      incrementProgress({ examsCompleted: 1 });
+  const handleFinalSubmit = () => {
+    submitExam();
+    incrementProgress({ examsCompleted: 1 });
 
-      try {
-        const answersPayload = Object.entries(userAnswers).map(([qId, ansIdx]) => ({
-          questionId: qId,
-          userAnswer: ansIdx,
-        }));
+    try {
+      const answersPayload = Object.entries(userAnswers).map(([qId, ansIdx]) => ({
+        questionId: qId,
+        userAnswer: ansIdx,
+        isCorrect: activeExam.questions.find((q) => q.id === qId)?.correctAnswer === ansIdx,
+      }));
 
-        if (answersPayload.length > 0) {
-          fetch('/api/exams/submit', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              examId: activeExam.id,
-              answers: answersPayload,
-            }),
-          });
-        }
-      } catch (err) {
-        console.error('Error submitting exam to backend:', err);
+      if (answersPayload.length > 0) {
+        fetch('/api/exams/submit', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            examId: activeExam.id,
+            answers: answersPayload,
+          }),
+        }).catch(() => {});
       }
-    }
+    } catch {}
   };
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6 space-y-6">
-      {/* Exam Header Bar */}
+      {/* ========================================================================= */}
+      {/* EXAM HEADER: GỌN GÀNG, TẬP TRUNG (ĐÃ XÓA NÚT CHỌN CHẾ ĐỘ & CHỌN GIỜ)      */}
+      {/* ========================================================================= */}
       <div className="bg-[#121c2b] border border-[#1e2d42] rounded-3xl p-4 sm:p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xl">
-        <div className="flex items-center gap-3">
-          <Link href="/kho-de" className="text-slate-400 hover:text-emerald-400 transition-colors p-1">
+        <div className="flex items-center gap-3 min-w-0">
+          <Link
+            href="/kho-de"
+            className="text-slate-400 hover:text-emerald-400 transition-colors p-1.5 rounded-xl hover:bg-[#1a273a] shrink-0"
+            title="Quay lại kho đề"
+          >
             <ArrowLeft className="w-5 h-5" />
           </Link>
-          <div>
-            <h1 className="text-sm sm:text-base font-black text-white line-clamp-1">{activeExam.title}</h1>
+          <div className="min-w-0">
+            <h1 className="text-sm sm:text-base font-black text-white truncate">{activeExam.title}</h1>
             <div className="flex items-center gap-2 mt-0.5">
               <span className="badge-micky-green text-[10px]">{activeExam.type}</span>
               <span className="text-[11px] font-bold text-slate-400">
@@ -145,111 +151,59 @@ export default function ExamSessionPage() {
           </div>
         </div>
 
-        {/* Action Controls: Mode Switcher + Question Count + Timer + Settings + Submit */}
-        <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
-          {/* Question Count Selector when exam has > 50 questions */}
-          {targetExam && targetExam.questions.length > 50 && (
-            <div className="flex items-center gap-1 bg-[#0e1726] p-1 rounded-2xl border border-[#1e2d42]">
-              <span className="text-[10px] text-slate-400 font-bold px-2 hidden sm:inline">Số câu:</span>
-              {[25, 50, 100].map((num) => (
-                <button
-                  key={num}
-                  type="button"
-                  onClick={() => {
-                    setQuestionCount(num);
-                    setCurrentQuestionIndex(0);
-                  }}
-                  className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                    questionCount === num
-                      ? 'bg-emerald-600 text-white shadow-sm'
-                      : 'text-slate-400 hover:text-white'
-                  }`}
-                >
-                  {num} câu
-                </button>
-              ))}
-              <button
-                type="button"
-                onClick={() => {
-                  setQuestionCount(targetExam.questions.length);
-                  setCurrentQuestionIndex(0);
-                }}
-                className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all cursor-pointer ${
-                  questionCount === targetExam.questions.length
-                    ? 'bg-emerald-600 text-white shadow-sm'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                Tất cả ({targetExam.questions.length})
-              </button>
+        {/* Action Controls: Badge Chế Độ + Đồng Hồ (Đếm Xuôi / Đếm Ngược) + Nộp Bài */}
+        <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end shrink-0">
+          {/* Badge Chế độ hiện tại */}
+          {mode === 'practice' ? (
+            <div className="px-3 py-1.5 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 text-xs font-black flex items-center gap-1.5 shadow-xs">
+              <GraduationCap className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Luyện Đề (Tự do)</span>
+            </div>
+          ) : (
+            <div className="px-3 py-1.5 rounded-xl bg-amber-500 text-slate-950 font-black text-xs flex items-center gap-1.5 shadow-md">
+              <Timer className="w-3.5 h-3.5 fill-slate-950" />
+              <span>Thi Thử (Bấm giờ)</span>
             </div>
           )}
 
-          {/* Mode Switcher Pill */}
-          <div className="flex items-center bg-[#0e1726] p-1 rounded-2xl border border-[#1e2d42]">
-            <button
-              type="button"
-              onClick={() => setMode('practice')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
-                mode === 'practice'
-                  ? 'bg-emerald-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <GraduationCap className="w-3.5 h-3.5" /> Ôn Luyện (Hiện đúng/sai)
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setMode('exam')}
-              className={`px-3 py-1.5 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
-                mode === 'exam'
-                  ? 'bg-amber-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-white'
-              }`}
-            >
-              <Timer className="w-3.5 h-3.5" /> Thi Thử
-            </button>
-          </div>
-
-          {/* Time Selector Button */}
-          <button
-            type="button"
-            onClick={() => setShowTimeModal(true)}
-            className="px-3 py-1.5 bg-[#0e1726] hover:bg-[#182638] border border-[#1e2d42] text-slate-300 hover:text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer"
-          >
-            <Settings2 className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Chọn thời gian</span>
-          </button>
-
           {/* Timer Display */}
           <ExamTimer
+            mode={mode}
             remainingSeconds={remainingSeconds}
-            isUnlimited={isUnlimitedTime}
-            onTick={() => setRemainingSeconds((prev) => Math.max(0, prev - 1))}
+            elapsedSeconds={elapsedSeconds}
+            onTickRemaining={() => setRemainingSeconds((prev) => Math.max(0, prev - 1))}
+            onTickElapsed={() => setElapsedSeconds((prev) => prev + 1)}
             onTimeUp={() => {
-              alert('Hết giờ làm bài! Hệ thống tự động nộp bài thi.');
-              submitExam();
-              incrementProgress({ examsCompleted: 1 });
+              alert('Hết giờ làm bài thi! Hệ thống tự động nộp bài.');
+              handleFinalSubmit();
             }}
           />
 
-          <button onClick={handleSubmit} className="btn-micky-primary py-1.5 px-4 text-xs font-bold flex items-center gap-1.5 shadow-md">
-            <Send className="w-3.5 h-3.5" /> Nộp bài
+          {/* Nút Nộp Bài */}
+          <button
+            type="button"
+            onClick={handleSubmit}
+            className="btn-micky-primary py-2 px-5 text-xs font-black flex items-center gap-1.5 shadow-md shadow-emerald-500/25 cursor-pointer hover:scale-105 transition-all"
+          >
+            <Send className="w-3.5 h-3.5" />
+            <span>Nộp bài</span>
           </button>
         </div>
       </div>
 
-      {/* Main Exam Grid */}
+      {/* ========================================================================= */}
+      {/* MAIN EXAM WORKSPACE                                                       */}
+      {/* ========================================================================= */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
-        {/* Question & Options Area */}
+        {/* KHUNG CÂU HỎI VÀ ĐÁP ÁN */}
         <div className="md:col-span-2 space-y-6">
           <div className="bg-[#121c2b] border border-[#1e2d42] rounded-3xl p-6 space-y-5 shadow-xl">
             <div className="flex items-center justify-between">
               <span className="text-xs font-bold text-slate-400 bg-[#0e1726] border border-[#1e2d42] px-3 py-1 rounded-full">
-                {currentQuestion.part}
+                {currentQuestion.part || `Câu hỏi ${currentQuestionIndex + 1}`}
               </span>
               <button
+                type="button"
                 onClick={() => toggleFlagQuestion(currentQuestion.id)}
                 className={`flex items-center gap-1 text-xs font-bold px-3 py-1 rounded-full border cursor-pointer transition-all ${
                   isFlagged
@@ -262,13 +216,17 @@ export default function ExamSessionPage() {
               </button>
             </div>
 
-            {/* Media if available: Image + Audio */}
+            {/* Media: Image + Audio nếu có (Ẩn ảnh nếu lỗi để không hiện icon vỡ) */}
             {((currentQuestion as any).imageUrl || (currentQuestion as any).audioUrl) && (
               <div className="flex flex-col sm:flex-row items-center gap-4 p-4 bg-[#0e1726] rounded-2xl border border-[#1e2d42]">
                 {(currentQuestion as any).imageUrl && (
                   <img
                     src={(currentQuestion as any).imageUrl}
-                    alt={(currentQuestion as any).word || 'Vocab illustration'}
+                    alt={(currentQuestion as any).word || 'Minh họa'}
+                    onError={(e) => {
+                      // Ẩn ảnh nếu đường link ngoài bị 404 hoặc không load được
+                      e.currentTarget.style.display = 'none';
+                    }}
                     className="w-32 h-24 object-cover rounded-xl border border-slate-700 shrink-0"
                   />
                 )}
@@ -284,7 +242,7 @@ export default function ExamSessionPage() {
                         <Volume2 className="w-4 h-4" /> Nghe Audio Phát Âm
                       </button>
                       <audio controls className="h-8 max-w-[220px]" src={(currentQuestion as any).audioUrl}>
-                        Your browser does not support the audio element.
+                        Your browser does not support audio.
                       </audio>
                     </div>
                   )}
@@ -292,19 +250,19 @@ export default function ExamSessionPage() {
               </div>
             )}
 
-            {/* Passage text if any */}
+            {/* Đoạn văn (Passage) nếu có */}
             {currentQuestion.passage && (
               <div className="p-4 bg-[#0e1726] rounded-xl border border-[#1e2d42] text-xs sm:text-sm text-slate-300 leading-relaxed font-medium">
                 {currentQuestion.passage}
               </div>
             )}
 
-            {/* Question Text */}
-            <p className="text-base font-black text-white">
-              Câu {currentQuestionIndex + 1}: {currentQuestion.questionText}
+            {/* Nội dung câu hỏi */}
+            <p className="text-base sm:text-lg font-black text-white leading-relaxed">
+              Câu {currentQuestionIndex + 1}: {currentQuestion.questionText || currentQuestion.text}
             </p>
 
-            {/* Options selection */}
+            {/* Danh sách đáp án */}
             <div className="space-y-2.5 pt-1">
               {currentQuestion.options.map((opt: string, optIdx: number) => {
                 const isSelected = selectedAnswer === optIdx;
@@ -313,6 +271,7 @@ export default function ExamSessionPage() {
                 let optionStyles = 'bg-[#0e1726] text-slate-200 border-[#1e2d42] hover:bg-[#152236]';
 
                 if (mode === 'practice' && hasAnswered) {
+                  // Chế độ Luyện đề: Hiển thị ngay đúng / sai
                   if (isThisCorrect) {
                     optionStyles = 'bg-emerald-950/90 text-emerald-300 border-emerald-500 ring-2 ring-emerald-500/50 shadow-md';
                   } else if (isSelected && !isThisCorrect) {
@@ -321,54 +280,59 @@ export default function ExamSessionPage() {
                     optionStyles = 'bg-[#0e1726]/60 text-slate-500 border-[#1e2d42] opacity-60';
                   }
                 } else if (isSelected) {
-                  optionStyles = 'bg-emerald-950/80 text-emerald-300 border-emerald-500 ring-2 ring-emerald-500/40 shadow-sm';
+                  // Chế độ Thi thử: Chỉ đánh dấu lựa chọn đang chọn
+                  optionStyles = 'bg-amber-950/80 text-amber-300 border-amber-500 ring-2 ring-amber-500/40 shadow-sm';
                 }
 
                 return (
                   <button
                     key={optIdx}
+                    type="button"
                     onClick={() => selectAnswer(currentQuestion.id, optIdx)}
                     className={`w-full p-4 rounded-2xl text-xs sm:text-sm font-bold border transition-all text-left flex items-center justify-between cursor-pointer ${optionStyles}`}
                   >
                     <span>
-                      <strong className="mr-2 text-emerald-400">{String.fromCharCode(65 + optIdx)}.</strong> {opt}
+                      <strong className={`mr-2.5 font-mono ${mode === 'exam' && isSelected ? 'text-amber-400' : 'text-emerald-400'}`}>
+                        {String.fromCharCode(65 + optIdx)}.
+                      </strong>{' '}
+                      {opt}
                     </span>
 
+                    {/* Biểu tượng đúng/sai ở chế độ Luyện đề */}
                     {mode === 'practice' && hasAnswered && isThisCorrect && (
-                      <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 ml-2" />
                     )}
                     {mode === 'practice' && hasAnswered && isSelected && !isThisCorrect && (
-                      <XCircle className="w-5 h-5 text-rose-400 shrink-0" />
-                    )}
-                    {mode === 'exam' && isSelected && (
-                      <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+                      <XCircle className="w-5 h-5 text-rose-400 shrink-0 ml-2" />
                     )}
                   </button>
                 );
               })}
             </div>
 
-            {/* INSTANT PRACTICE MODE FEEDBACK & EXPLANATION BANNER */}
+            {/* Giải thích chi tiết ở chế độ Luyện đề */}
             {mode === 'practice' && hasAnswered && (
               <div
-                className={`p-5 rounded-2xl border space-y-2.5 animate-fade-in ${
+                className={`p-4 rounded-2xl border space-y-2 animate-fade-in ${
                   isCorrect
-                    ? 'bg-emerald-950/40 border-emerald-500/50 text-emerald-300'
-                    : 'bg-rose-950/40 border-rose-500/50 text-rose-300'
+                    ? 'bg-emerald-950/40 border-emerald-500/40'
+                    : 'bg-rose-950/40 border-rose-500/40'
                 }`}
               >
-                <div className="flex items-center gap-2 font-black text-sm">
+                <div className="flex items-center gap-2">
                   {isCorrect ? (
                     <>
                       <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-                      <span className="text-emerald-400">Chính xác! Tuyệt vời 🎉</span>
+                      <span className="text-xs font-black text-emerald-300">Chính xác! Làm rất tốt!</span>
                     </>
                   ) : (
                     <>
                       <AlertCircle className="w-5 h-5 text-rose-400" />
-                      <span className="text-rose-400">
+                      <span className="text-xs font-black text-rose-300">
                         Chưa chính xác! Đáp án đúng là:{' '}
-                        <strong>{String.fromCharCode(65 + currentQuestion.correctAnswer)}. {currentQuestion.options[currentQuestion.correctAnswer]}</strong>
+                        <strong>
+                          {String.fromCharCode(65 + currentQuestion.correctAnswer)}. {currentQuestion.options[currentQuestion.correctAnswer]}
+                        </strong>
                       </span>
                     </>
                   )}
@@ -383,27 +347,29 @@ export default function ExamSessionPage() {
             )}
           </div>
 
-          {/* Prev / Next buttons */}
+          {/* Prev / Next Buttons */}
           <div className="flex items-center justify-between">
             <button
+              type="button"
               onClick={() => setCurrentQuestionIndex(Math.max(0, currentQuestionIndex - 1))}
               disabled={currentQuestionIndex === 0}
-              className="btn-micky-secondary py-2.5 px-5 text-xs font-bold disabled:opacity-40"
+              className="btn-micky-secondary py-2.5 px-5 text-xs font-bold disabled:opacity-40 cursor-pointer"
             >
               <ChevronLeft className="w-4 h-4" /> Câu trước
             </button>
 
             <button
+              type="button"
               onClick={() => setCurrentQuestionIndex(Math.min(activeExam.questions.length - 1, currentQuestionIndex + 1))}
               disabled={currentQuestionIndex === activeExam.questions.length - 1}
-              className="btn-micky-primary py-2.5 px-5 text-xs font-bold disabled:opacity-40"
+              className="btn-micky-primary py-2.5 px-5 text-xs font-bold disabled:opacity-40 cursor-pointer"
             >
               Câu tiếp <ChevronRight className="w-4 h-4" />
             </button>
           </div>
         </div>
 
-        {/* Sidebar Question Grid Navigator */}
+        {/* BẢNG ĐIỀU HƯỚNG CÂU HỎI */}
         <div>
           <QuestionNav
             questions={activeExam.questions}
@@ -414,73 +380,6 @@ export default function ExamSessionPage() {
           />
         </div>
       </div>
-
-      {/* TIME SELECTION MODAL */}
-      {showTimeModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-[#121c2b] border border-[#1e2d42] w-full max-w-md rounded-3xl p-6 space-y-5 shadow-2xl animate-fade-in">
-            <div className="flex items-center justify-between border-b border-[#1e2d42] pb-3">
-              <h3 className="text-base font-black text-white flex items-center gap-2">
-                <Timer className="w-5 h-5 text-emerald-400" />
-                Chọn Thời Gian Làm Đề & Ôn Tập
-              </h3>
-              <button
-                onClick={() => setShowTimeModal(false)}
-                className="text-slate-400 hover:text-white text-xs font-bold cursor-pointer"
-              >
-                ✕ Đóng
-              </button>
-            </div>
-
-            {/* Quick preset buttons */}
-            <div className="space-y-3">
-              <label className="block text-xs font-bold text-slate-300">Chọn nhanh thời gian:</label>
-              <div className="grid grid-cols-3 gap-2">
-                {[15, 30, 45, 60, 90, 120, 180].map((mins) => (
-                  <button
-                    key={mins}
-                    type="button"
-                    onClick={() => handleApplyTime(mins)}
-                    className="p-2.5 rounded-xl bg-[#0e1726] hover:bg-emerald-600 border border-[#1e2d42] hover:border-emerald-500 text-xs font-bold text-white transition-all cursor-pointer"
-                  >
-                    {mins} phút
-                  </button>
-                ))}
-                <button
-                  type="button"
-                  onClick={() => handleApplyTime(null)}
-                  className="p-2.5 col-span-2 rounded-xl bg-emerald-950/60 hover:bg-emerald-600 border border-emerald-700/60 hover:border-emerald-500 text-xs font-black text-emerald-300 hover:text-white transition-all cursor-pointer flex items-center justify-center gap-1"
-                >
-                  <Sparkles className="w-3.5 h-3.5" /> Không giới hạn thời gian
-                </button>
-              </div>
-            </div>
-
-            {/* Custom Minutes Input */}
-            <div className="space-y-2 pt-2 border-t border-[#1e2d42]">
-              <label className="block text-xs font-bold text-slate-300">Hoặc nhập số phút tùy ý:</label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="number"
-                  min={1}
-                  max={600}
-                  value={tempMinutes}
-                  onChange={(e) => setTempMinutes(e.target.value ? Number(e.target.value) : '')}
-                  placeholder="Nhập số phút..."
-                  className="flex-1 bg-[#0e1726] border border-[#1e2d42] focus:border-emerald-500 rounded-xl px-4 py-2 text-xs text-white outline-none"
-                />
-                <button
-                  type="button"
-                  onClick={() => handleApplyTime(tempMinutes ? Number(tempMinutes) : 45)}
-                  className="btn-micky-primary px-4 py-2 text-xs font-black cursor-pointer shrink-0"
-                >
-                  Áp dụng
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }

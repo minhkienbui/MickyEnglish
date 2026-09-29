@@ -21,6 +21,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import { useThemeStore } from '@/stores/useThemeStore';
 import { curatedExams } from '@/data/exams';
 import { ExamPaper } from '@/lib/types';
+import ExamStartModal from '@/components/exam/ExamStartModal';
 
 export default function ExamBankPage() {
   const { theme } = useThemeStore();
@@ -29,6 +30,7 @@ export default function ExamBankPage() {
 
   const [activeCategory, setActiveCategory] = useState<string>('Tất cả');
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedExamForModal, setSelectedExamForModal] = useState<ExamPaper | null>(null);
 
   const categories = [
     'Tất cả',
@@ -97,7 +99,7 @@ export default function ExamBankPage() {
           <p className={`text-xs sm:text-sm font-semibold max-w-2xl leading-relaxed ${
             isLight ? 'text-slate-600' : 'text-slate-300'
           }`}>
-            Chọn đề vừa sức từ 20 đến 50 câu (15 – 30 phút). Hỗ trợ 2 chế độ: <strong>Ôn luyện (hiện đúng/sai & giải thích ngay)</strong> hoặc <strong>Thi thử bấm giờ</strong>.
+            Chọn đề vừa sức từ 20 đến 50 câu (15 – 30 phút). Nhấp vào đề để chọn chế độ: <strong>Luyện đề (tự do, hiện đáp án & giải thích tức thì)</strong> hoặc <strong>Thi thử (bấm giờ & tự động nộp bài)</strong>.
           </p>
         </div>
 
@@ -166,12 +168,17 @@ export default function ExamBankPage() {
       {/* ========================================================================= */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {regularExams.map((exam) => (
-          <ExamCard key={exam.id} exam={exam} isLight={isLight} />
+          <ExamCard
+            key={exam.id}
+            exam={exam}
+            isLight={isLight}
+            onSelectExam={(selected) => setSelectedExamForModal(selected)}
+          />
         ))}
       </div>
 
       {/* ========================================================================= */}
-      {/* 4. ĐẠI THỬ THÁCH TRỌN BỘ OXFORD MASTER CHALENGE (GỌN GÀNG, KHÔNG TRẢI DÀI) */}
+      {/* 4. ĐẠI THỬ THÁCH TRỌN BỘ OXFORD MASTER CHALLENGE                          */}
       {/* ========================================================================= */}
       {masterExam && (activeCategory === 'Tất cả' || activeCategory.includes('Oxford')) && (
         <div
@@ -197,7 +204,7 @@ export default function ExamBankPage() {
               <p className={`text-xs sm:text-sm font-medium leading-relaxed max-w-3xl ${
                 isLight ? 'text-slate-600' : 'text-slate-300'
               }`}>
-                Tổng hợp trọn vẹn 3.544 câu hỏi chuẩn Oxford quét từ trang 1 đến 296 có âm thanh MP3 & hình ảnh. Bạn có thể chọn thời gian và số câu linh hoạt theo sức học của mình.
+                Tổng hợp trọn vẹn 3.544 câu hỏi chuẩn Oxford quét từ trang 1 đến 296 có âm thanh MP3 & hình ảnh. Bạn có thể chọn Luyện đề tự do hoặc Thi thử bấm giờ, chọn đảo câu hỏi & đảo đáp án thông minh.
               </p>
 
               <div className="flex flex-wrap items-center gap-4 text-xs font-bold text-slate-400 pt-1">
@@ -205,7 +212,7 @@ export default function ExamBankPage() {
                   <CheckCircle2 className="w-4 h-4" /> 3.544 câu hỏi đầy đủ
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <Clock className="w-4 h-4 text-amber-400" /> Tự do chỉnh thời gian
+                  <Clock className="w-4 h-4 text-amber-400" /> Tự do chọn số câu & thời gian
                 </span>
                 <span className="flex items-center gap-1.5">
                   <Users className="w-4 h-4 text-blue-400" /> 4.210+ lượt thi
@@ -214,23 +221,41 @@ export default function ExamBankPage() {
             </div>
 
             <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0 w-full lg:w-auto">
-              <Link
-                href={`/kho-de/${masterExam.id}`}
+              <button
+                type="button"
+                onClick={() => setSelectedExamForModal(masterExam)}
                 className="w-full sm:w-auto px-8 py-3.5 bg-[#00c950] hover:bg-[#00b046] active:scale-95 text-white font-black text-sm rounded-2xl shadow-xl shadow-emerald-500/30 flex items-center justify-center gap-2 transition-all hover:scale-105 cursor-pointer"
               >
                 <span>Bắt đầu thử thách</span>
                 <ArrowRight className="w-4 h-4" />
-              </Link>
+              </button>
             </div>
           </div>
         </div>
       )}
+
+      {/* ========================================================================= */}
+      {/* MODAL CẤU HÌNH BẮT ĐẦU: CHỌN LUYỆN ĐỀ HOẶC THI THỬ (THEO YÊU CẦU NGƯỜI DÙNG) */}
+      {/* ========================================================================= */}
+      <ExamStartModal
+        exam={selectedExamForModal}
+        isOpen={Boolean(selectedExamForModal)}
+        onClose={() => setSelectedExamForModal(null)}
+      />
     </div>
   );
 }
 
 // Subcomponent: Card Đề thi thân thiện, bo góc đẹp mắt
-function ExamCard({ exam, isLight }: { exam: ExamPaper; isLight: boolean }) {
+function ExamCard({
+  exam,
+  isLight,
+  onSelectExam,
+}: {
+  exam: ExamPaper;
+  isLight: boolean;
+  onSelectExam: (exam: ExamPaper) => void;
+}) {
   const levelColor =
     exam.level === 'A1'
       ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
@@ -295,14 +320,15 @@ function ExamCard({ exam, isLight }: { exam: ExamPaper; isLight: boolean }) {
           </span>
         </div>
 
-        {/* Action Button */}
-        <Link
-          href={`/kho-de/${exam.id}`}
-          className="w-full py-2.5 px-4 bg-[#00c950] hover:bg-[#00b046] active:scale-95 text-white font-black text-xs rounded-xl shadow-md shadow-emerald-500/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+        {/* Action Button: Nhấp để mở Modal chọn Luyện Đề hoặc Thi Thử */}
+        <button
+          type="button"
+          onClick={() => onSelectExam(exam)}
+          className="w-full py-2.5 px-4 bg-[#00c950] hover:bg-[#00b046] active:scale-95 text-white font-black text-xs rounded-xl shadow-md shadow-emerald-500/20 flex items-center justify-center gap-1.5 transition-all cursor-pointer hover:scale-[1.02]"
         >
           <span>Vào thi ngay</span>
           <ArrowRight className="w-3.5 h-3.5" />
-        </Link>
+        </button>
       </div>
     </div>
   );
