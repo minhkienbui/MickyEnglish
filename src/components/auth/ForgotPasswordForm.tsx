@@ -34,11 +34,11 @@ export default function ForgotPasswordForm() {
         throw new Error(data.error || 'Không thể gửi yêu cầu đặt lại mật khẩu');
       }
 
-      setSuccessMsg('Đã tạo liên kết đặt lại mật khẩu thành công (hết hạn sau 1 giờ).');
+      setSuccessMsg(data.message || 'Yêu cầu đặt lại mật khẩu đã được xử lý an toàn.');
       if (data.resetToken) {
         setResetUrl(`/reset-password?token=${data.resetToken}`);
       } else {
-        setResetUrl(`/reset-password?token=demo-token-${Date.now()}`);
+        setResetUrl('');
       }
     } catch (err: any) {
       setErrorMsg(err.message || 'Đã có lỗi xảy ra');

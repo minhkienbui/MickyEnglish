@@ -36,6 +36,23 @@ interface TimedWord {
   text: string;
 }
 
+function isSafeYouTubeUrl(urlStr?: string): boolean {
+  if (!urlStr || typeof urlStr !== 'string') return false;
+  try {
+    const u = new URL(urlStr);
+    if (u.protocol !== 'https:') return false;
+    const hostname = u.hostname.toLowerCase();
+    return (
+      hostname === 'www.youtube.com' ||
+      hostname === 'youtube.com' ||
+      hostname.endsWith('.youtube.com') ||
+      hostname.endsWith('.googlevideo.com')
+    );
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Tự động trích xuất phụ đề YouTube chính xác theo từng từ (Word-level Real-time Sync)
  * Loại bỏ 100% độ trễ (delay) chữ giữa âm thanh và phụ đề
@@ -108,8 +125,8 @@ export async function fetchYouTubeDualSubtitles(videoId: string): Promise<YouTub
     let enWords: TimedWord[] = [];
     let viWords: TimedWord[] = [];
 
-    // Tải và bóc tách từng từ tiếng Anh kèm mốc giây tuyệt đối
-    if (enTrack?.baseUrl) {
+    // Tải và bóc tách từng từ tiếng Anh kèm mốc giây tuyệt đối (bảo vệ chống SSRF)
+    if (enTrack?.baseUrl && isSafeYouTubeUrl(enTrack.baseUrl)) {
       const enXmlRes = await fetch(enTrack.baseUrl, {
         headers: { 'User-Agent': INNERTUBE_USER_AGENT },
       });
@@ -119,8 +136,8 @@ export async function fetchYouTubeDualSubtitles(videoId: string): Promise<YouTub
       }
     }
 
-    // Tải track tiếng Việt nếu có sẵn
-    if (viTrack?.baseUrl) {
+    // Tải track tiếng Việt nếu có sẵn (bảo vệ chống SSRF)
+    if (viTrack?.baseUrl && isSafeYouTubeUrl(viTrack.baseUrl)) {
       const viXmlRes = await fetch(viTrack.baseUrl, {
         headers: { 'User-Agent': INNERTUBE_USER_AGENT },
       });
