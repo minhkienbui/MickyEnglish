@@ -14,6 +14,7 @@ export interface UserProfile {
   diamonds?: number; // Đá Quý (default 100)
   gems?: number; // alias for diamonds
   streak: number; // chuỗi ngày học
+  xp?: number; // Điểm kinh nghiệm
   createdAt?: string;
   lastLogin?: string;
   lastActive?: string;

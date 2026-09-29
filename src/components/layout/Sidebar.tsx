@@ -26,6 +26,7 @@ import {
   Crown,
   Video,
   LogOut,
+  Trophy,
 } from 'lucide-react';
 
 export default function Sidebar() {
@@ -41,6 +42,7 @@ export default function Sidebar() {
     { name: 'Luyện tập', href: '/practice', icon: Dumbbell, badge: null },
     { name: 'Trò chơi', href: '/tro-choi', icon: Gamepad2, badge: 'NEW' },
     { name: 'Luyện thi', href: '/kho-de', icon: GraduationCap, badge: null },
+    { name: 'Bảng xếp hạng', href: '/bang-xep-hang', icon: Trophy, badge: 'HOT' },
   ];
 
   const isAdmin = Boolean(isAuthenticated && user?.role === 'admin');

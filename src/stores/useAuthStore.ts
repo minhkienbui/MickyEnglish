@@ -42,6 +42,8 @@ interface AuthState {
   updateProfile: (data: Partial<UserProfile>) => void;
   deductDiamonds: (amount: number) => boolean;
   deductGems: (amount: number) => boolean;
+  addDiamonds: (amount: number) => void;
+  addXp: (amount: number) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -316,6 +318,31 @@ export const useAuthStore = create<AuthState>()(
 
       deductGems: (amount: number) => {
         return get().deductDiamonds(amount);
+      },
+
+      addDiamonds: (amount: number) => {
+        const currentUser = get().user;
+        if (!currentUser) return;
+        const currentDiamonds = currentUser.diamonds ?? 100;
+        set({
+          user: {
+            ...currentUser,
+            diamonds: currentDiamonds + amount,
+            gems: currentDiamonds + amount,
+          },
+        });
+      },
+
+      addXp: (amount: number) => {
+        const currentUser = get().user;
+        if (!currentUser) return;
+        const currentXp = currentUser.xp ?? 0;
+        set({
+          user: {
+            ...currentUser,
+            xp: currentXp + amount,
+          },
+        });
       },
     }),
     {

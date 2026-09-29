@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Headphones, BookCheck, Dumbbell, Gamepad2, GraduationCap, User } from 'lucide-react';
+import { Home, Headphones, BookCheck, Dumbbell, Gamepad2, GraduationCap, Trophy, User } from 'lucide-react';
 
 export default function MobileNav() {
   const pathname = usePathname();
@@ -13,7 +13,7 @@ export default function MobileNav() {
     { name: 'Từ vựng', href: '/vocabulary', icon: BookCheck },
     { name: 'Luyện tập', href: '/practice', icon: Dumbbell },
     { name: 'Trò chơi', href: '/tro-choi', icon: Gamepad2 },
-    { name: 'Luyện thi', href: '/kho-de', icon: GraduationCap },
+    { name: 'BXH', href: '/bang-xep-hang', icon: Trophy },
     { name: 'Tài khoản', href: '/tai-khoan', icon: User },
   ];
 
