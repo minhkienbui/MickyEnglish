@@ -2,40 +2,47 @@ import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { db } from '@/lib/db';
 import { ADMIN_EMAILS } from '@/stores/useAuthStore';
+import { sanitizeText, validateEmail, validatePassword } from '@/lib/security';
 
 export async function POST(req: Request) {
   try {
-    const body = await req.json();
+    const body = await req.json().catch(() => ({}));
     const { username, email, fullName, name, password, avatar } = body;
 
-    const finalFullName = (fullName || name || username || '').trim();
-    const normalizedEmail = (email || '').toLowerCase().trim();
-    const cleanUsername = (username || '').toLowerCase().trim();
+    const rawFullName = fullName || name || username || '';
+    const rawEmail = email || '';
+    const rawUsername = username || '';
+
+    const finalFullName = sanitizeText(rawFullName, 100);
+    const normalizedEmail = rawEmail.toLowerCase().trim();
+    const cleanUsername = sanitizeText(rawUsername.toLowerCase().trim(), 50);
 
     if (!finalFullName) {
       return NextResponse.json({ success: false, error: 'Họ và tên là bắt buộc' }, { status: 400 });
     }
-    if (!cleanUsername) {
-      return NextResponse.json({ success: false, error: 'Tên đăng nhập là bắt buộc' }, { status: 400 });
+    if (!cleanUsername || cleanUsername.length < 3) {
+      return NextResponse.json({ success: false, error: 'Tên đăng nhập phải có ít nhất 3 ký tự' }, { status: 400 });
     }
-    if (!normalizedEmail) {
-      return NextResponse.json({ success: false, error: 'Email là bắt buộc' }, { status: 400 });
-    }
-    if (!password || password.length < 6) {
-      return NextResponse.json({ success: false, error: 'Mật khẩu phải có tối thiểu 6 ký tự' }, { status: 400 });
+    if (!validateEmail(normalizedEmail)) {
+      return NextResponse.json({ success: false, error: 'Địa chỉ email không đúng định dạng' }, { status: 400 });
     }
 
-    // Role check: Nếu email nằm trong ADMIN_EMAILS -> gán role admin
+    const passCheck = validatePassword(password);
+    if (!passCheck.isValid) {
+      return NextResponse.json({ success: false, error: passCheck.message }, { status: 400 });
+    }
+
+    // Role check: Chỉ các email quản trị đã định danh mới có role admin
     const isAdmin = ADMIN_EMAILS.includes(normalizedEmail);
     const role = isAdmin ? 'admin' : 'user';
 
-    // Hash password
+    // Mã hóa mật khẩu an toàn với bcrypt (10 rounds salt)
     const hashedPassword = await bcrypt.hash(password, 10);
 
     let createdUser: any = null;
 
     try {
-      // Check existing email
+      // Kiểm tra trùng email
       const existingUser = await db.user.findUnique({
         where: { email: normalizedEmail },
       });
@@ -52,7 +59,7 @@ export async function POST(req: Request) {
           name: finalFullName,
           email: normalizedEmail,
           hashedPassword,
-          image: avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
+          image: avatar ? sanitizeText(avatar, 500) : 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&w=200&q=80',
           role: role === 'admin' ? 'ADMIN' : 'USER',
           streak: 1,
         },
@@ -90,16 +97,15 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         success: true,
-        message: `Chào mừng ${finalFullName}! Tài khoản đã được tạo`,
+        message: `Chào mừng ${finalFullName}! Tài khoản đã được tạo an toàn`,
         user: userProfile,
         token: `jwt-token-${userProfile.id}-${Date.now()}`,
       },
       { status: 201 }
     );
   } catch (error: any) {
-    console.error('Registration error:', error);
     return NextResponse.json(
-      { success: false, error: error.message || 'Đã có lỗi xảy ra khi tạo tài khoản' },
+      { success: false, error: 'Đã xảy ra lỗi khi tạo tài khoản. Vui lòng thử lại.' },
       { status: 500 }
     );
   }
