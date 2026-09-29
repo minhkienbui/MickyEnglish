@@ -56,9 +56,19 @@ export default function ExamSessionPage() {
 
   const targetExam = exams.find((e) => e.id === examId) || exams[0];
 
+  const [questionCount, setQuestionCount] = useState<number>(() => {
+    return targetExam && targetExam.questions.length > 50 ? 50 : targetExam?.questions.length || 30;
+  });
+
   useEffect(() => {
-    startExam(targetExam);
-  }, [examId, targetExam, startExam]);
+    if (!targetExam) return;
+    const slicedExam = {
+      ...targetExam,
+      questions: targetExam.questions.slice(0, questionCount),
+      totalQuestions: Math.min(questionCount, targetExam.questions.length),
+    };
+    startExam(slicedExam);
+  }, [examId, targetExam, questionCount, startExam]);
 
   if (!activeExam) return null;
 
@@ -135,8 +145,46 @@ export default function ExamSessionPage() {
           </div>
         </div>
 
-        {/* Action Controls: Mode Switcher + Timer + Settings + Submit */}
+        {/* Action Controls: Mode Switcher + Question Count + Timer + Settings + Submit */}
         <div className="flex flex-wrap items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
+          {/* Question Count Selector when exam has > 50 questions */}
+          {targetExam && targetExam.questions.length > 50 && (
+            <div className="flex items-center gap-1 bg-[#0e1726] p-1 rounded-2xl border border-[#1e2d42]">
+              <span className="text-[10px] text-slate-400 font-bold px-2 hidden sm:inline">Số câu:</span>
+              {[25, 50, 100].map((num) => (
+                <button
+                  key={num}
+                  type="button"
+                  onClick={() => {
+                    setQuestionCount(num);
+                    setCurrentQuestionIndex(0);
+                  }}
+                  className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                    questionCount === num
+                      ? 'bg-emerald-600 text-white shadow-sm'
+                      : 'text-slate-400 hover:text-white'
+                  }`}
+                >
+                  {num} câu
+                </button>
+              ))}
+              <button
+                type="button"
+                onClick={() => {
+                  setQuestionCount(targetExam.questions.length);
+                  setCurrentQuestionIndex(0);
+                }}
+                className={`px-2.5 py-1 rounded-xl text-xs font-black transition-all cursor-pointer ${
+                  questionCount === targetExam.questions.length
+                    ? 'bg-emerald-600 text-white shadow-sm'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                Tất cả ({targetExam.questions.length})
+              </button>
+            </div>
+          )}
+
           {/* Mode Switcher Pill */}
           <div className="flex items-center bg-[#0e1726] p-1 rounded-2xl border border-[#1e2d42]">
             <button

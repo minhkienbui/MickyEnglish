@@ -1,6 +1,4 @@
 import { ExamPaper } from '@/lib/types';
-import { oxford3000FullExam } from './exams';
+import { curatedExams } from './exams';
 
-export const mockExams: ExamPaper[] = [
-  oxford3000FullExam,
-];
+export const mockExams: ExamPaper[] = curatedExams;

@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useThemeStore } from '@/stores/useThemeStore';
 import { useLeaderboardStore } from '@/stores/useLeaderboardStore';
-import { mockLeaderboardUsers, weeklyMilestones, LeaderboardUser } from '@/data/mockLeaderboard';
+import { weeklyMilestones, LeaderboardUser } from '@/data/mockLeaderboard';
 import {
   Trophy,
   Crown,
@@ -26,6 +26,7 @@ import {
   Shield,
   Star,
   Users,
+  UserPlus,
 } from 'lucide-react';
 
 export default function LeaderboardPage() {
@@ -36,6 +37,21 @@ export default function LeaderboardPage() {
   const { period, metric, setPeriod, setMetric, claimMilestone, isMilestoneClaimed } = useLeaderboardStore();
 
   const [claimToast, setClaimToast] = useState<string | null>(null);
+  const [realDbUsers, setRealDbUsers] = useState<LeaderboardUser[]>([]);
+  const [loadingUsers, setLoadingUsers] = useState(true);
+
+  // Tải danh sách người dùng thật từ API /api/leaderboard (kết nối trực tiếp database)
+  useEffect(() => {
+    fetch('/api/leaderboard')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.users)) {
+          setRealDbUsers(data.users);
+        }
+      })
+      .catch(() => {})
+      .finally(() => setLoadingUsers(false));
+  }, []);
 
   // Tính toán XP thực tế của user hiện tại
   const currentUserXp = useMemo(() => {
@@ -49,12 +65,12 @@ export default function LeaderboardPage() {
     return (user.dictationMinutes || 0) + (user.shadowingMinutes || 0);
   }, [user]);
 
-  // Ghép user hiện tại vào danh sách xếp hạng
+  // Ghép user hiện tại vào danh sách người dùng thật
   const fullRankList = useMemo(() => {
-    let list = [...mockLeaderboardUsers];
+    const list = [...realDbUsers];
 
     if (isAuthenticated && user) {
-      const existingIdx = list.findIndex((u) => u.id === user.id);
+      const existingIdx = list.findIndex((u) => u.id === user.id || u.name === (user.fullName || user.username));
       const userRankItem: LeaderboardUser = {
         id: user.id,
         rank: 99,
@@ -62,20 +78,20 @@ export default function LeaderboardPage() {
         avatar: user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=200&q=80',
         badge: 'Học viên Chăm chỉ',
         roleTitle: user.role === 'admin' ? 'Quản Trị Viên' : 'Học Viên',
-        level: 'B1',
+        level: currentUserXp > 2000 ? 'C1' : currentUserXp > 1000 ? 'B2' : currentUserXp > 300 ? 'B1' : 'A2',
         streak: user.streak || 1,
-        schoolOrOrg: 'MickyEnglish Learner',
+        schoolOrOrg: 'Học viên MickyEnglish',
         xp: {
-          weekly: Math.max(currentUserXp, 420),
-          monthly: Math.max(currentUserXp * 3, 1350),
-          allTime: Math.max(currentUserXp * 7, 3600),
+          weekly: Math.round(currentUserXp * 0.5),
+          monthly: currentUserXp,
+          allTime: currentUserXp,
         },
         studyTimeMinutes: {
-          weekly: Math.max(currentUserStudyTime, 45),
-          monthly: Math.max(currentUserStudyTime * 3, 140),
-          allTime: Math.max(currentUserStudyTime * 8, 480),
+          weekly: Math.round(currentUserStudyTime * 0.5),
+          monthly: currentUserStudyTime,
+          allTime: currentUserStudyTime,
         },
-        wordsLearned: user.wordsLearned || 42,
+        wordsLearned: user.wordsLearned || 0,
         isCurrentUser: true,
       };
 
@@ -86,10 +102,10 @@ export default function LeaderboardPage() {
       }
     }
 
-    // Sắp xếp danh sách theo tiêu chí (XP hoặc Thời gian học) và thời gian (weekly/monthly/allTime)
+    // Sắp xếp danh sách theo tiêu chí (XP hoặc Thời gian học)
     list.sort((a, b) => {
-      const valA = metric === 'xp' ? a.xp[period] : a.studyTimeMinutes[period];
-      const valB = metric === 'xp' ? b.xp[period] : b.studyTimeMinutes[period];
+      const valA = metric === 'xp' ? a.xp[period] || 0 : a.studyTimeMinutes[period] || 0;
+      const valB = metric === 'xp' ? b.xp[period] || 0 : b.studyTimeMinutes[period] || 0;
       return valB - valA;
     });
 
@@ -98,17 +114,17 @@ export default function LeaderboardPage() {
       ...item,
       rank: idx + 1,
     }));
-  }, [isAuthenticated, user, period, metric, currentUserXp, currentUserStudyTime]);
+  }, [realDbUsers, isAuthenticated, user, period, metric, currentUserXp, currentUserStudyTime]);
 
   // Tìm vị trí của user hiện tại
   const currentUserRankData = useMemo(() => {
     return fullRankList.find((u) => u.isCurrentUser) || null;
   }, [fullRankList]);
 
-  // Top 3 người dẫn đầu
-  const top1 = fullRankList[0];
-  const top2 = fullRankList[1];
-  const top3 = fullRankList[2];
+  // Top 3 người dẫn đầu (nếu có người dùng thật)
+  const top1 = fullRankList[0] || null;
+  const top2 = fullRankList[1] || null;
+  const top3 = fullRankList[2] || null;
   const restList = fullRankList.slice(3);
 
   // Xử lý bấm nhận thưởng chỉ tiêu
@@ -150,7 +166,7 @@ export default function LeaderboardPage() {
             </h1>
 
             <p className={`text-xs sm:text-sm font-semibold max-w-2xl leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-300'}`}>
-              Cạnh tranh lành mạnh, bứt phá giới hạn mỗi ngày. Tích lũy <strong>XP</strong> và <strong>thời gian luyện nghe</strong> để giành vị trí Quán Quân, nhận hàng trăm 💎 Kim cương cùng danh hiệu cao quý!
+              Bảng xếp hạng theo thời gian thực dành cho người dùng thật của MickyEnglish. Tích lũy <strong>XP</strong> và <strong>thời gian luyện nghe</strong> để giành vị trí Quán Quân, nhận hàng trăm 💎 Kim cương cùng danh hiệu cao quý!
             </p>
           </div>
 
@@ -336,110 +352,158 @@ export default function LeaderboardPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-end max-w-4xl mx-auto pt-6">
           {/* PODIUM #2: Á QUÂN (BÊN TRÁI) */}
-          {top2 && (
-            <div className="order-2 md:order-1 flex flex-col items-center">
-              <div className="relative mb-3 group">
-                <div className="w-20 h-20 rounded-full border-4 border-slate-300 overflow-hidden shadow-xl shadow-slate-300/20">
-                  <img src={top2.avatar} alt={top2.name} className="w-full h-full object-cover" />
+          <div className="order-2 md:order-1 flex flex-col items-center">
+            {top2 ? (
+              <>
+                <div className="relative mb-3 group">
+                  <div className="w-20 h-20 rounded-full border-4 border-slate-300 overflow-hidden shadow-xl shadow-slate-300/20">
+                    <img src={top2.avatar} alt={top2.name} className="w-full h-full object-cover" />
+                  </div>
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-7 h-7 bg-slate-200 text-slate-900 rounded-full flex items-center justify-center font-black text-sm shadow-md">
+                    2
+                  </div>
                 </div>
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-7 h-7 bg-slate-200 text-slate-900 rounded-full flex items-center justify-center font-black text-sm shadow-md">
-                  2
-                </div>
-              </div>
 
-              <div className={`w-full p-5 rounded-t-3xl border-t-4 border-slate-300 text-center space-y-2 shadow-2xl h-56 flex flex-col justify-between ${
-                isLight ? 'bg-white border-slate-200' : 'bg-gradient-to-b from-[#16233a] to-[#0f1726] border-[#1e2d42]'
+                <div className={`w-full p-5 rounded-t-3xl border-t-4 border-slate-300 text-center space-y-2 shadow-2xl h-56 flex flex-col justify-between ${
+                  isLight ? 'bg-white border-slate-200' : 'bg-gradient-to-b from-[#16233a] to-[#0f1726] border-[#1e2d42]'
+                }`}>
+                  <div>
+                    <h4 className="font-black text-sm truncate">{top2.name}</h4>
+                    <p className="text-[10px] text-slate-400 truncate">{top2.schoolOrOrg}</p>
+                    <span className="inline-block px-2 py-0.5 mt-1 rounded bg-slate-300/20 text-slate-300 text-[10px] font-bold">
+                      {top2.badge}
+                    </span>
+                  </div>
+
+                  <div className="space-y-1 bg-black/20 p-2.5 rounded-2xl border border-white/5">
+                    <div className="text-xl font-black text-slate-200 font-mono">
+                      {metric === 'xp' ? `${top2.xp[period]?.toLocaleString() || 0} XP` : `${top2.studyTimeMinutes[period] || 0} phút`}
+                    </div>
+                    <div className="flex items-center justify-center gap-1 text-[11px] text-amber-400 font-bold">
+                      <Flame className="w-3.5 h-3.5 fill-amber-400" /> {top2.streak} ngày streak
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className={`w-full p-6 rounded-3xl border-2 border-dashed border-slate-500/40 text-center space-y-3 h-56 flex flex-col items-center justify-center ${
+                isLight ? 'bg-slate-50' : 'bg-[#121c2b]/60'
               }`}>
-                <div>
-                  <h4 className="font-black text-sm truncate">{top2.name}</h4>
-                  <p className="text-[10px] text-slate-400 truncate">{top2.schoolOrOrg}</p>
-                  <span className="inline-block px-2 py-0.5 mt-1 rounded bg-slate-300/20 text-slate-300 text-[10px] font-bold">
-                    {top2.badge}
-                  </span>
+                <div className="w-12 h-12 rounded-full bg-slate-500/20 text-slate-300 flex items-center justify-center text-xl font-black">
+                  🥈
                 </div>
-
-                <div className="space-y-1 bg-black/20 p-2.5 rounded-2xl border border-white/5">
-                  <div className="text-xl font-black text-slate-200 font-mono">
-                    {metric === 'xp' ? `${top2.xp[period].toLocaleString()} XP` : `${top2.studyTimeMinutes[period]} phút`}
-                  </div>
-                  <div className="flex items-center justify-center gap-1 text-[11px] text-amber-400 font-bold">
-                    <Flame className="w-3.5 h-3.5 fill-amber-400" /> {top2.streak} ngày streak
-                  </div>
+                <div>
+                  <h4 className="font-black text-xs text-slate-300">Đang chờ Á Quân</h4>
+                  <p className="text-[10px] text-slate-400">Hãy học bài để leo lên Top 2 nhận 300 💎!</p>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* PODIUM #1: QUÁN QUÂN (Ở GIỮA - CAO NHẤT) */}
-          {top1 && (
-            <div className="order-1 md:order-2 flex flex-col items-center relative -top-3">
-              <div className="relative mb-3 group">
-                <Crown className="w-10 h-10 text-amber-400 fill-amber-400 absolute -top-8 left-1/2 -translate-x-1/2 animate-bounce drop-shadow-[0_4px_10px_rgba(251,191,36,0.6)]" />
-                <div className="w-24 h-24 rounded-full border-4 border-amber-400 overflow-hidden shadow-2xl shadow-amber-400/30 ring-4 ring-amber-400/20">
-                  <img src={top1.avatar} alt={top1.name} className="w-full h-full object-cover" />
+          <div className="order-1 md:order-2 flex flex-col items-center relative -top-3">
+            {top1 ? (
+              <>
+                <div className="relative mb-3 group">
+                  <Crown className="w-10 h-10 text-amber-400 fill-amber-400 absolute -top-8 left-1/2 -translate-x-1/2 animate-bounce drop-shadow-[0_4px_10px_rgba(251,191,36,0.6)]" />
+                  <div className="w-24 h-24 rounded-full border-4 border-amber-400 overflow-hidden shadow-2xl shadow-amber-400/30 ring-4 ring-amber-400/20">
+                    <img src={top1.avatar} alt={top1.name} className="w-full h-full object-cover" />
+                  </div>
+                  <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-amber-500 text-slate-950 rounded-full font-black text-xs shadow-md">
+                    QUÁN QUÂN
+                  </div>
                 </div>
-                <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 px-3 py-0.5 bg-amber-500 text-slate-950 rounded-full font-black text-xs shadow-md">
-                  QUÁN QUÂN
-                </div>
-              </div>
 
-              <div className={`w-full p-6 rounded-t-3xl border-t-4 border-amber-400 text-center space-y-3 shadow-2xl h-64 flex flex-col justify-between ${
-                isLight ? 'bg-amber-500/10 border-amber-300' : 'bg-gradient-to-b from-[#1e2e4a] via-[#142036] to-[#0f1726] border-[#1e2d42]'
+                <div className={`w-full p-6 rounded-t-3xl border-t-4 border-amber-400 text-center space-y-3 shadow-2xl h-64 flex flex-col justify-between ${
+                  isLight ? 'bg-amber-500/10 border-amber-300' : 'bg-gradient-to-b from-[#1e2e4a] via-[#142036] to-[#0f1726] border-[#1e2d42]'
+                }`}>
+                  <div>
+                    <h4 className="font-black text-base text-amber-400 truncate">{top1.name}</h4>
+                    <p className="text-[11px] text-slate-400 truncate">{top1.schoolOrOrg}</p>
+                    <span className="inline-block px-2.5 py-0.5 mt-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-black">
+                      {top1.badge}
+                    </span>
+                  </div>
+
+                  <div className="space-y-1 bg-amber-950/40 border border-amber-500/30 p-3 rounded-2xl shadow-inner">
+                    <div className="text-2xl font-black text-amber-400 font-mono">
+                      {metric === 'xp' ? `${top1.xp[period]?.toLocaleString() || 0} XP` : `${top1.studyTimeMinutes[period] || 0} phút`}
+                    </div>
+                    <div className="flex items-center justify-center gap-1.5 text-xs text-amber-300 font-black">
+                      <Flame className="w-4 h-4 fill-amber-400" /> {top1.streak} ngày streak liên tục
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className={`w-full p-6 rounded-3xl border-2 border-dashed border-amber-400/50 text-center space-y-3 h-64 flex flex-col items-center justify-center ${
+                isLight ? 'bg-amber-50/50' : 'bg-[#142033]/60'
               }`}>
+                <Crown className="w-10 h-10 text-amber-400 fill-amber-400 animate-bounce" />
                 <div>
-                  <h4 className="font-black text-base text-amber-400 truncate">{top1.name}</h4>
-                  <p className="text-[11px] text-slate-400 truncate">{top1.schoolOrOrg}</p>
-                  <span className="inline-block px-2.5 py-0.5 mt-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40 text-[10px] font-black">
-                    {top1.badge}
-                  </span>
+                  <h4 className="font-black text-sm text-amber-400">Vị Trí Quán Quân Đang Mở</h4>
+                  <p className="text-xs text-slate-300 mt-1">
+                    Hãy học ngay hôm nay để trở thành người dẫn đầu mùa giải và nhận <strong>500 💎 Kim cương</strong>!
+                  </p>
                 </div>
-
-                <div className="space-y-1 bg-amber-950/40 border border-amber-500/30 p-3 rounded-2xl shadow-inner">
-                  <div className="text-2xl font-black text-amber-400 font-mono">
-                    {metric === 'xp' ? `${top1.xp[period].toLocaleString()} XP` : `${top1.studyTimeMinutes[period]} phút`}
-                  </div>
-                  <div className="flex items-center justify-center gap-1.5 text-xs text-amber-300 font-black">
-                    <Flame className="w-4 h-4 fill-amber-400" /> {top1.streak} ngày streak liên tục
-                  </div>
-                </div>
+                <Link
+                  href="/dictation-shadowing"
+                  className="px-4 py-2 bg-[#00c950] text-white text-xs font-black rounded-xl shadow-md hover:scale-105 transition-all"
+                >
+                  Bắt đầu học ngay →
+                </Link>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           {/* PODIUM #3: QUÝ QUÂN (BÊN PHẢI) */}
-          {top3 && (
-            <div className="order-3 flex flex-col items-center">
-              <div className="relative mb-3 group">
-                <div className="w-20 h-20 rounded-full border-4 border-orange-500 overflow-hidden shadow-xl shadow-orange-500/20">
-                  <img src={top3.avatar} alt={top3.name} className="w-full h-full object-cover" />
+          <div className="order-3 flex flex-col items-center">
+            {top3 ? (
+              <>
+                <div className="relative mb-3 group">
+                  <div className="w-20 h-20 rounded-full border-4 border-orange-500 overflow-hidden shadow-xl shadow-orange-500/20">
+                    <img src={top3.avatar} alt={top3.name} className="w-full h-full object-cover" />
+                  </div>
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-7 h-7 bg-orange-600 text-white rounded-full flex items-center justify-center font-black text-sm shadow-md">
+                    3
+                  </div>
                 </div>
-                <div className="absolute -top-3 left-1/2 -translate-x-1/2 w-7 h-7 bg-orange-600 text-white rounded-full flex items-center justify-center font-black text-sm shadow-md">
-                  3
-                </div>
-              </div>
 
-              <div className={`w-full p-5 rounded-t-3xl border-t-4 border-orange-500 text-center space-y-2 shadow-2xl h-52 flex flex-col justify-between ${
-                isLight ? 'bg-white border-slate-200' : 'bg-gradient-to-b from-[#182030] to-[#0f1726] border-[#1e2d42]'
+                <div className={`w-full p-5 rounded-t-3xl border-t-4 border-orange-500 text-center space-y-2 shadow-2xl h-52 flex flex-col justify-between ${
+                  isLight ? 'bg-white border-slate-200' : 'bg-gradient-to-b from-[#182030] to-[#0f1726] border-[#1e2d42]'
+                }`}>
+                  <div>
+                    <h4 className="font-black text-sm truncate">{top3.name}</h4>
+                    <p className="text-[10px] text-slate-400 truncate">{top3.schoolOrOrg}</p>
+                    <span className="inline-block px-2 py-0.5 mt-1 rounded bg-orange-500/20 text-orange-400 text-[10px] font-bold">
+                      {top3.badge}
+                    </span>
+                  </div>
+
+                  <div className="space-y-1 bg-black/20 p-2.5 rounded-2xl border border-white/5">
+                    <div className="text-xl font-black text-orange-400 font-mono">
+                      {metric === 'xp' ? `${top3.xp[period]?.toLocaleString() || 0} XP` : `${top3.studyTimeMinutes[period] || 0} phút`}
+                    </div>
+                    <div className="flex items-center justify-center gap-1 text-[11px] text-amber-400 font-bold">
+                      <Flame className="w-3.5 h-3.5 fill-amber-400" /> {top3.streak} ngày streak
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className={`w-full p-6 rounded-3xl border-2 border-dashed border-orange-500/40 text-center space-y-3 h-52 flex flex-col items-center justify-center ${
+                isLight ? 'bg-slate-50' : 'bg-[#121c2b]/60'
               }`}>
-                <div>
-                  <h4 className="font-black text-sm truncate">{top3.name}</h4>
-                  <p className="text-[10px] text-slate-400 truncate">{top3.schoolOrOrg}</p>
-                  <span className="inline-block px-2 py-0.5 mt-1 rounded bg-orange-500/20 text-orange-400 text-[10px] font-bold">
-                    {top3.badge}
-                  </span>
+                <div className="w-12 h-12 rounded-full bg-orange-500/20 text-orange-400 flex items-center justify-center text-xl font-black">
+                  🥉
                 </div>
-
-                <div className="space-y-1 bg-black/20 p-2.5 rounded-2xl border border-white/5">
-                  <div className="text-xl font-black text-orange-400 font-mono">
-                    {metric === 'xp' ? `${top3.xp[period].toLocaleString()} XP` : `${top3.studyTimeMinutes[period]} phút`}
-                  </div>
-                  <div className="flex items-center justify-center gap-1 text-[11px] text-amber-400 font-bold">
-                    <Flame className="w-3.5 h-3.5 fill-amber-400" /> {top3.streak} ngày streak
-                  </div>
+                <div>
+                  <h4 className="font-black text-xs text-orange-400">Đang chờ Quý Quân</h4>
+                  <p className="text-[10px] text-slate-400">Tích lũy XP để chiếm vị trí Top 3 nhận 150 💎!</p>
                 </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </section>
 
@@ -554,7 +618,7 @@ export default function LeaderboardPage() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Users className="w-5 h-5 text-blue-400" />
-            <h2 className="text-lg sm:text-xl font-black">Danh Sách Xếp Hạng Chi Tiết</h2>
+            <h2 className="text-lg sm:text-xl font-black">Danh Sách Xếp Hạng Người Dùng</h2>
           </div>
           <span className="text-xs text-slate-400 font-bold">Tổng cộng: {fullRankList.length} học viên</span>
         </div>
@@ -575,86 +639,102 @@ export default function LeaderboardPage() {
             <div className="hidden sm:block sm:col-span-2 text-right pr-2">Từ Đã Học</div>
           </div>
 
-          {/* Table Rows */}
-          <div className="divide-y divide-slate-700/20">
-            {fullRankList.map((item) => {
-              const isUser = item.isCurrentUser;
-              return (
-                <div
-                  key={item.id}
-                  className={`grid grid-cols-12 gap-2 p-3.5 sm:p-4 items-center transition-colors ${
-                    isUser
-                      ? 'bg-emerald-500/15 border-l-4 border-emerald-500 ring-1 ring-emerald-500/30'
-                      : isLight
-                      ? 'hover:bg-slate-50'
-                      : 'hover:bg-[#152338]'
-                  }`}
-                >
-                  {/* Rank */}
-                  <div className="col-span-2 sm:col-span-1 text-center font-black flex items-center justify-center">
-                    {item.rank === 1 ? (
-                      <span className="w-8 h-8 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center text-sm shadow-md font-black">
-                        🥇
-                      </span>
-                    ) : item.rank === 2 ? (
-                      <span className="w-8 h-8 rounded-full bg-slate-300 text-slate-900 flex items-center justify-center text-sm shadow-md font-black">
-                        🥈
-                      </span>
-                    ) : item.rank === 3 ? (
-                      <span className="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center text-sm shadow-md font-black">
-                        🥉
-                      </span>
-                    ) : (
-                      <span className={`text-sm font-mono ${isUser ? 'text-emerald-400' : 'text-slate-400'}`}>
-                        #{item.rank}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Student Info */}
-                  <div className="col-span-6 sm:col-span-5 flex items-center gap-3 min-w-0">
-                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl overflow-hidden border border-slate-600 shrink-0 shadow-sm">
-                      <img src={item.avatar} alt={item.name} className="w-full h-full object-cover" />
-                    </div>
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5">
-                        <p className={`text-xs sm:text-sm font-black truncate ${isUser ? 'text-emerald-400 font-extrabold' : ''}`}>
-                          {item.name} {isUser && '(Bạn)'}
-                        </p>
-                        <span className="px-1.5 py-0.2 rounded bg-blue-500/20 text-blue-400 text-[9px] font-black border border-blue-500/30 shrink-0">
-                          {item.level}
+          {/* Table Content */}
+          {fullRankList.length === 0 ? (
+            <div className="p-12 text-center space-y-3">
+              <Trophy className="w-12 h-12 text-amber-500/40 mx-auto animate-pulse" />
+              <h4 className="text-base font-black text-slate-300">Mùa giải mới đang bắt đầu!</h4>
+              <p className="text-xs text-slate-400 max-w-md mx-auto">
+                Chưa có học viên nào ghi danh tuần này. Hãy là người đầu tiên học bài để vươn lên Top 1 và nhận 500 💎!
+              </p>
+              <Link
+                href="/dictation-shadowing"
+                className="inline-flex px-5 py-2.5 bg-[#00c950] hover:bg-[#00b046] text-white font-black text-xs rounded-xl shadow-md cursor-pointer"
+              >
+                Học bài tích lũy XP ngay →
+              </Link>
+            </div>
+          ) : (
+            <div className="divide-y divide-slate-700/20">
+              {fullRankList.map((item) => {
+                const isUser = item.isCurrentUser;
+                return (
+                  <div
+                    key={item.id}
+                    className={`grid grid-cols-12 gap-2 p-3.5 sm:p-4 items-center transition-colors ${
+                      isUser
+                        ? 'bg-emerald-500/15 border-l-4 border-emerald-500 ring-1 ring-emerald-500/30'
+                        : isLight
+                        ? 'hover:bg-slate-50'
+                        : 'hover:bg-[#152338]'
+                    }`}
+                  >
+                    {/* Rank */}
+                    <div className="col-span-2 sm:col-span-1 text-center font-black flex items-center justify-center">
+                      {item.rank === 1 ? (
+                        <span className="w-8 h-8 rounded-full bg-amber-500 text-slate-950 flex items-center justify-center text-sm shadow-md font-black">
+                          🥇
                         </span>
+                      ) : item.rank === 2 ? (
+                        <span className="w-8 h-8 rounded-full bg-slate-300 text-slate-900 flex items-center justify-center text-sm shadow-md font-black">
+                          🥈
+                        </span>
+                      ) : item.rank === 3 ? (
+                        <span className="w-8 h-8 rounded-full bg-orange-500 text-white flex items-center justify-center text-sm shadow-md font-black">
+                          🥉
+                        </span>
+                      ) : (
+                        <span className={`text-sm font-mono ${isUser ? 'text-emerald-400 font-black' : 'text-slate-400'}`}>
+                          #{item.rank}
+                        </span>
+                      )}
+                    </div>
+
+                    {/* Student Info */}
+                    <div className="col-span-6 sm:col-span-5 flex items-center gap-3 min-w-0">
+                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl overflow-hidden border border-slate-600 shrink-0 shadow-sm">
+                        <img src={item.avatar} alt={item.name} className="w-full h-full object-cover" />
                       </div>
-                      <p className="text-[10px] text-slate-400 truncate">{item.schoolOrOrg || item.badge}</p>
+                      <div className="min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <p className={`text-xs sm:text-sm font-black truncate ${isUser ? 'text-emerald-400 font-extrabold' : ''}`}>
+                            {item.name} {isUser && '(Bạn)'}
+                          </p>
+                          <span className="px-1.5 py-0.2 rounded bg-blue-500/20 text-blue-400 text-[9px] font-black border border-blue-500/30 shrink-0">
+                            {item.level}
+                          </span>
+                        </div>
+                        <p className="text-[10px] text-slate-400 truncate">{item.schoolOrOrg || item.badge}</p>
+                      </div>
+                    </div>
+
+                    {/* Streak */}
+                    <div className="hidden sm:flex sm:col-span-2 items-center justify-center gap-1 text-xs font-black text-amber-400">
+                      <Flame className="w-4 h-4 fill-amber-400" />
+                      <span>{item.streak} ngày</span>
+                    </div>
+
+                    {/* Primary Metric Score */}
+                    <div className="col-span-4 sm:col-span-2 text-right font-black">
+                      <span className="text-xs sm:text-sm font-mono text-emerald-400 block">
+                        {metric === 'xp'
+                          ? `${(item.xp[period] || 0).toLocaleString()} XP`
+                          : `${item.studyTimeMinutes[period] || 0} phút`}
+                      </span>
+                      <span className="text-[10px] text-slate-400 sm:hidden block">
+                        🔥 {item.streak} ngày
+                      </span>
+                    </div>
+
+                    {/* Words Learned */}
+                    <div className="hidden sm:block sm:col-span-2 text-right pr-2 text-xs font-bold text-slate-300">
+                      {(item.wordsLearned || 0).toLocaleString()} từ
                     </div>
                   </div>
-
-                  {/* Streak */}
-                  <div className="hidden sm:flex sm:col-span-2 items-center justify-center gap-1 text-xs font-black text-amber-400">
-                    <Flame className="w-4 h-4 fill-amber-400" />
-                    <span>{item.streak} ngày</span>
-                  </div>
-
-                  {/* Primary Metric Score */}
-                  <div className="col-span-4 sm:col-span-2 text-right font-black">
-                    <span className="text-xs sm:text-sm font-mono text-emerald-400 block">
-                      {metric === 'xp'
-                        ? `${item.xp[period].toLocaleString()} XP`
-                        : `${item.studyTimeMinutes[period]} phút`}
-                    </span>
-                    <span className="text-[10px] text-slate-400 sm:hidden block">
-                      🔥 {item.streak} ngày
-                    </span>
-                  </div>
-
-                  {/* Words Learned */}
-                  <div className="hidden sm:block sm:col-span-2 text-right pr-2 text-xs font-bold text-slate-300">
-                    {item.wordsLearned.toLocaleString()} từ
-                  </div>
-                </div>
-              );
-            })}
-          </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       </section>
 
