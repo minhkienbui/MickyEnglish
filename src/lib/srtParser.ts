@@ -114,6 +114,17 @@ export function parseSRT(content: string): ParsedSentence[] {
     });
   }
 
+  // Khử độ trễ (Zero Delay Sanitizer):
+  // Nếu câu trước có endTime đè lên startTime của câu sau (overlapping),
+  // co endTime lại đúng lúc câu sau bắt đầu để chữ hiển thị chính xác theo tiếng nói, không bị delay
+  for (let i = 0; i < sentences.length - 1; i++) {
+    const cur = sentences[i];
+    const next = sentences[i + 1];
+    if (cur.endTime > next.startTime && next.startTime > cur.startTime) {
+      cur.endTime = Number(Math.max(cur.startTime + 0.3, next.startTime - 0.05).toFixed(2));
+    }
+  }
+
   return sentences;
 }
 

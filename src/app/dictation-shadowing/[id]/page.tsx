@@ -193,7 +193,7 @@ function DictationLessonContent() {
     }
 
     if (lessonSentences.length > 0) {
-      const nextAccurateIdx = getAccurateSentenceIndex(lessonSentences, t, 0.08);
+      const nextAccurateIdx = getAccurateSentenceIndex(lessonSentences, t, 0.04);
       if (nextAccurateIdx !== activeIndexRef.current) {
         if (activeMode === 'dictation' && !isDictationPassed && nextAccurateIdx > activeIndexRef.current) {
           // Keep current sentence until correct
@@ -300,7 +300,7 @@ function DictationLessonContent() {
           }
 
           if (lessonSentences.length > 0) {
-            const nextAccurateIdx = getAccurateSentenceIndex(lessonSentences, t, 0.08);
+            const nextAccurateIdx = getAccurateSentenceIndex(lessonSentences, t, 0.04);
             if (nextAccurateIdx !== activeIndexRef.current) {
               // Trong dictation: nếu chưa pass thì không cho video tự ý nhảy sang câu tiếp theo
               if (activeMode === 'dictation' && !isDictationPassed && nextAccurateIdx > activeIndexRef.current) {

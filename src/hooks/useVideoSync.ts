@@ -28,28 +28,28 @@ export interface UseVideoSyncOptions {
 }
 
 /**
- * Tìm vị trí câu thoại chính xác theo thời gian thực (Zero Lag, Không có vùng chết)
+ * Tìm vị trí câu thoại chính xác theo thời gian thực (Zero Lag, Không có độ trễ)
  */
 export function getAccurateSentenceIndex(
   sentences: SyncSentence[],
   time: number,
-  offsetSec = 0.08
+  offsetSec = 0.05
 ): number {
   if (!sentences || sentences.length === 0) return 0;
   const t = Math.max(0, time + offsetSec);
 
-  // 1. Kiểm tra trực tiếp trong khoảng [startTime, endTime]
-  for (let i = 0; i < sentences.length; i++) {
+  // 1. Kiểm tra từ câu mới nhất lùi về để khi vừa chạm mốc câu mới là kích hoạt chữ ngay lập tức
+  for (let i = sentences.length - 1; i >= 0; i--) {
     if (t >= sentences[i].startTime && t <= sentences[i].endTime) {
       return i;
     }
   }
 
-  // 2. Kiểm tra khoảng liên tục từ startTime câu hiện tại tới startTime câu tiếp theo (xóa bỏ delay giữa các câu)
-  for (let i = 0; i < sentences.length; i++) {
+  // 2. Kiểm tra khoảng liên tục từ startTime câu hiện tại tới startTime câu tiếp theo
+  for (let i = sentences.length - 1; i >= 0; i--) {
     const cur = sentences[i];
     const next = sentences[i + 1];
-    const nextStart = next ? next.startTime : cur.endTime + 2.0;
+    const nextStart = next ? next.startTime : cur.endTime + 1.2;
 
     if (t >= cur.startTime && t < nextStart) {
       return i;
