@@ -716,13 +716,7 @@ function DictationLessonContent() {
 
           <button
             type="button"
-            onClick={() => {
-              if (!isAuthenticated) {
-                router.push(`/login?redirect=/dictation-shadowing/${storeLesson.id}`);
-                return;
-              }
-              setShowAddVideoModal(true);
-            }}
+            onClick={() => setShowAddVideoModal(true)}
             className="px-3.5 py-2 bg-[#00c950] hover:bg-[#00b046] active:scale-95 text-white text-xs font-black rounded-xl flex items-center gap-1.5 shadow-md shadow-emerald-500/25 transition-all cursor-pointer"
             title="Thêm video mới"
           >

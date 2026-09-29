@@ -239,3 +239,17 @@ export function generateAIDranslatePrompt(sentences: ParsedSentence[]): string {
 
   return `Dịch các câu sau sang tiếng Việt, giữ nguyên format SRT (số thứ tự + timestamp + bản dịch tiếng Việt), dịch tự nhiên, không dịch máy móc từng từ:\n\n${srtBody}`;
 }
+
+/**
+ * Chuyển danh sách câu thành chuỗi định dạng SRT chuẩn
+ */
+export function sentencesToSRT(sentences: { startTime: number; endTime: number; text: string }[]): string {
+  return sentences
+    .map((s, idx) => {
+      const start = secondsToTimeString(s.startTime);
+      const end = secondsToTimeString(s.endTime);
+      return `${idx + 1}\n${start} --> ${end}\n${(s.text || '').trim()}`;
+    })
+    .join('\n\n');
+}
+

@@ -17,6 +17,10 @@ import {
   Loader2,
   CheckCircle2,
   Zap,
+  ExternalLink,
+  Download,
+  RefreshCw,
+  Sparkles,
 } from 'lucide-react';
 import { useDictationStore } from '@/stores/useDictationStore';
 import { useAuthStore } from '@/stores/useAuthStore';
@@ -42,7 +46,7 @@ export default function AddVideoModal({ isOpen, onClose }: AddVideoModalProps) {
   const [wizardStep, setWizardStep] = useState<1 | 2>(1);
 
   // Nguồn video: 'local' (Tải file từ máy tính) hoặc 'youtube' (Link YouTube)
-  const [videoSource, setVideoSource] = useState<'local' | 'youtube'>('local');
+  const [videoSource, setVideoSource] = useState<'local' | 'youtube'>('youtube');
 
   // Trạng thái Upload Video Trực Tiếp
   const [isUploadingVideo, setIsUploadingVideo] = useState(false);
@@ -58,6 +62,10 @@ export default function AddVideoModal({ isOpen, onClose }: AddVideoModalProps) {
   const [videoTitle, setVideoTitle] = useState('');
   const [videoThumbnail, setVideoThumbnail] = useState('');
   const [isFetchingTitle, setIsFetchingTitle] = useState(false);
+
+  // Tự động tải phụ đề YouTube (English & Tiếng Việt)
+  const [isAutoFetchingSubtitles, setIsAutoFetchingSubtitles] = useState(false);
+  const [autoSubtitlesSuccess, setAutoSubtitlesSuccess] = useState(false);
 
   // English Transcript
   const [enFileName, setEnFileName] = useState('');
@@ -164,7 +172,86 @@ export default function AddVideoModal({ isOpen, onClose }: AddVideoModalProps) {
     showToast(`⚡ Đã tự động chia video thành ${totalCount} mốc câu (mỗi câu 5 giây) để luyện nghe!`);
   };
 
-  // [FETCH TIÊU ĐỀ YOUTUBE]
+  // [TỰ ĐỘNG TẢI PHỤ ĐỀ YOUTUBE (ENGLISH & TIẾNG VIỆT)]
+  const handleAutoFetchSubtitles = async (targetUrl?: string) => {
+    const urlToUse = (typeof targetUrl === 'string' ? targetUrl : videoUrl || '').trim();
+    if (!urlToUse) {
+      setErrorMessage('Vui lòng nhập đường link video YouTube.');
+      return;
+    }
+
+    const extractedId = extractYoutubeId(urlToUse);
+    if (!extractedId) {
+      setErrorMessage('Link YouTube không hợp lệ. Vui lòng kiểm tra lại URL.');
+      return;
+    }
+
+    setErrorMessage('');
+    setWarningMessage('');
+    setYoutubeId(extractedId);
+    setVideoThumbnail(`https://img.youtube.com/vi/${extractedId}/hqdefault.jpg`);
+    setIsAutoFetchingSubtitles(true);
+
+    try {
+      const res = await fetch('/api/dictation/fetch-youtube-subtitles', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ videoUrl: urlToUse }),
+      });
+
+      const data = await res.json();
+
+      if (data.success && data.englishSrt) {
+        if (data.title) {
+          setVideoTitle(data.title);
+        }
+        setEnRawText(data.englishSrt);
+        setEnFileName(`${data.title || extractedId}_English.srt`);
+        setEnSentences(data.sentences || []);
+
+        if (data.hasVietnamese && data.vietnameseSrt) {
+          setViRawText(data.vietnameseSrt);
+          setViFileName(`${data.title || extractedId}_Vietnamese.srt`);
+        }
+
+        setAutoSubtitlesSuccess(true);
+        showToast(`🎉 Tự động tải thành công ${data.sentences?.length || 0} câu phụ đề Tiếng Anh & Tiếng Việt từ YouTube!`);
+      } else {
+        // Fallback lấy title qua oembed
+        handleFetchTitleOnly(extractedId);
+        setWarningMessage(
+          data.error || 'Video này không có phụ đề có sẵn trên YouTube. Bạn hãy dùng liên kết DownSub bên dưới để tải phụ đề SRT.'
+        );
+      }
+    } catch (err: any) {
+      handleFetchTitleOnly(extractedId);
+      setWarningMessage('Không thể tải tự động phụ đề. Bạn hãy sử dụng DownSub (hướng dẫn bên dưới) để tải 2 file SRT.');
+    } finally {
+      setIsAutoFetchingSubtitles(false);
+    }
+  };
+
+  // Lấy tiêu đề video dự phòng qua oembed
+  const handleFetchTitleOnly = async (id: string) => {
+    setIsFetchingTitle(true);
+    try {
+      const res = await fetch(
+        `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${id}&format=json`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        setVideoTitle(data.title || `Video (${id})`);
+      } else {
+        setVideoTitle(`Video (${id})`);
+      }
+    } catch {
+      setVideoTitle(`Video (${id})`);
+    } finally {
+      setIsFetchingTitle(false);
+    }
+  };
+
+  // Kích hoạt khi user nhập / blur link YouTube
   const handleUrlBlur = async () => {
     if (!videoUrl.trim()) return;
     const extractedId = extractYoutubeId(videoUrl);
@@ -173,25 +260,8 @@ export default function AddVideoModal({ isOpen, onClose }: AddVideoModalProps) {
       return;
     }
 
-    setErrorMessage('');
-    setYoutubeId(extractedId);
-    setVideoThumbnail(`https://img.youtube.com/vi/${extractedId}/hqdefault.jpg`);
-
-    setIsFetchingTitle(true);
-    try {
-      const res = await fetch(
-        `https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${extractedId}&format=json`
-      );
-      if (res.ok) {
-        const data = await res.json();
-        setVideoTitle(data.title || `Video (${extractedId})`);
-      } else {
-        setVideoTitle(`Video (${extractedId})`);
-      }
-    } catch {
-      setVideoTitle(`Video (${extractedId})`);
-    } finally {
-      setIsFetchingTitle(false);
+    if (extractedId !== youtubeId || !autoSubtitlesSuccess) {
+      handleAutoFetchSubtitles(videoUrl);
     }
   };
 
@@ -270,7 +340,7 @@ export default function AddVideoModal({ isOpen, onClose }: AddVideoModalProps) {
     }
 
     if (parsedEn.length === 0) {
-      setErrorMessage('Transcript bài học là bắt buộc. Bạn có thể tải file .srt/.vtt hoặc bấm nút "Tự động chia câu".');
+      setErrorMessage('Transcript bài học là bắt buộc. Bạn hãy dán link YouTube để tự động lấy phụ đề, hoặc tải file .srt/.vtt lên.');
       return;
     }
 
@@ -378,7 +448,7 @@ export default function AddVideoModal({ isOpen, onClose }: AddVideoModalProps) {
               </h3>
               <p className="text-xs text-slate-400 font-medium">
                 {wizardStep === 1
-                  ? 'Tải video trực tiếp từ máy tính hoặc dùng liên kết YouTube để luyện Dictation & Shadowing'
+                  ? 'Tự động tải phụ đề tiếng Anh & tiếng Việt từ YouTube hoặc tải video trực tiếp từ máy tính'
                   : 'Kiểm tra mốc thời gian, câu tiếng Anh và bản dịch trước khi tạo bài học'}
               </p>
             </div>
@@ -387,7 +457,7 @@ export default function AddVideoModal({ isOpen, onClose }: AddVideoModalProps) {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={() => alert('Bạn có thể tải trực tiếp file video (.mp4, .webm) từ máy tính để lưu trên website, hoặc dán link YouTube.')}
+              onClick={() => alert('Dán link YouTube để hệ thống tự động tải phụ đề English & Tiếng Việt. Bạn cũng có thể mở DownSub.com để tải file .srt nếu cần.')}
               className="text-slate-400 hover:text-white p-1.5 rounded-xl hover:bg-[#1e2d42] cursor-pointer"
               title="Hướng dẫn"
             >
@@ -415,12 +485,31 @@ export default function AddVideoModal({ isOpen, onClose }: AddVideoModalProps) {
             <span>{errorMessage}</span>
           </div>
         )}
+        {warningMessage && (
+          <div className="bg-amber-950/90 border-b border-amber-500 px-4 py-2 text-center text-xs font-bold text-amber-300 flex items-center justify-center gap-2 animate-fade-in shrink-0">
+            <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
+            <span>{warningMessage}</span>
+          </div>
+        )}
 
         {/* STEP 1: CHỌN NGUỒN VIDEO & NHẬP TRANSCRIPT */}
         {wizardStep === 1 && (
           <div className="p-6 space-y-6 overflow-y-auto flex-1">
-            {/* TABS CHỌN NGUỒN: TẢI TỪ MÁY HOẶC YOUTUBE */}
+            {/* TABS CHỌN NGUỒN: YOUTUBE HOẶC TẢI TỪ MÁY */}
             <div className="flex rounded-2xl bg-[#0e1726] border border-[#1e2d42] p-1.5 gap-1.5">
+              <button
+                type="button"
+                onClick={() => setVideoSource('youtube')}
+                className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-all cursor-pointer ${
+                  videoSource === 'youtube'
+                    ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30'
+                    : 'text-slate-400 hover:text-white'
+                }`}
+              >
+                <LinkIcon className="w-4 h-4" />
+                <span>Nhập liên kết YouTube (Tự động tải phụ đề)</span>
+              </button>
+
               <button
                 type="button"
                 onClick={() => setVideoSource('local')}
@@ -433,22 +522,185 @@ export default function AddVideoModal({ isOpen, onClose }: AddVideoModalProps) {
                 <HardDrive className="w-4 h-4" />
                 <span>Tải lên từ máy tính (Lưu trên website)</span>
               </button>
-
-              <button
-                type="button"
-                onClick={() => setVideoSource('youtube')}
-                className={`flex-1 py-2.5 px-4 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                  videoSource === 'youtube'
-                    ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30'
-                    : 'text-slate-400 hover:text-white'
-                }`}
-              >
-                <LinkIcon className="w-4 h-4" />
-                <span>Nhập liên kết YouTube</span>
-              </button>
             </div>
 
-            {/* TAB 1: TẢI VIDEO TỪ MÁY TÍNH */}
+            {/* TAB 1: NHẬP LINK YOUTUBE */}
+            {videoSource === 'youtube' && (
+              <div className="space-y-4 p-5 rounded-2xl bg-[#0e1726] border border-[#1e2d42]">
+                <div className="flex items-center justify-between">
+                  <label className="text-xs font-black text-white flex items-center gap-1.5">
+                    <span className="text-emerald-400 font-extrabold">1</span> Link YouTube
+                    <span className="px-2 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 rounded-md text-[10px] font-black">
+                      Tự động tải phụ đề song ngữ
+                    </span>
+                  </label>
+
+                  <button
+                    type="button"
+                    onClick={() => handleAutoFetchSubtitles()}
+                    disabled={isAutoFetchingSubtitles || !videoUrl.trim()}
+                    className="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 disabled:opacity-40 text-white rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+                  >
+                    {isAutoFetchingSubtitles ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>Đang tải...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                        <span>Tự động tải phụ đề</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="relative">
+                  <input
+                    type="text"
+                    value={videoUrl}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      setVideoUrl(val);
+                      setAutoSubtitlesSuccess(false);
+                      const exId = extractYoutubeId(val);
+                      if (exId && exId !== youtubeId) {
+                        setYoutubeId(exId);
+                        setVideoThumbnail(`https://img.youtube.com/vi/${exId}/hqdefault.jpg`);
+                        handleAutoFetchSubtitles(val);
+                      }
+                    }}
+                    onPaste={(e) => {
+                      const pasted = e.clipboardData?.getData('text') || '';
+                      if (pasted) {
+                        const exId = extractYoutubeId(pasted);
+                        if (exId) {
+                          setVideoUrl(pasted);
+                          setAutoSubtitlesSuccess(false);
+                          setYoutubeId(exId);
+                          setVideoThumbnail(`https://img.youtube.com/vi/${exId}/hqdefault.jpg`);
+                          handleAutoFetchSubtitles(pasted);
+                        }
+                      }
+                    }}
+                    onBlur={handleUrlBlur}
+                    placeholder="Dán link video YouTube (VD: https://www.youtube.com/watch?v=...)"
+                    className="w-full bg-[#121c2b] border border-[#1e2d42] focus:border-emerald-500 rounded-2xl py-3 pl-10 pr-28 text-xs sm:text-sm text-white font-medium outline-none transition-colors"
+                  />
+                  <LinkIcon className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
+
+                  {videoUrl.trim() && (
+                    <button
+                      type="button"
+                      onClick={() => handleAutoFetchSubtitles(videoUrl)}
+                      disabled={isAutoFetchingSubtitles}
+                      className="absolute right-2 top-2 px-3 py-1.5 bg-emerald-500/20 hover:bg-emerald-500 text-emerald-300 hover:text-white border border-emerald-500/40 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1"
+                    >
+                      <Sparkles className="w-3 h-3 text-amber-300" />
+                      <span>Quét phụ đề</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Trạng thái đang tự động tải phụ đề */}
+                {isAutoFetchingSubtitles && (
+                  <div className="p-3 bg-emerald-950/70 border border-emerald-500/40 rounded-xl flex items-center gap-2.5 text-xs text-emerald-300 animate-pulse">
+                    <Loader2 className="w-4 h-4 animate-spin text-emerald-400 shrink-0" />
+                    <span>Đang tự động quét và trích xuất phụ đề Tiếng Anh & Tiếng Việt từ YouTube...</span>
+                  </div>
+                )}
+
+                {/* Trạng thái đã tải thành công */}
+                {autoSubtitlesSuccess && !isAutoFetchingSubtitles && (
+                  <div className="p-3 bg-emerald-950/80 border border-emerald-500/70 rounded-xl flex items-center justify-between text-xs text-emerald-300 animate-fade-in">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                      <span>Đã nạp tự động thành công <strong>{enSentences.length} câu</strong> phụ đề Tiếng Anh & Tiếng Việt!</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleAutoFetchSubtitles()}
+                      className="text-[11px] text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      <RefreshCw className="w-3 h-3" /> Tải lại
+                    </button>
+                  </div>
+                )}
+
+                {/* Preview Thumbnail Video */}
+                {youtubeId && (
+                  <div className="p-3 bg-[#121c2b] border border-[#1e2d42] rounded-2xl flex items-center gap-3 animate-fade-in">
+                    <img
+                      src={videoThumbnail}
+                      alt="Preview"
+                      className="w-20 h-12 object-cover rounded-xl border border-[#1e2d42]"
+                    />
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-black text-white truncate">
+                        {isFetchingTitle ? 'Đang lấy tiêu đề...' : videoTitle}
+                      </p>
+                      <p className="text-[10px] text-emerald-400 font-bold">ID: {youtubeId}</p>
+                    </div>
+                  </div>
+                )}
+
+                {/* ========================================================================= */}
+                {/* BANNER HƯỚNG DẪN DOWNSUB (THEO YÊU CẦU NGƯỜI DÙNG)                       */}
+                {/* ========================================================================= */}
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-blue-950/70 via-indigo-950/60 to-purple-950/70 border border-blue-500/40 space-y-3">
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-9 h-9 rounded-xl bg-blue-600/30 border border-blue-400/40 flex items-center justify-center text-blue-400 shrink-0">
+                        <Download className="w-4 h-4" />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-black text-white flex items-center gap-2">
+                          <span>Tải phụ đề SRT nhanh qua DownSub</span>
+                          <span className="px-1.5 py-0.2 rounded bg-blue-500/20 text-blue-300 text-[10px] font-bold border border-blue-500/30">
+                            Miễn phí
+                          </span>
+                        </h4>
+                        <p className="text-[11px] text-slate-300">
+                          Nếu video chưa có phụ đề tự động, bạn có thể tải 2 file SRT từ DownSub rồi tải lên:
+                        </p>
+                      </div>
+                    </div>
+
+                    <a
+                      href={
+                        youtubeId
+                          ? `https://downsub.com/lang/vi?url=${encodeURIComponent(`https://www.youtube.com/watch?v=${youtubeId}`)}`
+                          : 'https://downsub.com/lang/vi'
+                      }
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-500 active:scale-95 text-white font-black text-xs rounded-xl shadow-md transition-all flex items-center gap-1.5 shrink-0 cursor-pointer"
+                    >
+                      <span>Mở DownSub Tiếng Việt</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+
+                  {/* Hướng dẫn 3 bước */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1 text-[11px] text-slate-300 border-t border-blue-500/20">
+                    <div className="flex items-start gap-1.5">
+                      <span className="w-4 h-4 rounded-full bg-blue-500/30 text-blue-300 font-bold flex items-center justify-center text-[10px] shrink-0">1</span>
+                      <span>Dán link video vào DownSub</span>
+                    </div>
+                    <div className="flex items-start gap-1.5">
+                      <span className="w-4 h-4 rounded-full bg-blue-500/30 text-blue-300 font-bold flex items-center justify-center text-[10px] shrink-0">2</span>
+                      <span>Tải file <strong>English (.srt)</strong> & <strong>Tiếng Việt (.srt)</strong></span>
+                    </div>
+                    <div className="flex items-start gap-1.5">
+                      <span className="w-4 h-4 rounded-full bg-blue-500/30 text-blue-300 font-bold flex items-center justify-center text-[10px] shrink-0">3</span>
+                      <span>Chọn tải file hoặc dán vào 2 ô bên dưới</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 2: TẢI VIDEO TỪ MÁY TÍNH */}
             {videoSource === 'local' && (
               <div className="space-y-4 p-5 rounded-2xl bg-[#0e1726] border border-[#1e2d42]">
                 <div className="flex items-center justify-between">
@@ -527,47 +779,11 @@ export default function AddVideoModal({ isOpen, onClose }: AddVideoModalProps) {
               </div>
             )}
 
-            {/* TAB 2: NHẬP LINK YOUTUBE */}
-            {videoSource === 'youtube' && (
-              <div className="space-y-3 p-5 rounded-2xl bg-[#0e1726] border border-[#1e2d42]">
-                <label className="text-xs font-black text-white flex items-center gap-1.5">
-                  <span className="text-emerald-400 font-extrabold">1</span> Link YouTube
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    value={videoUrl}
-                    onChange={(e) => setVideoUrl(e.target.value)}
-                    onBlur={handleUrlBlur}
-                    placeholder="https://www.youtube.com/watch?v=..."
-                    className="w-full bg-[#121c2b] border border-[#1e2d42] focus:border-emerald-500 rounded-2xl py-3 pl-10 pr-4 text-xs sm:text-sm text-white font-medium outline-none transition-colors"
-                  />
-                  <LinkIcon className="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5" />
-                </div>
-
-                {youtubeId && (
-                  <div className="p-3 bg-[#121c2b] border border-[#1e2d42] rounded-2xl flex items-center gap-3 animate-fade-in">
-                    <img
-                      src={videoThumbnail}
-                      alt="Preview"
-                      className="w-20 h-12 object-cover rounded-xl border border-[#1e2d42]"
-                    />
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs font-black text-white truncate">
-                        {isFetchingTitle ? 'Đang lấy tiêu đề...' : videoTitle}
-                      </p>
-                      <p className="text-[10px] text-emerald-400 font-bold">ID: {youtubeId}</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
             {/* BƯỚC 2: TRANSCRIPT TIẾNG ANH */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-black text-white flex items-center gap-1.5">
-                  <span className="text-emerald-400 font-extrabold">2</span> Transcript bài học
+                  <span className="text-emerald-400 font-extrabold">2</span> Transcript tiếng Anh
                   <span className="px-2 py-0.5 bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 rounded-md text-[10px] font-black">
                     Luyện nghe & chép
                   </span>
@@ -647,7 +863,7 @@ export default function AddVideoModal({ isOpen, onClose }: AddVideoModalProps) {
             {/* BƯỚC 3: BẢN DỊCH TIẾNG VIỆT (TÙY CHỌN) */}
             <div className="space-y-3">
               <label className="text-xs font-black text-white flex items-center gap-1.5">
-                <span className="text-purple-400 font-extrabold">3</span> Bản dịch tiếng Việt (Không bắt buộc)
+                <span className="text-purple-400 font-extrabold">3</span> Bản dịch tiếng Việt (Đã hỗ trợ tự động)
               </label>
 
               <div className="p-4 rounded-2xl bg-[#0e1726] border border-[#1e2d42] flex items-center justify-between gap-4">
@@ -659,7 +875,9 @@ export default function AddVideoModal({ isOpen, onClose }: AddVideoModalProps) {
                     <p className="text-xs font-black text-white truncate">
                       {viFileName ? viFileName : 'Chọn file bản dịch SRT hoặc TXT'}
                     </p>
-                    <p className="text-[11px] text-slate-400">Không bắt buộc - có thể thêm sau</p>
+                    <p className="text-[11px] text-slate-400">
+                      {viFileName ? 'Đã tải bản dịch tiếng Việt' : 'Tự động tạo hoặc tải file SRT tiếng Việt từ DownSub'}
+                    </p>
                   </div>
                 </div>
 
@@ -679,6 +897,29 @@ export default function AddVideoModal({ isOpen, onClose }: AddVideoModalProps) {
                     {viFileName ? 'Đổi file' : 'Tải lên'}
                   </button>
                 </div>
+              </div>
+
+              {/* Dán văn bản tiếng Việt */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setShowViPaste(!showViPaste)}
+                  className="text-xs font-bold text-slate-400 hover:text-purple-400 flex items-center gap-1 cursor-pointer transition-colors"
+                >
+                  <span>{showViPaste ? '▼' : '▶'} Hoặc dán nội dung bản dịch tiếng Việt trực tiếp</span>
+                </button>
+
+                {showViPaste && (
+                  <div className="mt-2 space-y-2 animate-fade-in">
+                    <textarea
+                      rows={5}
+                      value={viRawText}
+                      onChange={(e) => setViRawText(e.target.value)}
+                      placeholder="Dán nội dung SRT bản dịch hoặc từng dòng câu tiếng Việt..."
+                      className="w-full bg-[#0e1726] border border-[#1e2d42] focus:border-purple-500 rounded-2xl p-3 text-xs text-white outline-none resize-none font-mono"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -815,7 +1056,7 @@ export default function AddVideoModal({ isOpen, onClose }: AddVideoModalProps) {
               <button
                 type="button"
                 onClick={handleProceedToEdit}
-                disabled={isUploadingVideo}
+                disabled={isUploadingVideo || isAutoFetchingSubtitles}
                 className="px-6 py-2.5 rounded-xl bg-[#00c950] hover:bg-[#00b046] active:scale-95 text-white text-xs font-black transition-all shadow-lg shadow-emerald-500/25 flex items-center gap-2 cursor-pointer disabled:opacity-50"
               >
                 <span>Tiếp tục chỉnh transcript</span>

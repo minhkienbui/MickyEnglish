@@ -235,13 +235,7 @@ export default function DictationListPage() {
           {/* Button + Thêm video */}
           <button
             type="button"
-            onClick={() => {
-              if (!isAuthenticated) {
-                router.push('/login?redirect=/dictation-shadowing');
-                return;
-              }
-              setShowAddVideoModal(true);
-            }}
+            onClick={() => setShowAddVideoModal(true)}
             className="py-2.5 px-5 bg-[#00c950] hover:bg-[#00b046] text-white text-xs font-black rounded-full flex items-center gap-1.5 shadow-lg shadow-emerald-600/20 transition-transform hover:scale-105 cursor-pointer shrink-0 whitespace-nowrap"
           >
             <Plus className="w-4 h-4" /> Thêm video
