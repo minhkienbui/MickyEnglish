@@ -36,7 +36,7 @@ export async function POST(req: Request) {
 
     // [2] Kiểm tra tên file & đuôi mở rộng (Chống Path Traversal & Shell Upload)
     const rawOriginalName = file.name || 'uploaded_video.mp4';
-    const safeFilename = sanitizeSafeFilename(rawOriginalName, ALLOWED_EXTENSIONS);
+    const safeFilename = sanitizeSafeFilename(rawOriginalName, ALLOWED_EXTENSIONS, 'video');
 
     if (!safeFilename) {
       return NextResponse.json(

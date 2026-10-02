@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { useExamStore } from '@/stores/useExamStore';
 import { useAuthStore } from '@/stores/useAuthStore';
@@ -8,6 +8,7 @@ import ExamTimer from '@/components/exam/ExamTimer';
 import QuestionNav from '@/components/exam/QuestionNav';
 import ExamResultView from '@/components/exam/ExamResultView';
 import Link from 'next/link';
+import { ExamPaper } from '@/lib/types';
 import {
   ArrowLeft,
   Bookmark,
@@ -30,6 +31,7 @@ export default function ExamSessionPage() {
 
   const {
     exams,
+    customExams,
     activeExam,
     mode,
     remainingSeconds,
@@ -47,24 +49,66 @@ export default function ExamSessionPage() {
 
   const { incrementProgress } = useAuthStore();
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [dbLoading, setDbLoading] = useState(false);
 
-  const targetExam = exams.find((e) => e.id === examId) || exams[0];
+  const allKnownExams = useMemo(() => {
+    return [...customExams, ...exams];
+  }, [customExams, exams]);
 
-  // Chỉ khởi tạo nếu chưa có activeExam từ modal cấu hình
+  const targetExam = allKnownExams.find((e) => e.id === examId);
+
+  // Khởi tạo đề thi nếu chưa có trong activeExam
   useEffect(() => {
-    if (activeExam && (activeExam.id === examId || activeExam.id === targetExam?.id)) {
+    if (activeExam && activeExam.id === examId) {
       return;
     }
     if (targetExam) {
       startExam(targetExam, { mode: 'practice' });
+      return;
+    }
+
+    // Nếu không có trong store, thử tìm trong database qua API /api/exams/[id]
+    if (examId && !targetExam) {
+      setDbLoading(true);
+      fetch(`/api/exams/${examId}`)
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success && data.exam) {
+            const dbEx = data.exam;
+            const questionsList = (dbEx.sections || []).flatMap((sec: any) =>
+              (sec.questions || []).map((q: any) => ({
+                id: q.id,
+                order: q.order,
+                questionText: q.questionText,
+                options: q.options || ['A', 'B', 'C', 'D'],
+                correctAnswer: q.correctAnswer ?? 0,
+                explanation: q.explanation || '',
+                part: sec.name || 'Phần 1',
+              }))
+            );
+            const fullExam: ExamPaper = {
+              id: dbEx.id,
+              title: dbEx.title,
+              type: dbEx.type,
+              description: dbEx.description,
+              durationMinutes: dbEx.duration,
+              duration: dbEx.duration,
+              totalQuestions: questionsList.length,
+              questions: questionsList,
+            };
+            startExam(fullExam, { mode: 'practice' });
+          }
+        })
+        .catch(() => {})
+        .finally(() => setDbLoading(false));
     }
   }, [examId, targetExam, activeExam, startExam]);
 
-  if (!activeExam) {
+  if (dbLoading || !activeExam) {
     return (
       <div className="max-w-6xl mx-auto px-4 py-16 text-center text-white space-y-4">
         <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin mx-auto" />
-        <p className="text-xs text-slate-400">Đang tải đề thi...</p>
+        <p className="text-xs text-slate-400">Đang tải và chuẩn bị đề thi...</p>
       </div>
     );
   }

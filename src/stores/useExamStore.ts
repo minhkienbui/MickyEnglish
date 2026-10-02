@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { persist } from 'zustand/middleware';
 import { ExamPaper, ExamQuestion } from '@/lib/types';
 import { mockExams } from '@/data/mockExams';
 
@@ -22,6 +23,7 @@ interface ExamResult {
 
 interface ExamState {
   exams: ExamPaper[];
+  customExams: ExamPaper[];
   activeExam: ExamPaper | null;
   mode: ExamMode; // 'exam' (Thi thử) | 'practice' (Luyện đề)
   customDurationMinutes: number | null; // null = unlimited, number = minutes
@@ -37,6 +39,8 @@ interface ExamState {
 
   setMode: (mode: ExamMode) => void;
   setCustomDuration: (minutes: number | null) => void;
+  addCustomExam: (exam: ExamPaper) => void;
+  removeCustomExam: (id: string) => void;
   startExam: (exam: ExamPaper, options?: StartExamOptions) => void;
   selectAnswer: (questionId: string, optionIndex: number) => void;
   toggleFlagQuestion: (questionId: string) => void;
@@ -82,161 +86,214 @@ export function prepareQuestions(
   return questions;
 }
 
-export const useExamStore = create<ExamState>()((set, get) => ({
-  exams: mockExams,
-  activeExam: null,
-  mode: 'practice',
-  customDurationMinutes: null,
-  shuffleQuestions: false,
-  shuffleAnswers: false,
-  userAnswers: {},
-  flaggedQuestions: [],
-  remainingSeconds: 0,
-  elapsedSeconds: 0,
-  isUnlimitedTime: true,
-  isCompleted: false,
-  result: null,
-
-  setMode: (mode) => set({ mode }),
-
-  setCustomDuration: (minutes) => {
-    const isUnlimited = minutes === null || minutes <= 0;
-    set({
-      customDurationMinutes: minutes,
-      isUnlimitedTime: isUnlimited,
-      remainingSeconds: isUnlimited ? 0 : (minutes || 45) * 60,
-    });
-  },
-
-  startExam: (exam, options) => {
-    const selectedMode: ExamMode = options?.mode || get().mode || 'practice';
-    const shouldShuffleQ = options?.shuffleQuestions ?? false;
-    const shouldShuffleA = options?.shuffleAnswers ?? false;
-
-    // Slice question count if provided
-    let rawList = exam.questions || [];
-    if (options?.questionCount && options.questionCount > 0 && options.questionCount < rawList.length) {
-      rawList = rawList.slice(0, options.questionCount);
-    }
-
-    // Apply shuffling
-    const processedQuestions = prepareQuestions(rawList, shouldShuffleQ, shouldShuffleA);
-
-    const preparedExam: ExamPaper = {
-      ...exam,
-      questions: processedQuestions,
-      totalQuestions: processedQuestions.length,
-    };
-
-    // Duration setup
-    const isExamMode = selectedMode === 'exam';
-    const examDuration = options?.durationMinutes !== undefined
-      ? options.durationMinutes
-      : (exam.durationMinutes || exam.duration || 20);
-
-    const initialRemaining = isExamMode && examDuration && examDuration > 0
-      ? examDuration * 60
-      : 0;
-
-    set({
-      activeExam: preparedExam,
-      mode: selectedMode,
-      customDurationMinutes: isExamMode ? examDuration : null,
-      shuffleQuestions: shouldShuffleQ,
-      shuffleAnswers: shouldShuffleA,
+export const useExamStore = create<ExamState>()(
+  persist(
+    (set, get) => ({
+      exams: mockExams,
+      customExams: [],
+      activeExam: null,
+      mode: 'practice',
+      customDurationMinutes: null,
+      shuffleQuestions: false,
+      shuffleAnswers: false,
       userAnswers: {},
       flaggedQuestions: [],
-      remainingSeconds: initialRemaining,
+      remainingSeconds: 0,
       elapsedSeconds: 0,
-      isUnlimitedTime: !isExamMode,
+      isUnlimitedTime: true,
       isCompleted: false,
       result: null,
-    });
-  },
 
-  selectAnswer: (questionId, optionIndex) => {
-    set((state) => ({
-      userAnswers: {
-        ...state.userAnswers,
-        [questionId]: optionIndex,
+      setMode: (mode) => set({ mode }),
+
+      setCustomDuration: (minutes) => {
+        const isUnlimited = minutes === null || minutes <= 0;
+        set({
+          customDurationMinutes: minutes,
+          isUnlimitedTime: isUnlimited,
+          remainingSeconds: isUnlimited ? 0 : (minutes || 45) * 60,
+        });
       },
-    }));
-  },
 
-  toggleFlagQuestion: (questionId) => {
-    set((state) => {
-      const isFlagged = state.flaggedQuestions.includes(questionId);
-      return {
-        flaggedQuestions: isFlagged
-          ? state.flaggedQuestions.filter((id) => id !== questionId)
-          : [...state.flaggedQuestions, questionId],
-      };
-    });
-  },
+      addCustomExam: (newExam) => {
+        set((state) => {
+          const existingIdx = state.customExams.findIndex((e) => e.id === newExam.id);
+          let updatedCustom: ExamPaper[];
+          if (existingIdx >= 0) {
+            updatedCustom = [...state.customExams];
+            updatedCustom[existingIdx] = newExam;
+          } else {
+            updatedCustom = [newExam, ...state.customExams];
+          }
 
-  setRemainingSeconds: (action) => {
-    set((state) => ({
-      remainingSeconds: typeof action === 'function' ? action(state.remainingSeconds) : action,
-    }));
-  },
+          // Cập nhật cả mảng exams
+          const examIdx = state.exams.findIndex((e) => e.id === newExam.id);
+          let updatedExams: ExamPaper[];
+          if (examIdx >= 0) {
+            updatedExams = [...state.exams];
+            updatedExams[examIdx] = newExam;
+          } else {
+            updatedExams = [newExam, ...state.exams];
+          }
 
-  setElapsedSeconds: (action) => {
-    set((state) => ({
-      elapsedSeconds: typeof action === 'function' ? action(state.elapsedSeconds) : action,
-    }));
-  },
+          return {
+            customExams: updatedCustom,
+            exams: updatedExams,
+            activeExam: newExam,
+          };
+        });
+      },
 
-  submitExam: () => {
-    const { activeExam, userAnswers, remainingSeconds, elapsedSeconds, mode, customDurationMinutes } = get();
-    if (!activeExam) {
-      return { scorePercentage: 0, correctCount: 0, totalQuestions: 0, timeSpentSeconds: 0, weakParts: [] };
+      removeCustomExam: (id) => {
+        set((state) => ({
+          customExams: state.customExams.filter((e) => e.id !== id),
+          exams: state.exams.filter((e) => e.id !== id),
+          activeExam: state.activeExam?.id === id ? null : state.activeExam,
+        }));
+      },
+
+      startExam: (exam, options) => {
+        const selectedMode: ExamMode = options?.mode || get().mode || 'practice';
+        const shouldShuffleQ = options?.shuffleQuestions ?? false;
+        const shouldShuffleA = options?.shuffleAnswers ?? false;
+
+        // Trích xuất danh sách câu hỏi (từ questions hoặc sections)
+        let rawList: ExamQuestion[] = exam.questions || [];
+        if (rawList.length === 0 && exam.sections && Array.isArray(exam.sections)) {
+          rawList = exam.sections.flatMap((s: any) => s.questions || []);
+        }
+
+        if (options?.questionCount && options.questionCount > 0 && options.questionCount < rawList.length) {
+          rawList = rawList.slice(0, options.questionCount);
+        }
+
+        // Áp dụng xáo trộn câu hỏi & đáp án
+        const processedQuestions = prepareQuestions(rawList, shouldShuffleQ, shouldShuffleA);
+
+        const preparedExam: ExamPaper = {
+          ...exam,
+          questions: processedQuestions,
+          totalQuestions: processedQuestions.length,
+        };
+
+        const isExamMode = selectedMode === 'exam';
+        const examDuration =
+          options?.durationMinutes !== undefined
+            ? options.durationMinutes
+            : (exam.durationMinutes || exam.duration || 20);
+
+        const initialRemaining = isExamMode && examDuration && examDuration > 0
+          ? examDuration * 60
+          : 0;
+
+        set({
+          activeExam: preparedExam,
+          mode: selectedMode,
+          customDurationMinutes: isExamMode ? examDuration : null,
+          shuffleQuestions: shouldShuffleQ,
+          shuffleAnswers: shouldShuffleA,
+          userAnswers: {},
+          flaggedQuestions: [],
+          remainingSeconds: initialRemaining,
+          elapsedSeconds: 0,
+          isUnlimitedTime: !isExamMode,
+          isCompleted: false,
+          result: null,
+        });
+      },
+
+      selectAnswer: (questionId, optionIndex) => {
+        set((state) => ({
+          userAnswers: {
+            ...state.userAnswers,
+            [questionId]: optionIndex,
+          },
+        }));
+      },
+
+      toggleFlagQuestion: (questionId) => {
+        set((state) => {
+          const isFlagged = state.flaggedQuestions.includes(questionId);
+          return {
+            flaggedQuestions: isFlagged
+              ? state.flaggedQuestions.filter((id) => id !== questionId)
+              : [...state.flaggedQuestions, questionId],
+          };
+        });
+      },
+
+      setRemainingSeconds: (action) => {
+        set((state) => ({
+          remainingSeconds: typeof action === 'function' ? action(state.remainingSeconds) : action,
+        }));
+      },
+
+      setElapsedSeconds: (action) => {
+        set((state) => ({
+          elapsedSeconds: typeof action === 'function' ? action(state.elapsedSeconds) : action,
+        }));
+      },
+
+      submitExam: () => {
+        const { activeExam, userAnswers, remainingSeconds, elapsedSeconds, mode, customDurationMinutes } = get();
+        if (!activeExam) {
+          return { scorePercentage: 0, correctCount: 0, totalQuestions: 0, timeSpentSeconds: 0, weakParts: [] };
+        }
+
+        let correctCount = 0;
+        const weakPartCounts: Record<string, number> = {};
+
+        const questionsList = activeExam.questions || [];
+        questionsList.forEach((q: any) => {
+          const userSelected = userAnswers[q.id];
+          if (userSelected === q.correctAnswer) {
+            correctCount++;
+          } else {
+            weakPartCounts[q.part || 'Chung'] = (weakPartCounts[q.part || 'Chung'] || 0) + 1;
+          }
+        });
+
+        const totalQuestions = questionsList.length;
+        const scorePercentage = Math.round((correctCount / Math.max(1, totalQuestions)) * 100);
+
+        let timeSpentSeconds = elapsedSeconds;
+        if (mode === 'exam') {
+          const examMinutes = customDurationMinutes || activeExam.durationMinutes || 20;
+          const allocatedSec = examMinutes * 60;
+          timeSpentSeconds = Math.max(0, allocatedSec - remainingSeconds);
+        }
+
+        const weakParts = Object.keys(weakPartCounts);
+
+        const examResult: ExamResult = {
+          scorePercentage,
+          correctCount,
+          totalQuestions,
+          timeSpentSeconds,
+          weakParts,
+        };
+
+        set({
+          isCompleted: true,
+          result: examResult,
+        });
+
+        return examResult;
+      },
+
+      resetExam: () => {
+        const { activeExam } = get();
+        if (activeExam) {
+          get().startExam(activeExam);
+        }
+      },
+    }),
+    {
+      name: 'micky-exam-storage',
+      partialize: (state) => ({
+        customExams: state.customExams,
+        mode: state.mode,
+      }),
     }
-
-    let correctCount = 0;
-    const weakPartCounts: Record<string, number> = {};
-
-    const questionsList = activeExam.questions || [];
-    questionsList.forEach((q: any) => {
-      const userSelected = userAnswers[q.id];
-      if (userSelected === q.correctAnswer) {
-        correctCount++;
-      } else {
-        weakPartCounts[q.part] = (weakPartCounts[q.part] || 0) + 1;
-      }
-    });
-
-    const totalQuestions = questionsList.length;
-    const scorePercentage = Math.round((correctCount / Math.max(1, totalQuestions)) * 100);
-
-    let timeSpentSeconds = elapsedSeconds;
-    if (mode === 'exam') {
-      const examMinutes = customDurationMinutes || activeExam.durationMinutes || 20;
-      const allocatedSec = examMinutes * 60;
-      timeSpentSeconds = Math.max(0, allocatedSec - remainingSeconds);
-    }
-
-    const weakParts = Object.keys(weakPartCounts);
-
-    const examResult: ExamResult = {
-      scorePercentage,
-      correctCount,
-      totalQuestions,
-      timeSpentSeconds,
-      weakParts,
-    };
-
-    set({
-      isCompleted: true,
-      result: examResult,
-    });
-
-    return examResult;
-  },
-
-  resetExam: () => {
-    const { activeExam } = get();
-    if (activeExam) {
-      get().startExam(activeExam);
-    }
-  },
-}));
+  )
+);

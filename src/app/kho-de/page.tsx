@@ -7,7 +7,6 @@ import {
   Clock,
   ArrowRight,
   Sparkles,
-  Headphones,
   CheckCircle2,
   Search,
   Filter,
@@ -16,24 +15,33 @@ import {
   Layers,
   Zap,
   BookOpen,
+  Plus,
+  Upload,
+  FolderDown,
+  FileText,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useThemeStore } from '@/stores/useThemeStore';
+import { useExamStore } from '@/stores/useExamStore';
 import { curatedExams } from '@/data/exams';
 import { ExamPaper } from '@/lib/types';
 import ExamStartModal from '@/components/exam/ExamStartModal';
+import AddExamModal from '@/components/exam/AddExamModal';
 
 export default function ExamBankPage() {
   const { theme } = useThemeStore();
   const isLight = theme === 'light';
   const { user } = useAuthStore();
+  const { customExams } = useExamStore();
 
   const [activeCategory, setActiveCategory] = useState<string>('Tất cả');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedExamForModal, setSelectedExamForModal] = useState<ExamPaper | null>(null);
+  const [showAddExamModal, setShowAddExamModal] = useState(false);
 
   const categories = [
     'Tất cả',
+    'Đề của tôi (Tải lên)',
     'Căn bản (A1 - A2)',
     'Trung cấp (B1 - B2)',
     'Nâng cao (C1)',
@@ -42,8 +50,13 @@ export default function ExamBankPage() {
     'VSTEP',
   ];
 
+  // Hợp nhất các đề thi được tạo / tải lên với đề thi mặc định
+  const allExams = useMemo(() => {
+    return [...customExams, ...curatedExams];
+  }, [customExams]);
+
   const filteredExams = useMemo(() => {
-    return curatedExams.filter((exam) => {
+    return allExams.filter((exam) => {
       // Tìm kiếm
       const matchesSearch =
         exam.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -52,7 +65,9 @@ export default function ExamBankPage() {
 
       // Danh mục
       let matchesCat = true;
-      if (activeCategory === 'Căn bản (A1 - A2)') {
+      if (activeCategory === 'Đề của tôi (Tải lên)') {
+        matchesCat = Boolean(exam.fileUrl || exam.fileName || customExams.some((c) => c.id === exam.id));
+      } else if (activeCategory === 'Căn bản (A1 - A2)') {
         matchesCat = exam.level === 'A1' || exam.level === 'A2';
       } else if (activeCategory === 'Trung cấp (B1 - B2)') {
         matchesCat = exam.level === 'B1' || exam.level === 'B2';
@@ -68,10 +83,10 @@ export default function ExamBankPage() {
 
       return matchesSearch && matchesCat;
     });
-  }, [activeCategory, searchQuery]);
+  }, [allExams, customExams, activeCategory, searchQuery]);
 
   // Đề thi đặc biệt (Master 3544 câu)
-  const masterExam = curatedExams.find((e) => e.id === 'oxford-3000-master-exam');
+  const masterExam = allExams.find((e) => e.id === 'oxford-3000-master-exam');
   const regularExams = filteredExams.filter((e) => e.id !== 'oxford-3000-master-exam');
 
   return (
@@ -103,15 +118,26 @@ export default function ExamBankPage() {
           </p>
         </div>
 
-        {/* Thống kê cá nhân nhỏ gọn */}
-        <div className={`p-4 rounded-2xl border text-center space-y-1 shrink-0 shadow-md min-w-[180px] ${
-          isLight ? 'bg-white border-slate-200' : 'bg-[#0d1420] border-[#1e2d42]'
-        }`}>
-          <span className="text-[11px] font-bold text-slate-400 block">Đề thi đã hoàn thành</span>
-          <div className="text-2xl font-black text-emerald-500 font-mono">
-            {user?.examsCompleted ?? 0} đề
+        {/* Nút thêm đề thi PDF/Word + Thống kê cá nhân */}
+        <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
+          <button
+            type="button"
+            onClick={() => setShowAddExamModal(true)}
+            className="w-full sm:w-auto px-6 py-3.5 bg-[#00c950] hover:bg-[#00b046] active:scale-95 text-white font-black text-xs sm:text-sm rounded-2xl shadow-xl shadow-emerald-500/30 flex items-center justify-center gap-2 transition-all hover:scale-105 cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>+ Thêm đề thi (PDF / Word)</span>
+          </button>
+
+          <div className={`p-3.5 rounded-2xl border text-center space-y-0.5 shadow-md min-w-[140px] ${
+            isLight ? 'bg-white border-slate-200' : 'bg-[#0d1420] border-[#1e2d42]'
+          }`}>
+            <span className="text-[10px] font-bold text-slate-400 block">Đề đã làm</span>
+            <div className="text-xl font-black text-emerald-500 font-mono">
+              {user?.examsCompleted ?? 0} đề
+            </div>
+            <span className="text-[9px] text-amber-400 font-bold block">+50 XP / đề</span>
           </div>
-          <span className="text-[10px] text-amber-400 font-bold block">+50 XP mỗi đề thi đạt chuẩn</span>
         </div>
       </div>
 
@@ -164,7 +190,35 @@ export default function ExamBankPage() {
       </div>
 
       {/* ========================================================================= */}
-      {/* 3. LƯỚI BỘ ĐỀ THI GỌN GÀNG, THÂN THIỆN (GRID 3 CỘT)                      */}
+      {/* 3. SECTION RIÊNG: ĐỀ THI DO BẠN TẢI LÊN (NẾU CÓ)                          */}
+      {/* ========================================================================= */}
+      {customExams.length > 0 && (activeCategory === 'Tất cả' || activeCategory === 'Đề của tôi (Tải lên)') && (
+        <section className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="text-base sm:text-lg font-black flex items-center gap-2">
+              <FolderDown className="w-5 h-5 text-emerald-400" />
+              <span>📁 Đề thi của bạn (Đã lưu & đồng bộ trên website)</span>
+            </h2>
+            <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-black border border-emerald-500/30">
+              {customExams.length} đề thi
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {customExams.map((exam) => (
+              <ExamCard
+                key={exam.id}
+                exam={exam}
+                isLight={isLight}
+                onSelectExam={(selected) => setSelectedExamForModal(selected)}
+              />
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ========================================================================= */}
+      {/* 4. LƯỚI BỘ ĐỀ THI GỌN GÀNG, THÂN THIỆN (GRID 3 CỘT)                      */}
       {/* ========================================================================= */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {regularExams.map((exam) => (
@@ -178,7 +232,7 @@ export default function ExamBankPage() {
       </div>
 
       {/* ========================================================================= */}
-      {/* 4. ĐẠI THỬ THÁCH TRỌN BỘ OXFORD MASTER CHALLENGE                          */}
+      {/* 5. ĐẠI THỬ THÁCH TRỌN BỘ OXFORD MASTER CHALLENGE                          */}
       {/* ========================================================================= */}
       {masterExam && (activeCategory === 'Tất cả' || activeCategory.includes('Oxford')) && (
         <div
@@ -234,13 +288,17 @@ export default function ExamBankPage() {
         </div>
       )}
 
-      {/* ========================================================================= */}
-      {/* MODAL CẤU HÌNH BẮT ĐẦU: CHỌN LUYỆN ĐỀ HOẶC THI THỬ (THEO YÊU CẦU NGƯỜI DÙNG) */}
-      {/* ========================================================================= */}
+      {/* MODAL CẤU HÌNH BẮT ĐẦU: CHỌN LUYỆN ĐỀ HOẶC THI THỬ */}
       <ExamStartModal
         exam={selectedExamForModal}
         isOpen={Boolean(selectedExamForModal)}
         onClose={() => setSelectedExamForModal(null)}
+      />
+
+      {/* MODAL THÊM ĐỀ THI TỪ PDF / WORD */}
+      <AddExamModal
+        isOpen={showAddExamModal}
+        onClose={() => setShowAddExamModal(false)}
       />
     </div>
   );
@@ -256,6 +314,8 @@ function ExamCard({
   isLight: boolean;
   onSelectExam: (exam: ExamPaper) => void;
 }) {
+  const isUploaded = Boolean(exam.fileUrl || exam.fileName);
+
   const levelColor =
     exam.level === 'A1'
       ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
@@ -269,8 +329,10 @@ function ExamCard({
 
   return (
     <div
-      className={`rounded-3xl border p-5 flex flex-col justify-between space-y-4 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl ${
-        isLight
+      className={`rounded-3xl border p-5 flex flex-col justify-between space-y-4 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl relative ${
+        isUploaded
+          ? 'border-emerald-500/70 ring-1 ring-emerald-500/30 bg-gradient-to-b from-emerald-950/20 to-transparent'
+          : isLight
           ? 'bg-white border-slate-200 hover:border-emerald-500/60'
           : 'bg-[#121c2b] border-[#1e2d42] hover:border-emerald-500/60'
       }`}
@@ -279,6 +341,11 @@ function ExamCard({
         {/* Top Badges */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
+            {isUploaded && (
+              <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[9px] font-black shadow-xs flex items-center gap-1">
+                <span>📁 Tải lên</span>
+              </span>
+            )}
             {exam.level && (
               <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${levelColor}`}>
                 {exam.level}
@@ -291,7 +358,7 @@ function ExamCard({
 
           <div className="flex items-center gap-1 text-[11px] font-bold text-slate-400">
             <Clock className="w-3.5 h-3.5 text-amber-400" />
-            <span>{exam.durationMinutes || 20} phút</span>
+            <span>{exam.durationMinutes || exam.duration || 20} phút</span>
           </div>
         </div>
 
@@ -311,12 +378,12 @@ function ExamCard({
         <div className="flex items-center justify-between text-[11px] font-bold text-slate-400">
           <span className="flex items-center gap-1 text-emerald-500 font-black">
             <CheckCircle2 className="w-3.5 h-3.5" />
-            {exam.totalQuestions} câu hỏi
+            {exam.totalQuestions || exam.questions?.length || 30} câu hỏi
           </span>
 
           <span className="flex items-center gap-1 text-slate-400">
             <Users className="w-3.5 h-3.5" />
-            {(exam.attempts || 850).toLocaleString()} lượt thi
+            {(exam.attempts || 120).toLocaleString()} lượt thi
           </span>
         </div>
 
