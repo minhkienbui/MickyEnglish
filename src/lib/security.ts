@@ -65,6 +65,35 @@ export function sanitizeSafeFilename(
 }
 
 /**
+ * Inspect magic bytes of uploaded document buffer to verify legitimate PDF/Word format
+ */
+export function verifyDocumentMagicBytes(buffer: Buffer, ext: string): boolean {
+  if (!buffer || buffer.length < 4) return false;
+
+  // PDF starts with %PDF (0x25 0x50 0x44 0x46)
+  if (ext === '.pdf') {
+    return buffer[0] === 0x25 && buffer[1] === 0x50 && buffer[2] === 0x44 && buffer[3] === 0x46;
+  }
+
+  // DOCX is a zip archive, starts with PK (0x50 0x4B 0x03 0x04)
+  if (ext === '.docx') {
+    return buffer[0] === 0x50 && buffer[1] === 0x4b;
+  }
+
+  // DOC legacy CFBF header starts with 0xD0 0xCF 0x11 0xE0
+  if (ext === '.doc') {
+    return (buffer[0] === 0xd0 && buffer[1] === 0xcf) || (buffer[0] === 0x50 && buffer[1] === 0x4b);
+  }
+
+  // TXT is plain text
+  if (ext === '.txt') {
+    return true;
+  }
+
+  return false;
+}
+
+/**
  * Inspect magic bytes of uploaded video buffer to verify legitimate container format
  */
 export function verifyVideoMagicBytes(buffer: Buffer): boolean {
@@ -93,37 +122,6 @@ export function verifyVideoMagicBytes(buffer: Buffer): boolean {
   const altCheck = buffer.slice(4, 8).toString('ascii');
   if (['wide', 'mdat', 'free', 'skip'].includes(altCheck)) {
     return true;
-  }
-
-  return false;
-}
-
-/**
- * Verify magic bytes of uploaded documents (PDF, DOCX, DOC, TXT)
- */
-export function verifyDocumentMagicBytes(buffer: Buffer, ext: string): boolean {
-  if (!buffer || buffer.length < 4) return false;
-
-  const cleanExt = ext.toLowerCase();
-
-  // 1. PDF: starts with '%PDF-'
-  if (cleanExt === '.pdf') {
-    return buffer.slice(0, 5).toString('ascii') === '%PDF-';
-  }
-
-  // 2. DOCX: ZIP archive starting with PK\x03\x04
-  if (cleanExt === '.docx') {
-    return buffer[0] === 0x50 && buffer[1] === 0x4b && buffer[2] === 0x03 && buffer[3] === 0x04;
-  }
-
-  // 3. DOC (legacy binary compound document): D0 CF 11 E0
-  if (cleanExt === '.doc') {
-    return buffer[0] === 0xd0 && buffer[1] === 0xcf && buffer[2] === 0x11 && buffer[3] === 0xe0;
-  }
-
-  // 4. TXT: Plaintext UTF-8 / ASCII (no null bytes in beginning)
-  if (cleanExt === '.txt') {
-    return !buffer.slice(0, Math.min(512, buffer.length)).includes(0x00);
   }
 
   return false;

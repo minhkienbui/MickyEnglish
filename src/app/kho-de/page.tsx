@@ -7,6 +7,7 @@ import {
   Clock,
   ArrowRight,
   Sparkles,
+  Headphones,
   CheckCircle2,
   Search,
   Filter,
@@ -15,15 +16,14 @@ import {
   Layers,
   Zap,
   BookOpen,
-  Plus,
   Upload,
-  FolderDown,
   FileText,
+  Download,
+  Trash2,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useThemeStore } from '@/stores/useThemeStore';
 import { useExamStore } from '@/stores/useExamStore';
-import { curatedExams } from '@/data/exams';
 import { ExamPaper } from '@/lib/types';
 import ExamStartModal from '@/components/exam/ExamStartModal';
 import AddExamModal from '@/components/exam/AddExamModal';
@@ -32,16 +32,16 @@ export default function ExamBankPage() {
   const { theme } = useThemeStore();
   const isLight = theme === 'light';
   const { user } = useAuthStore();
-  const { customExams } = useExamStore();
+  const { exams, deleteCustomExam } = useExamStore();
 
   const [activeCategory, setActiveCategory] = useState<string>('Tất cả');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedExamForModal, setSelectedExamForModal] = useState<ExamPaper | null>(null);
-  const [showAddExamModal, setShowAddExamModal] = useState(false);
+  const [isAddExamModalOpen, setIsAddExamModalOpen] = useState(false);
 
   const categories = [
     'Tất cả',
-    'Đề của tôi (Tải lên)',
+    '📁 Đề của tôi',
     'Căn bản (A1 - A2)',
     'Trung cấp (B1 - B2)',
     'Nâng cao (C1)',
@@ -50,13 +50,8 @@ export default function ExamBankPage() {
     'VSTEP',
   ];
 
-  // Hợp nhất các đề thi được tạo / tải lên với đề thi mặc định
-  const allExams = useMemo(() => {
-    return [...customExams, ...curatedExams];
-  }, [customExams]);
-
   const filteredExams = useMemo(() => {
-    return allExams.filter((exam) => {
+    return exams.filter((exam) => {
       // Tìm kiếm
       const matchesSearch =
         exam.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -65,8 +60,8 @@ export default function ExamBankPage() {
 
       // Danh mục
       let matchesCat = true;
-      if (activeCategory === 'Đề của tôi (Tải lên)') {
-        matchesCat = Boolean(exam.fileUrl || exam.fileName || customExams.some((c) => c.id === exam.id));
+      if (activeCategory === '📁 Đề của tôi') {
+        matchesCat = Boolean(exam.isCustom || exam.fileUrl);
       } else if (activeCategory === 'Căn bản (A1 - A2)') {
         matchesCat = exam.level === 'A1' || exam.level === 'A2';
       } else if (activeCategory === 'Trung cấp (B1 - B2)') {
@@ -83,10 +78,10 @@ export default function ExamBankPage() {
 
       return matchesSearch && matchesCat;
     });
-  }, [allExams, customExams, activeCategory, searchQuery]);
+  }, [exams, activeCategory, searchQuery]);
 
-  // Đề thi đặc biệt (Master 3544 câu)
-  const masterExam = allExams.find((e) => e.id === 'oxford-3000-master-exam');
+  // Đề thi Master 3544 câu
+  const masterExam = exams.find((e) => e.id === 'oxford-3000-master-exam');
   const regularExams = filteredExams.filter((e) => e.id !== 'oxford-3000-master-exam');
 
   return (
@@ -114,29 +109,28 @@ export default function ExamBankPage() {
           <p className={`text-xs sm:text-sm font-semibold max-w-2xl leading-relaxed ${
             isLight ? 'text-slate-600' : 'text-slate-300'
           }`}>
-            Chọn đề vừa sức từ 20 đến 50 câu (15 – 30 phút). Nhấp vào đề để chọn chế độ: <strong>Luyện đề (tự do, hiện đáp án & giải thích tức thì)</strong> hoặc <strong>Thi thử (bấm giờ & tự động nộp bài)</strong>.
+            Chọn đề vừa sức từ 20 đến 50 câu (15 – 30 phút). Nhấp vào đề để chọn: <strong>Luyện đề (tự do, hiện đáp án & giải thích tức thì)</strong> hoặc <strong>Thi thử (bấm giờ & tự động nộp bài)</strong>.
           </p>
         </div>
 
-        {/* Nút thêm đề thi PDF/Word + Thống kê cá nhân */}
-        <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
+        {/* Nút Thêm đề thi PDF / Word & Thống kê cá nhân */}
+        <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0 w-full md:w-auto">
           <button
             type="button"
-            onClick={() => setShowAddExamModal(true)}
-            className="w-full sm:w-auto px-6 py-3.5 bg-[#00c950] hover:bg-[#00b046] active:scale-95 text-white font-black text-xs sm:text-sm rounded-2xl shadow-xl shadow-emerald-500/30 flex items-center justify-center gap-2 transition-all hover:scale-105 cursor-pointer"
+            onClick={() => setIsAddExamModalOpen(true)}
+            className="w-full sm:w-auto px-5 py-3 bg-[#00c950] hover:bg-[#00b046] active:scale-95 text-white font-black text-xs sm:text-sm rounded-2xl shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-2 transition-all hover:scale-105 cursor-pointer"
           >
-            <Plus className="w-4 h-4" />
-            <span>+ Thêm đề thi (PDF / Word)</span>
+            <Upload className="w-4 h-4" />
+            <span>+ Thêm Đề Thi (PDF / Word)</span>
           </button>
 
-          <div className={`p-3.5 rounded-2xl border text-center space-y-0.5 shadow-md min-w-[140px] ${
+          <div className={`p-3.5 rounded-2xl border text-center space-y-0.5 shadow-md min-w-[150px] w-full sm:w-auto ${
             isLight ? 'bg-white border-slate-200' : 'bg-[#0d1420] border-[#1e2d42]'
           }`}>
-            <span className="text-[10px] font-bold text-slate-400 block">Đề đã làm</span>
+            <span className="text-[10px] font-bold text-slate-400 block">Đề thi đã hoàn thành</span>
             <div className="text-xl font-black text-emerald-500 font-mono">
               {user?.examsCompleted ?? 0} đề
             </div>
-            <span className="text-[9px] text-amber-400 font-bold block">+50 XP / đề</span>
           </div>
         </div>
       </div>
@@ -190,49 +184,43 @@ export default function ExamBankPage() {
       </div>
 
       {/* ========================================================================= */}
-      {/* 3. SECTION RIÊNG: ĐỀ THI DO BẠN TẢI LÊN (NẾU CÓ)                          */}
+      {/* 3. LƯỚI BỘ ĐỀ THI GỌN GÀNG, THÂN THIỆN (GRID 3 CỘT)                      */}
       {/* ========================================================================= */}
-      {customExams.length > 0 && (activeCategory === 'Tất cả' || activeCategory === 'Đề của tôi (Tải lên)') && (
-        <section className="space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-base sm:text-lg font-black flex items-center gap-2">
-              <FolderDown className="w-5 h-5 text-emerald-400" />
-              <span>📁 Đề thi của bạn (Đã lưu & đồng bộ trên website)</span>
-            </h2>
-            <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-black border border-emerald-500/30">
-              {customExams.length} đề thi
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {customExams.map((exam) => (
-              <ExamCard
-                key={exam.id}
-                exam={exam}
-                isLight={isLight}
-                onSelectExam={(selected) => setSelectedExamForModal(selected)}
-              />
-            ))}
-          </div>
-        </section>
+      {regularExams.length === 0 ? (
+        <div className="p-12 text-center space-y-3 rounded-3xl border border-dashed border-[#1e2d42] bg-[#111a28]/60">
+          <BookOpen className="w-10 h-10 text-slate-500 mx-auto" />
+          <h4 className="text-sm font-black text-slate-300">Chưa có đề thi nào trong mục này</h4>
+          <p className="text-xs text-slate-400 max-w-sm mx-auto">
+            Bạn có thể bấm nút bên dưới để tải lên đề thi từ file PDF hoặc Word của mình!
+          </p>
+          <button
+            type="button"
+            onClick={() => setIsAddExamModalOpen(true)}
+            className="px-5 py-2.5 bg-[#00c950] text-white font-black text-xs rounded-xl shadow-md cursor-pointer hover:bg-[#00b046]"
+          >
+            + Tải Lên Đề Thi Ngay
+          </button>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {regularExams.map((exam) => (
+            <ExamCard
+              key={exam.id}
+              exam={exam}
+              isLight={isLight}
+              onSelectExam={(selected) => setSelectedExamForModal(selected)}
+              onDeleteExam={(id) => {
+                if (confirm(`Bạn có chắc muốn xóa đề thi "${exam.title}"?`)) {
+                  deleteCustomExam(id);
+                }
+              }}
+            />
+          ))}
+        </div>
       )}
 
       {/* ========================================================================= */}
-      {/* 4. LƯỚI BỘ ĐỀ THI GỌN GÀNG, THÂN THIỆN (GRID 3 CỘT)                      */}
-      {/* ========================================================================= */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {regularExams.map((exam) => (
-          <ExamCard
-            key={exam.id}
-            exam={exam}
-            isLight={isLight}
-            onSelectExam={(selected) => setSelectedExamForModal(selected)}
-          />
-        ))}
-      </div>
-
-      {/* ========================================================================= */}
-      {/* 5. ĐẠI THỬ THÁCH TRỌN BỘ OXFORD MASTER CHALLENGE                          */}
+      {/* 4. ĐẠI THỬ THÁCH TRỌN BỘ OXFORD MASTER CHALLENGE                          */}
       {/* ========================================================================= */}
       {masterExam && (activeCategory === 'Tất cả' || activeCategory.includes('Oxford')) && (
         <div
@@ -288,17 +276,24 @@ export default function ExamBankPage() {
         </div>
       )}
 
-      {/* MODAL CẤU HÌNH BẮT ĐẦU: CHỌN LUYỆN ĐỀ HOẶC THI THỬ */}
+      {/* ========================================================================= */}
+      {/* MODAL 1: CẤU HÌNH BẮT ĐẦU (CHỌN LUYỆN ĐỀ HOẶC THI THỬ)                    */}
+      {/* ========================================================================= */}
       <ExamStartModal
         exam={selectedExamForModal}
         isOpen={Boolean(selectedExamForModal)}
         onClose={() => setSelectedExamForModal(null)}
       />
 
-      {/* MODAL THÊM ĐỀ THI TỪ PDF / WORD */}
+      {/* ========================================================================= */}
+      {/* MODAL 2: THÊM ĐỀ THI TỪ PDF / WORD VÀ TỰ ĐỘNG PHÂN TÍCH BẰNG AI          */}
+      {/* ========================================================================= */}
       <AddExamModal
-        isOpen={showAddExamModal}
-        onClose={() => setShowAddExamModal(false)}
+        isOpen={isAddExamModalOpen}
+        onClose={() => setIsAddExamModalOpen(false)}
+        onExamCreated={(newExam) => {
+          setSelectedExamForModal(newExam);
+        }}
       />
     </div>
   );
@@ -309,13 +304,13 @@ function ExamCard({
   exam,
   isLight,
   onSelectExam,
+  onDeleteExam,
 }: {
   exam: ExamPaper;
   isLight: boolean;
   onSelectExam: (exam: ExamPaper) => void;
+  onDeleteExam?: (id: string) => void;
 }) {
-  const isUploaded = Boolean(exam.fileUrl || exam.fileName);
-
   const levelColor =
     exam.level === 'A1'
       ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40'
@@ -329,10 +324,8 @@ function ExamCard({
 
   return (
     <div
-      className={`rounded-3xl border p-5 flex flex-col justify-between space-y-4 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl relative ${
-        isUploaded
-          ? 'border-emerald-500/70 ring-1 ring-emerald-500/30 bg-gradient-to-b from-emerald-950/20 to-transparent'
-          : isLight
+      className={`rounded-3xl border p-5 flex flex-col justify-between space-y-4 shadow-lg transition-all duration-300 hover:scale-[1.02] hover:shadow-2xl relative group ${
+        isLight
           ? 'bg-white border-slate-200 hover:border-emerald-500/60'
           : 'bg-[#121c2b] border-[#1e2d42] hover:border-emerald-500/60'
       }`}
@@ -341,9 +334,9 @@ function ExamCard({
         {/* Top Badges */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            {isUploaded && (
-              <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[9px] font-black shadow-xs flex items-center gap-1">
-                <span>📁 Tải lên</span>
+            {exam.isCustom && (
+              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-500/25 text-emerald-300 border border-emerald-500/40">
+                📁 Đề của bạn
               </span>
             )}
             {exam.level && (
@@ -356,9 +349,25 @@ function ExamCard({
             </span>
           </div>
 
-          <div className="flex items-center gap-1 text-[11px] font-bold text-slate-400">
-            <Clock className="w-3.5 h-3.5 text-amber-400" />
-            <span>{exam.durationMinutes || exam.duration || 20} phút</span>
+          <div className="flex items-center gap-2 text-[11px] font-bold text-slate-400">
+            <span className="flex items-center gap-1">
+              <Clock className="w-3.5 h-3.5 text-amber-400" />
+              <span>{exam.durationMinutes || 20} phút</span>
+            </span>
+
+            {exam.isCustom && onDeleteExam && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteExam(exam.id);
+                }}
+                className="text-slate-500 hover:text-rose-400 p-1 cursor-pointer transition-colors"
+                title="Xóa đề thi này"
+              >
+                <Trash2 className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
 
@@ -378,13 +387,26 @@ function ExamCard({
         <div className="flex items-center justify-between text-[11px] font-bold text-slate-400">
           <span className="flex items-center gap-1 text-emerald-500 font-black">
             <CheckCircle2 className="w-3.5 h-3.5" />
-            {exam.totalQuestions || exam.questions?.length || 30} câu hỏi
+            {exam.totalQuestions} câu hỏi
           </span>
 
-          <span className="flex items-center gap-1 text-slate-400">
-            <Users className="w-3.5 h-3.5" />
-            {(exam.attempts || 120).toLocaleString()} lượt thi
-          </span>
+          {exam.fileUrl ? (
+            <a
+              href={exam.fileUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1 text-blue-400 hover:underline text-[10px]"
+              title="Tải file tài liệu gốc đã lưu trên website"
+            >
+              <Download className="w-3 h-3" /> File gốc
+            </a>
+          ) : (
+            <span className="flex items-center gap-1 text-slate-400">
+              <Users className="w-3.5 h-3.5" />
+              {(exam.attempts || 850).toLocaleString()} lượt thi
+            </span>
+          )}
         </div>
 
         {/* Action Button: Nhấp để mở Modal chọn Luyện Đề hoặc Thi Thử */}

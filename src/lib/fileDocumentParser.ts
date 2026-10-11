@@ -24,6 +24,7 @@ export async function parseDocxWithColorDetection(buffer: Buffer): Promise<Extra
   const textRegex = /<w:t(?:\s[^>]*)?>([\s\S]*?)<\/w:t>/g;
   const colorRegex = /<w:color\s+[^>]*w:val="([^"]+)"/i;
   const highlightRegex = /<w:highlight\s+[^>]*w:val="([^"]+)"/i;
+  const underlineRegex = /<w:u(?:\s+[^>]*w:val="([^"]+)"|\s*\/?>)/i;
 
   const paragraphs: string[] = [];
   let coloredKeywordsCount = 0;
@@ -46,19 +47,23 @@ export async function parseDocxWithColorDetection(buffer: Buffer): Promise<Extra
 
       if (!rText) continue;
 
-      // Check if this run has colored font or highlight
+      // Check if this run has colored font, highlight, or underline
       const colorValMatch = rContent.match(colorRegex);
       const highlightValMatch = rContent.match(highlightRegex);
+      const underlineValMatch = rContent.match(underlineRegex);
 
       const colorVal = colorValMatch ? colorValMatch[1].toUpperCase() : null;
       const highlightVal = highlightValMatch ? highlightValMatch[1].toLowerCase() : null;
+      const underlineVal = underlineValMatch ? (underlineValMatch[1]?.toLowerCase() || 'single') : null;
 
       // Standard non-answers: '000000', 'AUTO', 'DEFAULT', 'FFFFFF'
       const isColored =
         (colorVal && !['000000', 'AUTO', 'DEFAULT', 'FFFFFF'].includes(colorVal)) ||
         (highlightVal && highlightVal !== 'none');
 
-      if (isColored && rText.trim()) {
+      const isUnderlined = underlineVal && underlineVal !== 'none';
+
+      if ((isColored || isUnderlined) && rText.trim()) {
         coloredKeywordsCount++;
         // Tag with [CORRECT] marker for AI parser
         pText += ` [CORRECT]${rText}[/CORRECT] `;

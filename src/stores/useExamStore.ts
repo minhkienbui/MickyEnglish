@@ -37,10 +37,10 @@ interface ExamState {
   isCompleted: boolean;
   result: ExamResult | null;
 
+  addCustomExam: (exam: ExamPaper) => void;
+  deleteCustomExam: (id: string) => void;
   setMode: (mode: ExamMode) => void;
   setCustomDuration: (minutes: number | null) => void;
-  addCustomExam: (exam: ExamPaper) => void;
-  removeCustomExam: (id: string) => void;
   startExam: (exam: ExamPaper, options?: StartExamOptions) => void;
   selectAnswer: (questionId: string, optionIndex: number) => void;
   toggleFlagQuestion: (questionId: string) => void;
@@ -104,6 +104,24 @@ export const useExamStore = create<ExamState>()(
       isCompleted: false,
       result: null,
 
+      addCustomExam: (newExam) => {
+        set((state) => {
+          const updatedCustom = [newExam, ...state.customExams.filter((e) => e.id !== newExam.id)];
+          const updatedAll = [newExam, ...state.exams.filter((e) => e.id !== newExam.id)];
+          return {
+            customExams: updatedCustom,
+            exams: updatedAll,
+          };
+        });
+      },
+
+      deleteCustomExam: (id) => {
+        set((state) => ({
+          customExams: state.customExams.filter((e) => e.id !== id),
+          exams: state.exams.filter((e) => e.id !== id),
+        }));
+      },
+
       setMode: (mode) => set({ mode }),
 
       setCustomDuration: (minutes) => {
@@ -115,59 +133,18 @@ export const useExamStore = create<ExamState>()(
         });
       },
 
-      addCustomExam: (newExam) => {
-        set((state) => {
-          const existingIdx = state.customExams.findIndex((e) => e.id === newExam.id);
-          let updatedCustom: ExamPaper[];
-          if (existingIdx >= 0) {
-            updatedCustom = [...state.customExams];
-            updatedCustom[existingIdx] = newExam;
-          } else {
-            updatedCustom = [newExam, ...state.customExams];
-          }
-
-          // Cập nhật cả mảng exams
-          const examIdx = state.exams.findIndex((e) => e.id === newExam.id);
-          let updatedExams: ExamPaper[];
-          if (examIdx >= 0) {
-            updatedExams = [...state.exams];
-            updatedExams[examIdx] = newExam;
-          } else {
-            updatedExams = [newExam, ...state.exams];
-          }
-
-          return {
-            customExams: updatedCustom,
-            exams: updatedExams,
-            activeExam: newExam,
-          };
-        });
-      },
-
-      removeCustomExam: (id) => {
-        set((state) => ({
-          customExams: state.customExams.filter((e) => e.id !== id),
-          exams: state.exams.filter((e) => e.id !== id),
-          activeExam: state.activeExam?.id === id ? null : state.activeExam,
-        }));
-      },
-
       startExam: (exam, options) => {
         const selectedMode: ExamMode = options?.mode || get().mode || 'practice';
         const shouldShuffleQ = options?.shuffleQuestions ?? false;
         const shouldShuffleA = options?.shuffleAnswers ?? false;
 
-        // Trích xuất danh sách câu hỏi (từ questions hoặc sections)
-        let rawList: ExamQuestion[] = exam.questions || [];
-        if (rawList.length === 0 && exam.sections && Array.isArray(exam.sections)) {
-          rawList = exam.sections.flatMap((s: any) => s.questions || []);
-        }
-
+        // Slice question count if provided
+        let rawList = exam.questions || [];
         if (options?.questionCount && options.questionCount > 0 && options.questionCount < rawList.length) {
           rawList = rawList.slice(0, options.questionCount);
         }
 
-        // Áp dụng xáo trộn câu hỏi & đáp án
+        // Apply shuffling
         const processedQuestions = prepareQuestions(rawList, shouldShuffleQ, shouldShuffleA);
 
         const preparedExam: ExamPaper = {
@@ -176,11 +153,11 @@ export const useExamStore = create<ExamState>()(
           totalQuestions: processedQuestions.length,
         };
 
+        // Duration setup
         const isExamMode = selectedMode === 'exam';
-        const examDuration =
-          options?.durationMinutes !== undefined
-            ? options.durationMinutes
-            : (exam.durationMinutes || exam.duration || 20);
+        const examDuration = options?.durationMinutes !== undefined
+          ? options.durationMinutes
+          : (exam.durationMinutes || exam.duration || 20);
 
         const initialRemaining = isExamMode && examDuration && examDuration > 0
           ? examDuration * 60
@@ -249,7 +226,7 @@ export const useExamStore = create<ExamState>()(
           if (userSelected === q.correctAnswer) {
             correctCount++;
           } else {
-            weakPartCounts[q.part || 'Chung'] = (weakPartCounts[q.part || 'Chung'] || 0) + 1;
+            weakPartCounts[q.part] = (weakPartCounts[q.part] || 0) + 1;
           }
         });
 
@@ -289,11 +266,20 @@ export const useExamStore = create<ExamState>()(
       },
     }),
     {
-      name: 'micky-exam-storage',
+      name: 'micky-exams-v1',
       partialize: (state) => ({
         customExams: state.customExams,
-        mode: state.mode,
       }),
+      onRehydrateStorage: () => (state) => {
+        if (state && state.customExams && state.customExams.length > 0) {
+          // Merge custom exams with mockExams
+          const merged = [
+            ...state.customExams,
+            ...mockExams.filter((m) => !state.customExams.some((c) => c.id === m.id)),
+          ];
+          state.exams = merged;
+        }
+      },
     }
   )
 );
