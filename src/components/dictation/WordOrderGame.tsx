@@ -122,7 +122,17 @@ export default function WordOrderGame({
       core = trimmed.slice(0, -punct.length).trim();
     }
 
-    const rawWords = core.split(/\s+/).filter(Boolean);
+    let rawWords: string[] = [];
+    if (sentence.words && sentence.words.length > 0) {
+      rawWords = sentence.words;
+    } else {
+      const spaceSplit = core.split(/\s+/).filter(Boolean);
+      if (spaceSplit.length <= 1 && /[一-龥]/.test(core)) {
+        rawWords = Array.from(core.replace(/[，。！？、；：]/g, ' ')).filter((c) => c.trim().length > 0);
+      } else {
+        rawWords = spaceSplit;
+      }
+    }
     setCoreWords(rawWords);
     setEndPunctuation(punct);
     setFilledSlots([]);

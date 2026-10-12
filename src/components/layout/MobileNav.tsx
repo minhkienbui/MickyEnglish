@@ -2,20 +2,35 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Headphones, BookCheck, Dumbbell, Gamepad2, GraduationCap, Trophy, User } from 'lucide-react';
+import { Home, Headphones, BookCheck, Dumbbell, Gamepad2, GraduationCap, Trophy, User, PenTool } from 'lucide-react';
+import { useLanguageStore } from '@/stores/useLanguageStore';
 
 export default function MobileNav() {
   const pathname = usePathname();
+  const { targetLanguage } = useLanguageStore();
+  const isChinese = targetLanguage === 'zh';
 
-  const navItems = [
+  const englishNavItems = [
     { name: 'Trang chủ', href: '/', icon: Home },
     { name: 'Dictation', href: '/dictation-shadowing', icon: Headphones },
     { name: 'Từ vựng', href: '/vocabulary', icon: BookCheck },
     { name: 'Luyện tập', href: '/practice', icon: Dumbbell },
     { name: 'Trò chơi', href: '/tro-choi', icon: Gamepad2 },
-    { name: 'BXH', href: '/bang-xep-hang', icon: Trophy },
+    { name: 'Luyện thi', href: '/kho-de', icon: GraduationCap },
     { name: 'Tài khoản', href: '/tai-khoan', icon: User },
   ];
+
+  const chineseNavItems = [
+    { name: 'HSK Chủ', href: '/', icon: Home },
+    { name: 'Shadowing', href: '/dictation-shadowing', icon: Headphones },
+    { name: 'HSK Từ', href: '/vocabulary', icon: BookCheck },
+    { name: 'Tập viết', href: '/practice/hanzi-writer', icon: PenTool },
+    { name: 'Luyện tập', href: '/practice', icon: Dumbbell },
+    { name: 'Thi HSK', href: '/kho-de', icon: GraduationCap },
+    { name: 'Tài khoản', href: '/tai-khoan', icon: User },
+  ];
+
+  const navItems = isChinese ? chineseNavItems : englishNavItems;
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-[#0d131d] border-t border-[#1e2d42] px-1 py-1.5 shadow-2xl">
@@ -28,15 +43,17 @@ export default function MobileNav() {
             (item.href === '/vocabulary' && pathname.startsWith('/tuvung')) ||
             (item.href === '/practice' && pathname.startsWith('/ky-nang'));
 
+          const activeColor = isChinese ? 'text-rose-400' : 'text-emerald-400';
+
           return (
             <Link
               key={item.href}
               href={item.href}
               className={`flex flex-col items-center gap-0.5 px-1 py-1 rounded-lg text-[10px] font-bold transition-all ${
-                isActive ? 'text-emerald-400 font-extrabold' : 'text-slate-400 hover:text-slate-200'
+                isActive ? `${activeColor} font-extrabold` : 'text-slate-400 hover:text-slate-200'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? 'text-emerald-400 scale-110' : 'text-slate-400'}`} />
+              <Icon className={`w-4 h-4 ${isActive ? `${activeColor} scale-110` : 'text-slate-400'}`} />
               <span className="truncate max-w-[48px]">{item.name}</span>
             </Link>
           );
@@ -45,4 +62,3 @@ export default function MobileNav() {
     </nav>
   );
 }
-

@@ -19,18 +19,21 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useThemeStore } from '@/stores/useThemeStore';
+import { useLanguageStore } from '@/stores/useLanguageStore';
 import MickyMascot from '@/components/common/MickyMascot';
 
 export default function Navbar() {
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuthStore();
   const { theme, toggleTheme, isSidebarCollapsed } = useThemeStore();
+  const { targetLanguage, setTargetLanguage } = useLanguageStore();
 
   const [showAccountMenu, setShowAccountMenu] = useState(false);
   const accountMenuRef = useRef<HTMLDivElement | null>(null);
 
   const isAdmin = Boolean(isAuthenticated && user?.role === 'admin');
   const isLight = theme === 'light';
+  const isChinese = targetLanguage === 'zh';
 
   // Đóng dropdown khi nhấp ra ngoài
   useEffect(() => {
@@ -68,7 +71,7 @@ export default function Navbar() {
         <div className="flex md:hidden items-center gap-2">
           <MickyMascot size={36} />
           <Link href="/" className={`text-lg font-black tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
-            Micky<span className="text-emerald-500">English</span>
+            Micky<span className={isChinese ? 'text-rose-500' : 'text-emerald-500'}>{isChinese ? 'Chinese' : 'English'}</span>
           </Link>
         </div>
 
@@ -79,7 +82,7 @@ export default function Navbar() {
           <Search className="w-4 h-4 text-slate-400" />
           <input
             type="text"
-            placeholder="Tra cứu từ vựng hoặc bài học bất kỳ..."
+            placeholder={isChinese ? "Tra cứu chữ Hán, Pinyin, bài khoá HSK..." : "Tra cứu từ vựng hoặc bài học bất kỳ..."}
             className={`bg-transparent border-none outline-none w-full text-xs font-medium ${
               isLight ? 'text-slate-900 placeholder-slate-400' : 'text-slate-200 placeholder-slate-500'
             }`}
@@ -88,6 +91,37 @@ export default function Navbar() {
 
         {/* Right Action Icons */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Dual Language Switcher Pill */}
+          <div className={`flex items-center p-0.5 sm:p-1 rounded-2xl border transition-colors ${
+            isLight ? 'bg-slate-100 border-slate-300' : 'bg-[#121c2b] border-[#1e2d42]'
+          }`}>
+            <button
+              type="button"
+              onClick={() => setTargetLanguage('en')}
+              className={`px-2 sm:px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-black flex items-center gap-1 transition-all cursor-pointer ${
+                targetLanguage === 'en'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+              title="Chuyển sang Tiếng Anh (TOEIC, IELTS, Oxford)"
+            >
+              <span>🇬🇧</span>
+              <span className="hidden sm:inline">Tiếng Anh</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setTargetLanguage('zh')}
+              className={`px-2 sm:px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-black flex items-center gap-1 transition-all cursor-pointer ${
+                targetLanguage === 'zh'
+                  ? 'bg-rose-600 text-white shadow-xs'
+                  : 'text-slate-400 hover:text-slate-200'
+              }`}
+              title="Chuyển sang Tiếng Trung (HSK 3.0 & HSKK)"
+            >
+              <span>🇨🇳</span>
+              <span className="hidden sm:inline">Tiếng Trung</span>
+            </button>
+          </div>
           {/* Admin Shortcut Button (Chỉ Admin mới thấy) */}
           {isAdmin && (
             <Link

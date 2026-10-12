@@ -19,48 +19,89 @@ import {
   HelpCircle,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { useLanguageStore } from '@/stores/useLanguageStore';
 
 export default function GamesHubPage() {
   const { user, isAuthenticated, incrementProgress } = useAuthStore();
+  const { targetLanguage } = useLanguageStore();
+  const isChinese = targetLanguage === 'zh';
   const [activeGame, setActiveGame] = useState<'memory' | 'speed' | 'audio' | null>(null);
 
-  const games = [
-    {
-      id: 'memory',
-      title: 'Lật Thẻ Trí Nhớ (Memory Match)',
-      description: 'Lật và ghép đôi từ vựng tiếng Anh với nghĩa tiếng Việt tương ứng trong thời gian ngắn nhất.',
-      icon: '🃏',
-      color: 'border-emerald-500/40 hover:border-emerald-400',
-      tag: 'HOT',
-      reward: '+30 💎',
-    },
-    {
-      id: 'speed',
-      title: 'Đua Tốc Độ (Speed Vocab Race)',
-      description: '30 giây chọn nhanh từ đồng nghĩa hoặc trái nghĩa dưới áp lực thời gian cao độ.',
-      icon: '⚡',
-      color: 'border-amber-500/40 hover:border-amber-400',
-      tag: 'NEW',
-      reward: '+50 💎',
-    },
-    {
-      id: 'audio',
-      title: 'Thử Thách Nghe Tinh (Audio Quiz)',
-      description: 'Nghe phát âm chuẩn bản xứ và phân biệt các cặp từ dễ nhầm lẫn (Minimal Pairs).',
-      icon: '🎧',
-      color: 'border-cyan-500/40 hover:border-cyan-400',
-      tag: 'PRO',
-      reward: '+40 💎',
-    },
-  ];
+  const games = isChinese
+    ? [
+        {
+          id: 'memory',
+          title: 'Lật Thẻ Chữ Hán (Hanzi Memory Match)',
+          description: 'Lật và ghép đôi chữ Hán (汉字) với Pinyin và nghĩa tiếng Việt tương ứng trong thời gian ngắn nhất.',
+          icon: '🀄',
+          color: 'border-rose-500/40 hover:border-rose-400',
+          tag: 'HSK HOT',
+          reward: '+30 💎',
+        },
+        {
+          id: 'speed',
+          title: 'Đua Tốc Độ HSK (HSK Speed Race)',
+          description: '30 giây chọn nhanh nghĩa tiếng Việt tương ứng của các từ vựng HSK 1 - 4.',
+          icon: '⚡',
+          color: 'border-amber-500/40 hover:border-amber-400',
+          tag: 'HSK 1-4',
+          reward: '+50 💎',
+        },
+        {
+          id: 'audio',
+          title: 'Đoán Thanh Điệu (Pinyin Tone Quiz)',
+          description: 'Nghe phát âm chuẩn Bắc Kinh và phân biệt 4 thanh điệu (Thanh 1, 2, 3, 4) chính xác.',
+          icon: '🎧',
+          color: 'border-cyan-500/40 hover:border-cyan-400',
+          tag: 'PHÁT ÂM',
+          reward: '+40 💎',
+        },
+      ]
+    : [
+        {
+          id: 'memory',
+          title: 'Lật Thẻ Trí Nhớ (Memory Match)',
+          description: 'Lật và ghép đôi từ vựng tiếng Anh với nghĩa tiếng Việt tương ứng trong thời gian ngắn nhất.',
+          icon: '🃏',
+          color: 'border-emerald-500/40 hover:border-emerald-400',
+          tag: 'HOT',
+          reward: '+30 💎',
+        },
+        {
+          id: 'speed',
+          title: 'Đua Tốc Độ (Speed Vocab Race)',
+          description: '30 giây chọn nhanh từ đồng nghĩa hoặc trái nghĩa dưới áp lực thời gian cao độ.',
+          icon: '⚡',
+          color: 'border-amber-500/40 hover:border-amber-400',
+          tag: 'NEW',
+          reward: '+50 💎',
+        },
+        {
+          id: 'audio',
+          title: 'Thử Thách Nghe Tinh (Audio Quiz)',
+          description: 'Nghe phát âm chuẩn bản xứ và phân biệt các cặp từ dễ nhầm lẫn (Minimal Pairs).',
+          icon: '🎧',
+          color: 'border-cyan-500/40 hover:border-cyan-400',
+          tag: 'PRO',
+          reward: '+40 💎',
+        },
+      ];
 
-  const leaderboard = [
-    { rank: 1, name: 'Minh Tuấn (IELTS 8.0)', diamonds: 3450, streak: 42, avatar: '🦁' },
-    { rank: 2, name: 'Thu Thảo', diamonds: 2980, streak: 31, avatar: '🦊' },
-    { rank: 3, name: 'Hoàng Long', diamonds: 2610, streak: 28, avatar: '🐼' },
-    { rank: 4, name: 'Ngọc Mai', diamonds: 2150, streak: 19, avatar: '🐰' },
-    { rank: 5, name: 'Quang Huy', diamonds: 1890, streak: 15, avatar: '🐨' },
-  ];
+  const leaderboard = isChinese
+    ? [
+        { rank: 1, name: 'Minh Tuấn (HSK 6 - 280đ)', diamonds: 3850, streak: 45, avatar: '🐉' },
+        { rank: 2, name: 'Thu Thảo (HSK 5)', diamonds: 3120, streak: 34, avatar: '🦊' },
+        { rank: 3, name: 'Hoàng Long (HSK 4)', diamonds: 2790, streak: 29, avatar: '🐼' },
+        { rank: 4, name: 'Ngọc Mai (HSK 3)', diamonds: 2310, streak: 21, avatar: '🐰' },
+        { rank: 5, name: 'Quang Huy (HSK 2)', diamonds: 1950, streak: 16, avatar: '🐯' },
+      ]
+    : [
+        { rank: 1, name: 'Minh Tuấn (IELTS 8.0)', diamonds: 3450, streak: 42, avatar: '🦁' },
+        { rank: 2, name: 'Thu Thảo', diamonds: 2980, streak: 31, avatar: '🦊' },
+        { rank: 3, name: 'Hoàng Long', diamonds: 2610, streak: 28, avatar: '🐼' },
+        { rank: 4, name: 'Ngọc Mai', diamonds: 2150, streak: 19, avatar: '🐰' },
+        { rank: 5, name: 'Quang Huy', diamonds: 1890, streak: 15, avatar: '🐨' },
+      ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 font-sans">
@@ -238,25 +279,25 @@ export default function GamesHubPage() {
 
       {/* ================= MODAL GAME 1: MEMORY MATCH ================= */}
       {activeGame === 'memory' && (
-        <MemoryMatchModal onClose={() => setActiveGame(null)} />
+        <MemoryMatchModal isChinese={isChinese} onClose={() => setActiveGame(null)} />
       )}
 
       {/* ================= MODAL GAME 2: SPEED VOCAB ================= */}
       {activeGame === 'speed' && (
-        <SpeedVocabModal onClose={() => setActiveGame(null)} />
+        <SpeedVocabModal isChinese={isChinese} onClose={() => setActiveGame(null)} />
       )}
 
       {/* ================= MODAL GAME 3: AUDIO LISTENING ================= */}
       {activeGame === 'audio' && (
-        <AudioQuizModal onClose={() => setActiveGame(null)} />
+        <AudioQuizModal isChinese={isChinese} onClose={() => setActiveGame(null)} />
       )}
     </div>
   );
 }
 
 // ================= GAME 1: MEMORY MATCH =================
-function MemoryMatchModal({ onClose }: { onClose: () => void }) {
-  const rawPairs = [
+function MemoryMatchModal({ isChinese, onClose }: { isChinese: boolean; onClose: () => void }) {
+  const rawPairsEn = [
     { id: 1, text: 'actually', matchId: 1, type: 'en' },
     { id: 2, text: 'thực ra, quả thật', matchId: 1, type: 'vi' },
     { id: 3, text: 'however', matchId: 2, type: 'en' },
@@ -266,6 +307,19 @@ function MemoryMatchModal({ onClose }: { onClose: () => void }) {
     { id: 7, text: 'without', matchId: 4, type: 'en' },
     { id: 8, text: 'không có, thiếu', matchId: 4, type: 'vi' },
   ];
+
+  const rawPairsZh = [
+    { id: 1, text: '你好 (nǐ hǎo)', matchId: 1, type: 'zh' },
+    { id: 2, text: 'Xin chào', matchId: 1, type: 'vi' },
+    { id: 3, text: '谢谢 (xièxie)', matchId: 2, type: 'zh' },
+    { id: 4, text: 'Cảm ơn', matchId: 2, type: 'vi' },
+    { id: 5, text: '朋友 (péngyou)', matchId: 3, type: 'zh' },
+    { id: 6, text: 'Bạn bè', matchId: 3, type: 'vi' },
+    { id: 7, text: '学习 (xuéxí)', matchId: 4, type: 'zh' },
+    { id: 8, text: 'Học tập', matchId: 4, type: 'vi' },
+  ];
+
+  const rawPairs = isChinese ? rawPairsZh : rawPairsEn;
 
   const [cards, setCards] = useState(() => [...rawPairs].sort(() => Math.random() - 0.5));
   const [selectedCards, setSelectedCards] = useState<any[]>([]);
@@ -364,19 +418,29 @@ function MemoryMatchModal({ onClose }: { onClose: () => void }) {
 }
 
 // ================= GAME 2: SPEED VOCAB RACE =================
-function SpeedVocabModal({ onClose }: { onClose: () => void }) {
+function SpeedVocabModal({ isChinese, onClose }: { isChinese: boolean; onClose: () => void }) {
   const [timeLeft, setTimeLeft] = useState(30);
   const [score, setScore] = useState(0);
   const [currentQ, setCurrentQ] = useState(0);
   const [isGameOver, setIsGameOver] = useState(false);
 
-  const questions = [
+  const questionsEn = [
     { word: 'ABUNDANT', correct: 'plentiful', options: ['plentiful', 'scarce', 'narrow', 'harsh'] },
     { word: 'RELUCTANT', correct: 'unwilling', options: ['enthusiastic', 'unwilling', 'eager', 'proud'] },
     { word: 'CONCISE', correct: 'brief', options: ['elaborate', 'brief', 'confusing', 'lengthy'] },
     { word: 'BENEFICIAL', correct: 'helpful', options: ['harmful', 'helpful', 'neutral', 'boring'] },
     { word: 'AUTHENTIC', correct: 'genuine', options: ['fake', 'cloned', 'genuine', 'doubtful'] },
   ];
+
+  const questionsZh = [
+    { word: '学习 (xuéxí)', correct: 'học tập', options: ['học tập', 'nghỉ ngơi', 'ăn cơm', 'du lịch'] },
+    { word: '高兴 (gāoxìng)', correct: 'vui vẻ', options: ['buồn bã', 'vui vẻ', 'tức giận', 'sợ hãi'] },
+    { word: '漂亮 (piàoliang)', correct: 'xinh đẹp', options: ['xấu xí', 'xinh đẹp', 'đắt đỏ', 'khó khăn'] },
+    { word: '容易 (róngyì)', correct: 'dễ dàng', options: ['phức tạp', 'dễ dàng', 'nguy hiểm', 'chậm chạp'] },
+    { word: '帮助 (bāngzhù)', correct: 'giúp đỡ', options: ['từ chối', 'giúp đỡ', 'chia tay', 'lười biếng'] },
+  ];
+
+  const questions = isChinese ? questionsZh : questionsEn;
 
   useEffect(() => {
     if (isGameOver) return;
@@ -474,11 +538,11 @@ function SpeedVocabModal({ onClose }: { onClose: () => void }) {
 }
 
 // ================= GAME 3: AUDIO LISTENING QUIZ =================
-function AudioQuizModal({ onClose }: { onClose: () => void }) {
+function AudioQuizModal({ isChinese, onClose }: { isChinese: boolean; onClose: () => void }) {
   const [currentIdx, setCurrentIdx] = useState(0);
   const [selectedOpt, setSelectedOpt] = useState<string | null>(null);
 
-  const quiz = [
+  const quizEn = [
     {
       word: 'sheep',
       options: ['ship', 'sheep', 'sheet', 'shape'],
@@ -499,13 +563,35 @@ function AudioQuizModal({ onClose }: { onClose: () => void }) {
     },
   ];
 
+  const quizZh = [
+    {
+      word: 'mā',
+      options: ['mā', 'má', 'mǎ', 'mà'],
+      phonetic: 'mā (Thanh 1 • Âm cao bằng phẳng)',
+      meaning: 'Chữ Hán: 妈 (Mẹ) • Thanh 1',
+    },
+    {
+      word: 'hǎo',
+      options: ['hāo', 'háo', 'hǎo', 'hào'],
+      phonetic: 'hǎo (Thanh 3 • Xuống trầm rồi bổng)',
+      meaning: 'Chữ Hán: 好 (Tốt) • Thanh 3',
+    },
+    {
+      word: 'xiè',
+      options: ['xiē', 'xié', 'xiě', 'xiè'],
+      phonetic: 'xiè (Thanh 4 • Rơi dứt khoát)',
+      meaning: 'Chữ Hán: 谢 (Cảm ơn) • Thanh 4',
+    },
+  ];
+
+  const quiz = isChinese ? quizZh : quizEn;
   const current = quiz[currentIdx];
 
   const playAudio = () => {
     if ('speechSynthesis' in window) {
       const u = new SpeechSynthesisUtterance(current.word);
-      u.lang = 'en-US';
-      u.rate = 0.9;
+      u.lang = isChinese ? 'zh-CN' : 'en-US';
+      u.rate = 0.85;
       window.speechSynthesis.speak(u);
     }
   };

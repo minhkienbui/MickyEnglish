@@ -22,11 +22,15 @@ import {
 } from 'lucide-react';
 import { useVocabStore } from '@/stores/useVocabStore';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { useLanguageStore } from '@/stores/useLanguageStore';
+import { mockChineseVocabulary, hskDecks } from '@/data/mockChineseVocab';
 import PremiumModal from '@/components/common/PremiumModal';
 
 export default function VocabularyHubPage() {
   const { words, getDueWords, addWord } = useVocabStore();
   const { user } = useAuthStore();
+  const { targetLanguage } = useLanguageStore();
+  const isChinese = targetLanguage === 'zh';
 
   const [instantSearch, setInstantSearch] = useState('');
   const [deckSearch, setDeckSearch] = useState('');
@@ -53,8 +57,8 @@ export default function VocabularyHubPage() {
 
   const dueCount = getDueWords().length;
 
-  // 10 Gợi ý từ vựng chuẩn như ảnh Bibung
-  const trendingWords = [
+  // Gợi ý từ vựng theo ngôn ngữ (Anh vs Trung)
+  const englishTrendingWords = [
     { word: 'actually', phonetic: '/ˈæk.tʃu.ə.li/', meaning: 'Thực ra, thực sự', exampleEn: 'Actually, I think that is a great idea.', exampleVi: 'Thực ra tôi nghĩ đó là một ý tưởng tuyệt vời.' },
     { word: 'however', phonetic: '/haʊˈev.ər/', meaning: 'Tuy nhiên, dù thế nào', exampleEn: 'He was tired; however, he continued working.', exampleVi: 'Anh ấy mệt; tuy nhiên, anh ấy vẫn tiếp tục làm việc.' },
     { word: 'different', phonetic: '/ˈdɪf.ər.ənt/', meaning: 'Khác biệt, đa dạng', exampleEn: 'They hold very different opinions on this topic.', exampleVi: 'Họ có những quan điểm rất khác nhau về chủ đề này.' },
@@ -66,6 +70,16 @@ export default function VocabularyHubPage() {
     { word: 'enough', phonetic: '/ɪˈnʌf/', meaning: 'Đủ, vừa vặn', exampleEn: 'Is there enough time to finish this lesson?', exampleVi: 'Có đủ thời gian để hoàn thành bài học này không?' },
     { word: 'language', phonetic: '/ˈlæŋ.ɡwɪdʒ/', meaning: 'Ngôn ngữ, tiếng nói', exampleEn: 'English is the global language of communication.', exampleVi: 'Tiếng Anh là ngôn ngữ giao tiếp toàn cầu.' },
   ];
+
+  const chineseTrendingWords = mockChineseVocabulary.slice(0, 10).map((w) => ({
+    word: w.hanzi,
+    phonetic: w.pinyin,
+    meaning: `${w.sinoVietnamese ? `[${w.sinoVietnamese}] ` : ''}${w.meaning}`,
+    exampleEn: w.exampleZh,
+    exampleVi: w.exampleVi,
+  }));
+
+  const trendingWords = isChinese ? chineseTrendingWords : englishTrendingWords;
 
   // Tính toán số lượng từ ở từng cấp độ Spaced Repetition (0: Mới học, 1-2: Nhớ tạm, 3: Nhớ lâu, 4: Thuộc lòng, 5: Thông thạo)
   const srsStats = useMemo(() => {
@@ -86,7 +100,7 @@ export default function VocabularyHubPage() {
     return { moiHoc, nhoTam, nhoLau, thuocLong, thongThao, total: words.length };
   }, [words]);
 
-  const hashtags = [
+  const englishHashtags = [
     'Tất cả',
     '# Từ vựng thông dụng',
     '# English In Use',
@@ -96,8 +110,20 @@ export default function VocabularyHubPage() {
     '# Idiom and phrasal...',
   ];
 
+  const chineseHashtags = [
+    'Tất cả',
+    '# HSK 1',
+    '# HSK 2',
+    '# HSK 3',
+    '# HSK 4',
+    '# HSK 5',
+    '# HSK 6',
+  ];
+
+  const hashtags = isChinese ? chineseHashtags : englishHashtags;
+
   // Danh mục Từ vựng thông dụng
-  const commonDecks = [
+  const englishCommonDecks = [
     {
       id: 'deck-topics',
       title: 'Từ vựng theo chủ đề',
@@ -147,6 +173,21 @@ export default function VocabularyHubPage() {
       description: 'Từ vựng miêu tả dáng vẻ, khuôn mặt, phong cách ăn mặc và tính cách con người.',
     },
   ];
+
+  const chineseCommonDecks = hskDecks.map((d) => ({
+    id: d.id,
+    title: d.name,
+    subtitle: d.level,
+    wordsCount: d.count,
+    learnedCount: 0,
+    isPro: false,
+    tag: `# ${d.level}`,
+    icon: '🇨🇳',
+    bgGradient: d.color,
+    description: d.description,
+  }));
+
+  const commonDecks = isChinese ? chineseCommonDecks : englishCommonDecks;
 
   // Danh mục English In Use
   const englishInUseDecks = [
@@ -211,9 +252,9 @@ export default function VocabularyHubPage() {
     } else {
       setLookupResult({
         word: term,
-        phonetic: '/əˈkeɪ.ʒən.əl/',
-        meaning: `Nghĩa của từ "${term}" (Được tra tự động từ từ điển bản xứ)`,
-        exampleEn: `This is an example sentence containing the word ${term}.`,
+        phonetic: isChinese ? 'nǐ hǎo' : '/əˈkeɪ.ʒən.əl/',
+        meaning: `Nghĩa của từ "${term}" (Được tra tự động từ từ điển)`,
+        exampleEn: isChinese ? `这是包含 "${term}" 的例句。` : `This is an example sentence containing the word ${term}.`,
         exampleVi: `Đây là câu ví dụ minh họa chứa từ ${term}.`,
       });
     }
@@ -223,7 +264,7 @@ export default function VocabularyHubPage() {
   const speakAudio = (text: string) => {
     if ('speechSynthesis' in window) {
       const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'en-US';
+      u.lang = isChinese ? 'zh-CN' : 'en-US';
       window.speechSynthesis.speak(u);
     }
   };

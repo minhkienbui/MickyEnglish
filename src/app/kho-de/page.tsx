@@ -24,6 +24,8 @@ import {
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useThemeStore } from '@/stores/useThemeStore';
 import { useExamStore } from '@/stores/useExamStore';
+import { useLanguageStore } from '@/stores/useLanguageStore';
+import { mockHskExams } from '@/data/mockHskExams';
 import { ExamPaper } from '@/lib/types';
 import ExamStartModal from '@/components/exam/ExamStartModal';
 import AddExamModal from '@/components/exam/AddExamModal';
@@ -33,13 +35,15 @@ export default function ExamBankPage() {
   const isLight = theme === 'light';
   const { user } = useAuthStore();
   const { exams, deleteCustomExam } = useExamStore();
+  const { targetLanguage } = useLanguageStore();
+  const isChinese = targetLanguage === 'zh';
 
   const [activeCategory, setActiveCategory] = useState<string>('Tất cả');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedExamForModal, setSelectedExamForModal] = useState<ExamPaper | null>(null);
   const [isAddExamModalOpen, setIsAddExamModalOpen] = useState(false);
 
-  const categories = [
+  const englishCategories = [
     'Tất cả',
     '📁 Đề của tôi',
     'Căn bản (A1 - A2)',
@@ -50,8 +54,30 @@ export default function ExamBankPage() {
     'VSTEP',
   ];
 
+  const chineseCategories = [
+    'Tất cả',
+    '📁 Đề của tôi',
+    'HSK 1',
+    'HSK 2',
+    'HSK 3',
+    'HSK 4',
+    'HSKK Khẩu ngữ',
+  ];
+
+  const categories = isChinese ? chineseCategories : englishCategories;
+
+  // Hợp nhất đề thi theo ngôn ngữ đang chọn
+  const baseExams = useMemo(() => {
+    if (isChinese) {
+      // HSK exams + custom exams uploaded
+      const customZh = exams.filter((e) => e.isCustom && (e.type === 'HSK' || e.type === 'HSKK' || e.level?.includes('HSK')));
+      return [...mockHskExams, ...customZh];
+    }
+    return exams;
+  }, [isChinese, exams]);
+
   const filteredExams = useMemo(() => {
-    return exams.filter((exam) => {
+    return baseExams.filter((exam) => {
       // Tìm kiếm
       const matchesSearch =
         exam.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -62,26 +88,34 @@ export default function ExamBankPage() {
       let matchesCat = true;
       if (activeCategory === '📁 Đề của tôi') {
         matchesCat = Boolean(exam.isCustom || exam.fileUrl);
-      } else if (activeCategory === 'Căn bản (A1 - A2)') {
-        matchesCat = exam.level === 'A1' || exam.level === 'A2';
-      } else if (activeCategory === 'Trung cấp (B1 - B2)') {
-        matchesCat = exam.level === 'B1' || exam.level === 'B2';
-      } else if (activeCategory === 'Nâng cao (C1)') {
-        matchesCat = exam.level === 'C1';
-      } else if (activeCategory === 'TOEIC') {
-        matchesCat = exam.type === 'TOEIC';
-      } else if (activeCategory === 'IELTS') {
-        matchesCat = exam.type === 'IELTS';
-      } else if (activeCategory === 'VSTEP') {
-        matchesCat = exam.type === 'VSTEP';
+      } else if (isChinese) {
+        if (activeCategory === 'HSKK Khẩu ngữ') {
+          matchesCat = exam.type === 'HSKK';
+        } else if (activeCategory.startsWith('HSK')) {
+          matchesCat = exam.level === activeCategory || exam.title.includes(activeCategory);
+        }
+      } else {
+        if (activeCategory === 'Căn bản (A1 - A2)') {
+          matchesCat = exam.level === 'A1' || exam.level === 'A2';
+        } else if (activeCategory === 'Trung cấp (B1 - B2)') {
+          matchesCat = exam.level === 'B1' || exam.level === 'B2';
+        } else if (activeCategory === 'Nâng cao (C1)') {
+          matchesCat = exam.level === 'C1';
+        } else if (activeCategory === 'TOEIC') {
+          matchesCat = exam.type === 'TOEIC';
+        } else if (activeCategory === 'IELTS') {
+          matchesCat = exam.type === 'IELTS';
+        } else if (activeCategory === 'VSTEP') {
+          matchesCat = exam.type === 'VSTEP';
+        }
       }
 
       return matchesSearch && matchesCat;
     });
-  }, [exams, activeCategory, searchQuery]);
+  }, [baseExams, isChinese, activeCategory, searchQuery]);
 
-  // Đề thi Master 3544 câu
-  const masterExam = exams.find((e) => e.id === 'oxford-3000-master-exam');
+  // Đề thi Master 3544 câu (chỉ hiện ở English mode)
+  const masterExam = !isChinese ? exams.find((e) => e.id === 'oxford-3000-master-exam') : null;
   const regularExams = filteredExams.filter((e) => e.id !== 'oxford-3000-master-exam');
 
   return (
@@ -99,17 +133,27 @@ export default function ExamBankPage() {
         <div className="space-y-2 text-center md:text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-500 text-xs font-black uppercase tracking-wider">
             <GraduationCap className="w-4 h-4" />
-            <span>Phòng Thi Trắc Nghiệm Thông Minh</span>
+            <span>{isChinese ? 'Phòng Thi HSK 3.0 & HSKK Chuẩn Hóa' : 'Phòng Thi Trắc Nghiệm Thông Minh'}</span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight">
-            Kho Đề Thi & <span className="text-emerald-500">Luyện Đề Chuẩn Hóa</span>
+            {isChinese ? (
+              <>
+                Kho Đề Thi <span className="text-rose-500">HSK 1 - 6 & Khẩu Ngữ HSKK</span>
+              </>
+            ) : (
+              <>
+                Kho Đề Thi & <span className="text-emerald-500">Luyện Đề Chuẩn Hóa</span>
+              </>
+            )}
           </h1>
 
           <p className={`text-xs sm:text-sm font-semibold max-w-2xl leading-relaxed ${
             isLight ? 'text-slate-600' : 'text-slate-300'
           }`}>
-            Chọn đề vừa sức từ 20 đến 50 câu (15 – 30 phút). Nhấp vào đề để chọn: <strong>Luyện đề (tự do, hiện đáp án & giải thích tức thì)</strong> hoặc <strong>Thi thử (bấm giờ & tự động nộp bài)</strong>.
+            {isChinese
+              ? 'Mô phỏng 100% format đề thi HSK Đọc - Nghe - Viết và khẩu ngữ HSKK. Hỗ trợ Luyện đề (tự do, giải thích ngay) và Thi thử (bấm giờ & tự động nộp bài).'
+              : 'Chọn đề vừa sức từ 20 đến 50 câu (15 – 30 phút). Nhấp vào đề để chọn: Luyện đề (tự do, hiện đáp án & giải thích tức thì) hoặc Thi thử (bấm giờ & tự động nộp bài).'}
           </p>
         </div>
 

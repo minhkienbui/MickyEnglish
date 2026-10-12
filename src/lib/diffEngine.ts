@@ -24,7 +24,7 @@ export interface DiffResult {
 }
 
 export function cleanWord(str: string): string {
-  return str.toLowerCase().replace(/[^a-z0-9']/g, '');
+  return str.toLowerCase().replace(/[^\p{L}\p{N}']/gu, '');
 }
 
 export function tokenizeWords(text: string): string[] {

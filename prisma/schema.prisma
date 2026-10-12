@@ -8,20 +8,20 @@ generator client {
 }
 
 model User {
-  id               String                 @id @default(cuid())
+  id               String    @id @default(cuid())
   name             String?
-  email            String                 @unique
+  email            String    @unique
   hashedPassword   String?
   image            String?
   emailVerified    DateTime?
-  role             String                 @default("USER")
-  streak           Int                    @default(1)
-  wordsLearned     Int                    @default(0)
-  dictationMinutes Int                    @default(0)
-  examsCompleted   Int                    @default(0)
-  lastActive       DateTime               @default(now())
-  createdAt        DateTime               @default(now())
-  updatedAt        DateTime               @default(now()) @updatedAt
+  role             String    @default("USER")
+  streak           Int       @default(1)
+  wordsLearned     Int       @default(0)
+  dictationMinutes Int       @default(0)
+  examsCompleted   Int       @default(0)
+  lastActive       DateTime  @default(now())
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @default(now()) @updatedAt
 
   vocabularySets   VocabularySet[]
   wordProgresses   UserWordProgress[]
@@ -45,30 +45,30 @@ model PasswordResetToken {
 }
 
 model VocabularySet {
-  id          String           @id @default(cuid())
+  id          String   @id @default(cuid())
   userId      String?
-  user        User?            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   name        String
   description String?
-  isPublic    Boolean          @default(true)
-  createdAt   DateTime         @default(now())
-  updatedAt   DateTime         @default(now()) @updatedAt
+  isPublic    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 
-  words       VocabularyWord[]
+  words VocabularyWord[]
 
   @@index([userId])
 }
 
 model VocabularyWord {
-  id         String             @id @default(cuid())
-  setId      String
-  set        VocabularySet      @relation(fields: [setId], references: [id], onDelete: Cascade)
-  word       String
-  meaning    String
-  phonetic   String?
-  example    String?
-  audioUrl   String?
-  createdAt  DateTime           @default(now())
+  id        String        @id @default(cuid())
+  setId     String
+  set       VocabularySet @relation(fields: [setId], references: [id], onDelete: Cascade)
+  word      String
+  meaning   String
+  phonetic  String?
+  example   String?
+  audioUrl  String?
+  createdAt DateTime      @default(now())
 
   progresses UserWordProgress[]
 
@@ -95,17 +95,17 @@ model UserWordProgress {
 }
 
 model ListeningLesson {
-  id          String                @id @default(cuid())
-  title       String
-  level       String                @default("Beginner") // Beginner | Intermediate | Advanced
-  topic       String
-  audioUrl    String
-  transcript  String
-  duration    Int                   @default(30) // Tính theo giây
-  createdAt   DateTime              @default(now())
-  updatedAt   DateTime              @default(now()) @updatedAt
+  id         String   @id @default(cuid())
+  title      String
+  level      String   @default("Beginner") // Beginner | Intermediate | Advanced
+  topic      String
+  audioUrl   String
+  transcript String
+  duration   Int      @default(30) // Tính theo giây
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 
-  results     UserDictationResult[]
+  results UserDictationResult[]
 
   @@index([topic])
   @@index([level])
@@ -119,7 +119,7 @@ model UserDictationResult {
   lesson       ListeningLesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
   userText     String
   accuracy     Float
-  errorDetails Json            // { tokens: [], correct: 0, typo: 0, missing: 0, extra: 0 }
+  errorDetails Json // { tokens: [], correct: 0, typo: 0, missing: 0, extra: 0 }
   timeSpent    Int             @default(0)
   createdAt    DateTime        @default(now())
 
@@ -128,29 +128,29 @@ model UserDictationResult {
 }
 
 model Exam {
-  id          String            @id @default(cuid())
+  id          String   @id @default(cuid())
   title       String
-  type        String            // TOEIC | IELTS | VSTEP
+  type        String // TOEIC | IELTS | VSTEP
   description String?
-  duration    Int               @default(30) // Thời gian làm bài tính theo phút
-  createdAt   DateTime          @default(now())
-  updatedAt   DateTime          @default(now()) @updatedAt
+  duration    Int      @default(30) // Thời gian làm bài tính theo phút
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
 
-  sections    ExamSection[]
-  attempts    UserExamAttempt[]
+  sections ExamSection[]
+  attempts UserExamAttempt[]
 
   @@index([type])
 }
 
 model ExamSection {
-  id        String         @id @default(cuid())
+  id        String   @id @default(cuid())
   examId    String
-  exam      Exam           @relation(fields: [examId], references: [id], onDelete: Cascade)
+  exam      Exam     @relation(fields: [examId], references: [id], onDelete: Cascade)
   name      String
-  order     Int            @default(1)
+  order     Int      @default(1)
   passage   String?
   audioUrl  String?
-  createdAt DateTime       @default(now())
+  createdAt DateTime @default(now())
 
   questions ExamQuestion[]
 
@@ -158,35 +158,35 @@ model ExamSection {
 }
 
 model ExamQuestion {
-  id            String           @id @default(cuid())
+  id            String      @id @default(cuid())
   sectionId     String
-  section       ExamSection      @relation(fields: [sectionId], references: [id], onDelete: Cascade)
-  order         Int              @default(1)
+  section       ExamSection @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  order         Int         @default(1)
   questionText  String
-  options       Json             // Danh sách lựa chọn: ["A", "B", "C", "D"]
-  correctAnswer Int              // Index lựa chọn đúng (0, 1, 2, 3)
+  options       Json // Danh sách lựa chọn: ["A", "B", "C", "D"]
+  correctAnswer Int // Index lựa chọn đúng (0, 1, 2, 3)
   explanation   String
-  createdAt     DateTime         @default(now())
+  createdAt     DateTime    @default(now())
 
-  answers       UserExamAnswer[]
+  answers UserExamAnswer[]
 
   @@index([sectionId])
 }
 
 model UserExamAttempt {
-  id             String           @id @default(cuid())
+  id             String    @id @default(cuid())
   userId         String
-  user           User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user           User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   examId         String
-  exam           Exam             @relation(fields: [examId], references: [id], onDelete: Cascade)
+  exam           Exam      @relation(fields: [examId], references: [id], onDelete: Cascade)
   score          Float
-  correctCount   Int              @default(0)
-  totalQuestions Int              @default(0)
-  startedAt      DateTime         @default(now())
+  correctCount   Int       @default(0)
+  totalQuestions Int       @default(0)
+  startedAt      DateTime  @default(now())
   submittedAt    DateTime?
-  createdAt      DateTime         @default(now())
+  createdAt      DateTime  @default(now())
 
-  answers        UserExamAnswer[]
+  answers UserExamAnswer[]
 
   @@index([userId])
   @@index([examId])
@@ -203,4 +203,163 @@ model UserExamAnswer {
   createdAt  DateTime        @default(now())
 
   @@index([attemptId])
+}
+
+// ===== P0: Clone nhaihsk.com cho MickyEnglish (CEFR thay HSK 3.0) =====
+
+model Book {
+  id          String   @id @default(cuid())
+  slug        String   @unique // vd: cefr-a1, oxford-3000
+  title       String
+  level       String // A1 | A2 | B1 | B2 | C1 | C2
+  description String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+
+  lessons Lesson[]
+
+  @@index([level])
+}
+
+model Lesson {
+  id        String   @id @default(cuid())
+  bookId    String
+  book      Book     @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  slug      String   @unique // lesson-1, lesson-2 (giữ tương thích slug_migration kiểu nhai)
+  title     String
+  order     Int      @default(1)
+  createdAt DateTime @default(now())
+
+  progresses LessonProgress[]
+
+  @@index([bookId])
+}
+
+model Pattern {
+  id        String   @id @default(cuid())
+  slug      String   @unique // pattern-1
+  title     String
+  formula   String
+  level     String   @default("A1")
+  examples  Json // [{en, vi, wrong?}]
+  createdAt DateTime @default(now())
+
+  @@index([level])
+}
+
+model LessonProgress {
+  id        String   @id @default(cuid())
+  userId    String
+  lessonId  String
+  lesson    Lesson   @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completed Boolean  @default(false)
+  xpEarned  Int      @default(0)
+  updatedAt DateTime @default(now()) @updatedAt
+
+  @@unique([userId, lessonId])
+  @@index([userId])
+}
+
+model IpaSound {
+  id       String  @id @default(cuid())
+  symbol   String  @unique // /i:/
+  kind     String // vowel | consonant | diphthong
+  example  String // ship
+  phonetic String // /ʃɪp/
+  audioUrl String?
+}
+
+model Root {
+  id       String @id @default(cuid())
+  root     String @unique // un-, -dict-
+  meaning  String // không, nói
+  kind     String // prefix | root | suffix
+  examples Json // ["unhappy", "undo"]
+}
+
+model ReadingDoc {
+  id        String   @id @default(cuid())
+  title     String
+  level     String   @default("A1")
+  contentEn String
+  contentVi String?
+  audioUrl  String?
+  questions Json? // quiz đọc hiểu kiểu đề thật
+  createdAt DateTime @default(now())
+
+  @@index([level])
+}
+
+model VideoSegment {
+  id       String  @id @default(cuid())
+  lessonId String // ListeningLesson.id (tái dùng, tránh migration nặng)
+  startSec Float
+  endSec   Float
+  textEn   String
+  textVi   String?
+  order    Int     @default(0)
+
+  @@index([lessonId])
+}
+
+model XpEvent {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Int
+  source    String // lesson | shadowing | exam | battle | streak
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([userId, createdAt])
+}
+
+model StudyDay {
+  id      String   @id @default(cuid())
+  userId  String
+  date    DateTime @db.Date
+  minutes Int      @default(0)
+  xp      Int      @default(0)
+
+  @@unique([userId, date])
+  @@index([userId])
+}
+
+model VocabFolder {
+  id        String   @id @default(cuid())
+  userId    String
+  name      String
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model BattleScore {
+  id       String @id @default(cuid())
+  userId   String
+  season   String // 2026-10
+  xp       Int    @default(0)
+  attempts Int    @default(0)
+
+  @@unique([userId, season])
+  @@index([season, xp])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String?
+  title     String
+  body      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId, isRead])
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  userId    String?
+  content   String
+  reply     String?
+  createdAt DateTime @default(now())
 }

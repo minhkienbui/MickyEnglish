@@ -13,6 +13,8 @@ import DictationWordInputs from '@/components/dictation/DictationWordInputs';
 import ShadowingPanel from '@/components/dictation/ShadowingPanel';
 import WordOrderGame from '@/components/dictation/WordOrderGame';
 import { mockDictationLessons } from '@/data/mockDictation';
+import { mockChineseLessons } from '@/data/mockChineseLessons';
+import { useLanguageStore } from '@/stores/useLanguageStore';
 import { DictationSentence } from '@/lib/types';
 import { getAccurateSentenceIndex } from '@/hooks/useVideoSync';
 import {
@@ -80,15 +82,22 @@ function DictationLessonContent() {
 
   const { videos: adminVideos } = useAdminVideoStore();
   const { incrementProgress, isAuthenticated } = useAuthStore();
+  const { targetLanguage } = useLanguageStore();
 
-  // Tìm kiếm bài học từ Zustand store (User + Admin) hoặc mock data
+  // Tìm kiếm bài học từ Zustand store (User + Admin) hoặc mock data (cả EN lẫn ZH)
   const storeLesson =
     lessons.find((l) => l.id === lessonId || l.youtubeId === lessonId) ||
     adminVideos.find((l) => l.id === lessonId || l.youtubeId === lessonId) ||
+    mockChineseLessons.find((l) => l.id === lessonId || l.youtubeId === lessonId) ||
     mockDictationLessons.find((l) => l.id === lessonId || l.youtubeId === lessonId) ||
-    mockDictationLessons[0] ||
+    (targetLanguage === 'zh' ? mockChineseLessons[0] : mockDictationLessons[0]) ||
     lessons[0] ||
     adminVideos[0];
+
+  const isChineseLesson =
+    targetLanguage === 'zh' ||
+    storeLesson?.tags?.some((t) => t.includes('Tiếng Trung') || t.includes('HSK')) ||
+    /[一-龥]/.test(storeLesson?.title || '');
 
   const [lessonSentences, setLessonSentences] = useState<DictationSentence[]>(
     storeLesson?.sentences || []
@@ -366,7 +375,8 @@ function DictationLessonContent() {
         if ('speechSynthesis' in window) {
           window.speechSynthesis.cancel();
           const utterance = new SpeechSynthesisUtterance(s.text);
-          utterance.lang = 'en-US';
+          const isZh = /[一-龥]/.test(s.text) || isChineseLesson;
+          utterance.lang = isZh ? 'zh-CN' : 'en-US';
           utterance.rate = playbackSpeed;
           utterance.onend = () => {
             if (activeMode !== 'transcript' && !(activeMode === 'shadowing' && shadowingSubMode === 'auto-flow')) {
@@ -429,7 +439,8 @@ function DictationLessonContent() {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
+      const isZh = /[一-龥]/.test(text) || isChineseLesson;
+      utterance.lang = isZh ? 'zh-CN' : 'en-US';
       utterance.rate = playbackSpeed;
       window.speechSynthesis.speak(utterance);
     }
@@ -1146,6 +1157,7 @@ function DictationLessonContent() {
               playbackSpeed={playbackSpeed}
               subMode={shadowingSubMode}
               onSubModeChange={setShadowingSubMode}
+              speechLang={isChineseLesson ? 'zh-CN' : 'en-US'}
             />
           )}
 

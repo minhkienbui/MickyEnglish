@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useThemeStore } from '@/stores/useThemeStore';
+import { useLanguageStore } from '@/stores/useLanguageStore';
 import MickyMascot from '@/components/common/MickyMascot';
 import PremiumModal from '@/components/common/PremiumModal';
 import {
@@ -27,23 +28,44 @@ import {
   Video,
   LogOut,
   Trophy,
+  PenTool,
+  BookOpen,
+  Languages,
 } from 'lucide-react';
 
 export default function Sidebar() {
   const pathname = usePathname();
   const { user, isAuthenticated, logout } = useAuthStore();
   const { theme, isSidebarCollapsed, toggleTheme, toggleSidebar } = useThemeStore();
+  const { targetLanguage, setTargetLanguage } = useLanguageStore();
   const [showPremiumModal, setShowPremiumModal] = useState(false);
 
-  const mainNavItems = [
+  const isChinese = targetLanguage === 'zh';
+
+  const englishNavItems = [
     { name: 'Trang chủ', href: '/', icon: Home, badge: null },
     { name: 'Dictation & Shadowing', href: '/dictation-shadowing', icon: Headphones, badge: null },
-    { name: 'Từ vựng', href: '/vocabulary', icon: BookCheck, badge: null },
+    { name: 'Từ vựng (Oxford/TOEIC)', href: '/vocabulary', icon: BookCheck, badge: null },
     { name: 'Luyện tập', href: '/practice', icon: Dumbbell, badge: null },
-    { name: 'Trò chơi', href: '/tro-choi', icon: Gamepad2, badge: 'NEW' },
-    { name: 'Luyện thi', href: '/kho-de', icon: GraduationCap, badge: null },
+    { name: 'Trò chơi (Word Order)', href: '/tro-choi', icon: Gamepad2, badge: 'NEW' },
+    { name: 'Luyện thi (TOEIC/IELTS)', href: '/kho-de', icon: GraduationCap, badge: null },
     { name: 'Bảng xếp hạng', href: '/bang-xep-hang', icon: Trophy, badge: 'HOT' },
   ];
+
+  const chineseNavItems = [
+    { name: 'Trang chủ HSK', href: '/', icon: Home, badge: null },
+    { name: 'Shadowing Tiếng Trung', href: '/dictation-shadowing', icon: Headphones, badge: null },
+    { name: 'Từ vựng HSK 1 - 6', href: '/vocabulary', icon: BookCheck, badge: null },
+    { name: 'Luyện tập HSK', href: '/practice', icon: Dumbbell, badge: null },
+    { name: 'Tập viết chữ Hán', href: '/practice/hanzi-writer', icon: PenTool, badge: 'MỚI' },
+    { name: 'Pinyin & 214 Bộ Thủ', href: '/practice/pinyin-radicals', icon: BookOpen, badge: null },
+    { name: 'Bài khoá HSK Reading', href: '/practice/chinese-reading', icon: Languages, badge: null },
+    { name: 'Trò chơi chữ Hán', href: '/tro-choi', icon: Gamepad2, badge: 'HOT' },
+    { name: 'Thi thử HSK & HSKK', href: '/kho-de', icon: GraduationCap, badge: null },
+    { name: 'Bảng xếp hạng HSK', href: '/bang-xep-hang', icon: Trophy, badge: null },
+  ];
+
+  const mainNavItems = isChinese ? chineseNavItems : englishNavItems;
 
   const isAdmin = Boolean(isAuthenticated && user?.role === 'admin');
   const isLight = theme === 'light';
@@ -62,13 +84,59 @@ export default function Sidebar() {
           <Link href="/" className="flex items-center gap-3 group px-2 py-1">
             <MickyMascot size={38} />
             {!isSidebarCollapsed && (
-              <span className={`text-xl font-black tracking-tight group-hover:text-emerald-500 transition-colors ${
+              <span className={`text-xl font-black tracking-tight transition-colors ${
                 isLight ? 'text-slate-900' : 'text-white'
               }`}>
-                Micky<span className="text-emerald-500">English</span>
+                Micky<span className={isChinese ? 'text-rose-500' : 'text-emerald-500'}>{isChinese ? 'Chinese' : 'English'}</span>
               </span>
             )}
           </Link>
+
+          {/* Quick Dual Language Switcher in Sidebar */}
+          {!isSidebarCollapsed ? (
+            <div className={`p-1 rounded-2xl border flex items-center justify-between gap-1 transition-colors ${
+              isLight ? 'bg-slate-100 border-slate-300' : 'bg-[#121c2b] border-[#1e2d42]'
+            }`}>
+              <button
+                type="button"
+                onClick={() => setTargetLanguage('en')}
+                className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                  !isChinese
+                    ? 'bg-emerald-600 text-white shadow-xs'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <span>🇬🇧</span>
+                <span>Tiếng Anh</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setTargetLanguage('zh')}
+                className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                  isChinese
+                    ? 'bg-rose-600 text-white shadow-xs'
+                    : 'text-slate-400 hover:text-slate-200'
+                }`}
+              >
+                <span>🇨🇳</span>
+                <span>Tiếng Trung</span>
+              </button>
+            </div>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setTargetLanguage(isChinese ? 'en' : 'zh')}
+              className={`w-full py-2 rounded-xl text-base flex items-center justify-center transition-all cursor-pointer border ${
+                isChinese
+                  ? 'bg-rose-950/60 border-rose-500 text-white'
+                  : 'bg-emerald-950/60 border-emerald-500 text-white'
+              }`}
+              title={isChinese ? 'Đang chọn Tiếng Trung (Bấm để đổi sang Tiếng Anh)' : 'Đang chọn Tiếng Anh (Bấm để đổi sang Tiếng Trung)'}
+            >
+              {isChinese ? '🇨🇳' : '🇬🇧'}
+            </button>
+          )}
 
           {/* User Card Info Box */}
           <div className={`rounded-2xl p-3 space-y-2.5 transition-colors ${

@@ -28,7 +28,11 @@ export default function DictationWordInputs({
   const isLight = theme === 'light';
 
   // Tokenize target sentence words (preserving punctuation formatting)
-  const targetWords = targetSentence.trim().split(/\s+/).filter(Boolean);
+  const isChinese = /[一-龥]/.test(targetSentence);
+  const targetWords =
+    isChinese && !targetSentence.includes(' ')
+      ? Array.from(targetSentence.replace(/[，。！？、；：]/g, ' ')).filter((c) => c.trim().length > 0)
+      : targetSentence.trim().split(/\s+/).filter(Boolean);
 
   // Difficulty Mode: 'normal' (Thường) | 'easy' (Dễ - hints 1st letter) | 'hard' (Khó - no hints)
   const [difficulty, setDifficulty] = useState<'normal' | 'easy' | 'hard'>('normal');
@@ -44,7 +48,11 @@ export default function DictationWordInputs({
 
   // Initialize or reset word slots when targetSentence or difficulty changes
   useEffect(() => {
-    const words = targetSentence.trim().split(/\s+/).filter(Boolean);
+    const isZh = /[一-龥]/.test(targetSentence);
+    const words =
+      isZh && !targetSentence.includes(' ')
+        ? Array.from(targetSentence.replace(/[，。！？、；：]/g, ' ')).filter((c) => c.trim().length > 0)
+        : targetSentence.trim().split(/\s+/).filter(Boolean);
     if (difficulty === 'easy') {
       setUserWords(words.map((w, i) => (i % 3 === 0 ? w : '')));
       setRevealedHints(words.map((_, i) => i % 3 === 0));

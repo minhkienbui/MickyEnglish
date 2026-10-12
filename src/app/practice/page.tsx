@@ -25,16 +25,19 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useThemeStore } from '@/stores/useThemeStore';
+import { useLanguageStore } from '@/stores/useLanguageStore';
 
 export default function PracticeHubPage() {
   const { user, isAuthenticated, incrementProgress } = useAuthStore();
   const { theme } = useThemeStore();
+  const { targetLanguage } = useLanguageStore();
   const isLight = theme === 'light';
+  const isChinese = targetLanguage === 'zh';
 
   const [activeModalMode, setActiveModalMode] = useState<string | null>(null);
   const [showStatsModal, setShowStatsModal] = useState(false);
 
-  const modes = [
+  const englishModes = [
     {
       id: 'see-write',
       title: 'Nhìn và viết',
@@ -80,6 +83,56 @@ export default function PracticeHubPage() {
       color: 'from-emerald-500/20 to-green-500/10 border-emerald-500/30',
     },
   ];
+
+  const chineseModes = [
+    {
+      id: 'hanzi-writer',
+      title: 'Tập viết chữ Hán (Hanzi Grid)',
+      description: 'Tự động tạo vở luyện viết ô chữ Mễ (米) / ô chữ Điền (田) có thứ tự nét, xuất file in PDF A4.',
+      icon: '✍️',
+      badge: 'ĐẶC SẮC',
+      href: '/practice/hanzi-writer',
+      color: 'from-rose-500/25 to-red-500/10 border-rose-500/40',
+    },
+    {
+      id: 'pinyin-radicals',
+      title: 'Bảng Pinyin & 214 Bộ Thủ',
+      description: 'Bảng ngữ âm phát âm chuẩn Bắc Kinh 4 thanh điệu, tra cứu 214 bộ thủ và 7 quy tắc thuần bút.',
+      icon: '🀄',
+      badge: 'CỐT LÕI',
+      href: '/practice/pinyin-radicals',
+      color: 'from-amber-500/25 to-yellow-500/10 border-amber-500/40',
+    },
+    {
+      id: 'chinese-reading',
+      title: 'Bài khoá HSK Tra Từ Inline',
+      description: 'Đọc bài khoá HSK 1-5, nhấp 1-chạm vào bất kỳ chữ Hán nào để xem Pinyin, âm Hán Việt và nghĩa.',
+      icon: '📖',
+      badge: 'HSK 3.0',
+      href: '/practice/chinese-reading',
+      color: 'from-purple-500/25 to-indigo-500/10 border-purple-500/40',
+    },
+    {
+      id: 'see-write',
+      title: 'Nhìn và viết chữ Hán',
+      description: 'Quan sát hình ảnh đời sống, suy nghĩ và gõ Pinyin/chữ Hán để tăng phản xạ dịch thầm.',
+      icon: '🐱',
+      badge: null,
+      href: '/practice/see-write',
+      color: 'from-cyan-500/25 to-teal-500/10 border-cyan-500/40',
+    },
+    {
+      id: 'bilingual-news',
+      title: 'Đọc báo song ngữ Trung - Việt',
+      description: 'Cập nhật tin tức, văn hóa Trung Hoa song ngữ kèm tra từ và audio phát âm chuẩn.',
+      icon: '💬',
+      badge: 'NEW',
+      href: '/practice/bilingual-news',
+      color: 'from-emerald-500/25 to-green-500/10 border-emerald-500/40',
+    },
+  ];
+
+  const modes = isChinese ? chineseModes : englishModes;
 
   return (
     <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-7 font-sans transition-colors ${

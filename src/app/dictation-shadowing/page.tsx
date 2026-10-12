@@ -19,6 +19,8 @@ import {
 import { useDictationStore } from '@/stores/useDictationStore';
 import { useAdminVideoStore } from '@/stores/useAdminVideoStore';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { useLanguageStore } from '@/stores/useLanguageStore';
+import { mockChineseLessons } from '@/data/mockChineseLessons';
 import AddVideoModal from '@/components/dictation/AddVideoModal';
 import PracticeModeModal from '@/components/dictation/PracticeModeModal';
 import { DictationLesson } from '@/lib/types';
@@ -28,6 +30,8 @@ export default function DictationListPage() {
   const { isAuthenticated } = useAuthStore();
   const { lessons: dictationLessons } = useDictationStore();
   const { videos: adminVideos } = useAdminVideoStore();
+  const { targetLanguage } = useLanguageStore();
+  const isChinese = targetLanguage === 'zh';
 
   const [activeTag, setActiveTag] = useState('Tất cả');
   const [selectedLevel, setSelectedLevel] = useState('Tất cả cấp độ');
@@ -37,94 +41,169 @@ export default function DictationListPage() {
   const [showCommunityModal, setShowCommunityModal] = useState(false);
   const [selectedLessonForPractice, setSelectedLessonForPractice] = useState<DictationLesson | null>(null);
 
-  const tags = [
-    'Tất cả',
-    '# Video tải lên',
-    '# Youtube video',
-    '# TED',
-    '# BBC learning english',
-    '# Animals and wildlife',
-    '# Short Movie',
-    '# Fairy Tales',
-    '# IELTS Listening',
-  ];
+  const tags = useMemo(() => {
+    return isChinese
+      ? [
+          'Tất cả',
+          '# Video tải lên',
+          '# Tiếng Trung',
+          '# HSK 1',
+          '# HSK 2',
+          '# HSK 3',
+          '# Khẩu ngữ',
+          '# Ẩm thực',
+          '# Phỏng vấn',
+          '# Phim ảnh',
+        ]
+      : [
+          'Tất cả',
+          '# Video tải lên',
+          '# Youtube video',
+          '# TED',
+          '# BBC learning english',
+          '# Animals and wildlife',
+          '# Short Movie',
+          '# Fairy Tales',
+          '# IELTS Listening',
+        ];
+  }, [isChinese]);
 
-  const channels = [
-    {
-      id: 'ted-ed',
-      name: 'TED-Ed',
-      count: '1.240',
-      bgColor: 'bg-[#e62b1e]',
-      textColor: 'text-white font-black text-sm tracking-tight',
-      initial: 'TED-Ed',
-    },
-    {
-      id: 'mystery-science',
-      name: 'Mystery Scien...',
-      count: '840',
-      bgColor: 'bg-[#6d28d9]',
-      textColor: 'text-white font-black text-2xl',
-      initial: 'm',
-    },
-    {
-      id: 'science-channel',
-      name: 'Science Chan...',
-      count: '620',
-      bgColor: 'bg-[#0284c7]',
-      textColor: 'text-white font-black text-xs tracking-wider',
-      initial: 'SCI',
-    },
-    {
-      id: 'bbc-earth',
-      name: 'BBC Earth',
-      count: '915',
-      bgColor: 'bg-[#047857]',
-      textColor: 'text-white font-bold text-xs',
-      initial: 'BBC EARTH',
-    },
-    {
-      id: 'kurzgesagt',
-      name: 'Kurzgesagt – I...',
-      count: '430',
-      bgColor: 'bg-[#1e3a8a]',
-      textColor: 'text-white font-bold text-xs',
-      initial: '🌍',
-    },
-    {
-      id: 'deep-look',
-      name: 'Deep Look',
-      count: '320',
-      bgColor: 'bg-[#c2410c]',
-      textColor: 'text-white font-bold text-xs',
-      initial: 'Deep Look',
-    },
-    {
-      id: 'bbc-learning',
-      name: 'BBC Learning ...',
-      count: '1.180',
-      bgColor: 'bg-[#0f766e]',
-      textColor: 'text-white font-bold text-[10px] text-center uppercase tracking-tight',
-      initial: 'BBC LEARNING ENGLISH',
-    },
-  ];
+  const channels = useMemo(() => {
+    if (isChinese) {
+      return [
+        {
+          id: 'cctv-chinese',
+          name: 'CCTV 4',
+          count: '860',
+          bgColor: 'bg-[#dc2626]',
+          textColor: 'text-white font-black text-sm tracking-tight',
+          initial: 'CCTV',
+        },
+        {
+          id: 'hsk-speaking',
+          name: 'Khẩu Ngữ HSK',
+          count: '640',
+          bgColor: 'bg-[#ea580c]',
+          textColor: 'text-white font-black text-xs tracking-wider',
+          initial: 'HSK',
+        },
+        {
+          id: 'beijing-daily',
+          name: 'Đời Sống Bắc Kinh',
+          count: '420',
+          bgColor: 'bg-[#059669]',
+          textColor: 'text-white font-black text-xs',
+          initial: '北京',
+        },
+        {
+          id: 'chinese-cartoon',
+          name: 'Hoạt Hình Trung',
+          count: '315',
+          bgColor: 'bg-[#2563eb]',
+          textColor: 'text-white font-bold text-xs',
+          initial: '动画',
+        },
+        {
+          id: 'food-china',
+          name: 'Ẩm Thực Trung Hoa',
+          count: '280',
+          bgColor: 'bg-[#d97706]',
+          textColor: 'text-white font-bold text-xs',
+          initial: '美食',
+        },
+      ];
+    }
+    return [
+      {
+        id: 'ted-ed',
+        name: 'TED-Ed',
+        count: '1.240',
+        bgColor: 'bg-[#e62b1e]',
+        textColor: 'text-white font-black text-sm tracking-tight',
+        initial: 'TED-Ed',
+      },
+      {
+        id: 'mystery-science',
+        name: 'Mystery Scien...',
+        count: '840',
+        bgColor: 'bg-[#6d28d9]',
+        textColor: 'text-white font-black text-2xl',
+        initial: 'm',
+      },
+      {
+        id: 'science-channel',
+        name: 'Science Chan...',
+        count: '620',
+        bgColor: 'bg-[#0284c7]',
+        textColor: 'text-white font-black text-xs tracking-wider',
+        initial: 'SCI',
+      },
+      {
+        id: 'bbc-earth',
+        name: 'BBC Earth',
+        count: '915',
+        bgColor: 'bg-[#047857]',
+        textColor: 'text-white font-bold text-xs',
+        initial: 'BBC EARTH',
+      },
+      {
+        id: 'kurzgesagt',
+        name: 'Kurzgesagt – I...',
+        count: '430',
+        bgColor: 'bg-[#1e3a8a]',
+        textColor: 'text-white font-bold text-xs',
+        initial: '🌍',
+      },
+      {
+        id: 'deep-look',
+        name: 'Deep Look',
+        count: '320',
+        bgColor: 'bg-[#c2410c]',
+        textColor: 'text-white font-bold text-xs',
+        initial: 'Deep Look',
+      },
+      {
+        id: 'bbc-learning',
+        name: 'BBC Learning ...',
+        count: '1.180',
+        bgColor: 'bg-[#0f766e]',
+        textColor: 'text-white font-bold text-[10px] text-center uppercase tracking-tight',
+        initial: 'BBC LEARNING ENGLISH',
+      },
+    ];
+  }, [isChinese]);
 
-  // Hợp nhất bài học từ admin và user
+  // Hợp nhất bài học từ admin và user theo ngôn ngữ hiện tại
   const allLessons = useMemo(() => {
     const map = new Map<string, DictationLesson>();
-    adminVideos.forEach((v) => {
-      if (v.status !== 'hidden' && v.status !== 'deleted') {
-        map.set(v.id, v);
-      }
-    });
-    dictationLessons.forEach((l) => {
-      if (l.status !== 'hidden' && l.status !== 'deleted') {
-        map.set(l.id, l);
-      }
-    });
+    if (isChinese) {
+      mockChineseLessons.forEach((l) => map.set(l.id, l));
+      adminVideos.forEach((v) => {
+        if (v.status !== 'hidden' && v.status !== 'deleted' && (v.tags?.includes('# Tiếng Trung') || /[一-龥]/.test(v.title))) {
+          map.set(v.id, v);
+        }
+      });
+      dictationLessons.forEach((l) => {
+        if (l.status !== 'hidden' && l.status !== 'deleted' && (l.tags?.includes('# Tiếng Trung') || /[一-龥]/.test(l.title))) {
+          map.set(l.id, l);
+        }
+      });
+    } else {
+      adminVideos.forEach((v) => {
+        if (v.status !== 'hidden' && v.status !== 'deleted' && !v.tags?.includes('# Tiếng Trung') && !/[一-龥]/.test(v.title)) {
+          map.set(v.id, v);
+        }
+      });
+      dictationLessons.forEach((l) => {
+        if (l.status !== 'hidden' && l.status !== 'deleted' && !l.tags?.includes('# Tiếng Trung') && !/[一-龥]/.test(l.title)) {
+          map.set(l.id, l);
+        }
+      });
+    }
     return Array.from(map.values()).sort(
       (a, b) => (Number(b.createdAt) || 0) - (Number(a.createdAt) || 0)
     );
-  }, [dictationLessons, adminVideos]);
+  }, [dictationLessons, adminVideos, isChinese]);
 
   // Bộ lọc tổng hợp
   const filteredLessons = useMemo(() => {
@@ -186,6 +265,18 @@ export default function DictationListPage() {
     );
   }, [filteredLessons]);
 
+  const chineseSpeakingSection = useMemo(() => {
+    return filteredLessons.filter(
+      (l) => l.tags?.some((t) => t.includes('Khẩu ngữ') || t.includes('HSK 1') || t.includes('HSK 2')) || l.topic.toLowerCase().includes('khẩu ngữ')
+    );
+  }, [filteredLessons]);
+
+  const chineseCultureSection = useMemo(() => {
+    return filteredLessons.filter(
+      (l) => l.tags?.some((t) => t.includes('Ẩm thực') || t.includes('Phim') || t.includes('HSK 3')) || l.topic.toLowerCase().includes('ẩm thực')
+    );
+  }, [filteredLessons]);
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 font-sans">
       {/* Top Search & Filter Bar chuẩn ảnh Bibung */}
@@ -211,12 +302,25 @@ export default function DictationListPage() {
               className="w-full appearance-none bg-[#121c2b] border border-[#1e2d42] hover:border-slate-600 rounded-full pl-9 pr-8 py-2.5 text-xs text-slate-200 font-bold outline-none cursor-pointer"
             >
               <option value="Tất cả cấp độ">Tất cả cấp độ</option>
-              <option value="A1">A1 - Căn bản</option>
-              <option value="A2">A2 - Sơ cấp</option>
-              <option value="B1">B1 - Trung cấp</option>
-              <option value="B2">B2 - Trung cấp cao</option>
-              <option value="C1">C1 - Nâng cao</option>
-              <option value="C2">C2 - Thành thạo</option>
+              {isChinese ? (
+                <>
+                  <option value="HSK 1">HSK 1 - Căn bản</option>
+                  <option value="HSK 2">HSK 2 - Sơ cấp</option>
+                  <option value="HSK 3">HSK 3 - Trung cấp</option>
+                  <option value="HSK 4">HSK 4 - Trung cấp cao</option>
+                  <option value="HSK 5">HSK 5 - Nâng cao</option>
+                  <option value="HSK 6">HSK 6 - Thành thạo</option>
+                </>
+              ) : (
+                <>
+                  <option value="A1">A1 - Căn bản</option>
+                  <option value="A2">A2 - Sơ cấp</option>
+                  <option value="B1">B1 - Trung cấp</option>
+                  <option value="B2">B2 - Trung cấp cao</option>
+                  <option value="C1">C1 - Nâng cao</option>
+                  <option value="C2">C2 - Thành thạo</option>
+                </>
+              )}
             </select>
             <Filter className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
             <div className="absolute right-3.5 top-3.5 pointer-events-none text-slate-400 text-[10px]">▼</div>
@@ -343,89 +447,151 @@ export default function DictationListPage() {
         </section>
       )}
 
-      {/* SECTION 2: Youtube video */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <h2 className="text-base sm:text-lg font-black text-white">Youtube video</h2>
-            <span className="px-2 py-0.5 bg-[#131d2b] border border-[#1e2d42] text-slate-400 text-xs font-bold rounded-full">
-              {youtubeSection.length || 278}
-            </span>
-          </div>
-          <button
-            onClick={() => setActiveTag('# Youtube video')}
-            className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
-          >
-            Xem tất cả
-          </button>
-        </div>
+      {isChinese ? (
+        <>
+          {/* SECTION CHINESE 1: Khẩu ngữ giao tiếp HSK */}
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h2 className="text-base sm:text-lg font-black text-white">Khẩu ngữ giao tiếp HSK 1 - 2</h2>
+                <span className="px-2 py-0.5 bg-rose-950/60 border border-rose-500/30 text-rose-300 text-xs font-bold rounded-full">
+                  {chineseSpeakingSection.length || filteredLessons.length} bài
+                </span>
+              </div>
+              <button
+                onClick={() => setActiveTag('# Khẩu ngữ')}
+                className="text-xs font-bold text-rose-400 hover:text-rose-300 transition-colors cursor-pointer"
+              >
+                Xem tất cả
+              </button>
+            </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {youtubeSection.slice(0, 4).map((lesson) => (
-            <VideoCard
-              key={lesson.id}
-              lesson={lesson}
-              onSelect={() => setSelectedLessonForPractice(lesson)}
-            />
-          ))}
-        </div>
-      </section>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {(chineseSpeakingSection.length > 0 ? chineseSpeakingSection : filteredLessons).slice(0, 4).map((lesson) => (
+                <VideoCard
+                  key={lesson.id}
+                  lesson={lesson}
+                  onSelect={() => setSelectedLessonForPractice(lesson)}
+                />
+              ))}
+            </div>
+          </section>
 
-      {/* SECTION 3: TED */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <h2 className="text-base sm:text-lg font-black text-white">TED</h2>
-            <span className="px-2 py-0.5 bg-[#131d2b] border border-[#1e2d42] text-slate-400 text-xs font-bold rounded-full">
-              {tedSection.length || 247}
-            </span>
-          </div>
-          <button
-            onClick={() => setActiveTag('# TED')}
-            className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
-          >
-            Xem tất cả
-          </button>
-        </div>
+          {/* SECTION CHINESE 2: Ẩm thực & Đời sống HSK */}
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h2 className="text-base sm:text-lg font-black text-white">Ẩm thực & Đời sống HSK 2 - 3</h2>
+                <span className="px-2 py-0.5 bg-rose-950/60 border border-rose-500/30 text-rose-300 text-xs font-bold rounded-full">
+                  {chineseCultureSection.length || filteredLessons.length} bài
+                </span>
+              </div>
+              <button
+                onClick={() => setActiveTag('# Ẩm thực')}
+                className="text-xs font-bold text-rose-400 hover:text-rose-300 transition-colors cursor-pointer"
+              >
+                Xem tất cả
+              </button>
+            </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {tedSection.slice(0, 4).map((lesson) => (
-            <VideoCard
-              key={lesson.id}
-              lesson={lesson}
-              onSelect={() => setSelectedLessonForPractice(lesson)}
-            />
-          ))}
-        </div>
-      </section>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {(chineseCultureSection.length > 0 ? chineseCultureSection : filteredLessons.slice().reverse()).slice(0, 4).map((lesson) => (
+                <VideoCard
+                  key={lesson.id}
+                  lesson={lesson}
+                  onSelect={() => setSelectedLessonForPractice(lesson)}
+                />
+              ))}
+            </div>
+          </section>
+        </>
+      ) : (
+        <>
+          {/* SECTION 2: Youtube video */}
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h2 className="text-base sm:text-lg font-black text-white">Youtube video</h2>
+                <span className="px-2 py-0.5 bg-[#131d2b] border border-[#1e2d42] text-slate-400 text-xs font-bold rounded-full">
+                  {youtubeSection.length || 278}
+                </span>
+              </div>
+              <button
+                onClick={() => setActiveTag('# Youtube video')}
+                className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
+              >
+                Xem tất cả
+              </button>
+            </div>
 
-      {/* SECTION 4: BBC learning english */}
-      <section className="space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <h2 className="text-base sm:text-lg font-black text-white">BBC learning english</h2>
-            <span className="px-2 py-0.5 bg-[#131d2b] border border-[#1e2d42] text-slate-400 text-xs font-bold rounded-full">
-              {bbcSection.length || 173}
-            </span>
-          </div>
-          <button
-            onClick={() => setActiveTag('# BBC learning english')}
-            className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
-          >
-            Xem tất cả
-          </button>
-        </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {youtubeSection.slice(0, 4).map((lesson) => (
+                <VideoCard
+                  key={lesson.id}
+                  lesson={lesson}
+                  onSelect={() => setSelectedLessonForPractice(lesson)}
+                />
+              ))}
+            </div>
+          </section>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {bbcSection.slice(0, 4).map((lesson) => (
-            <VideoCard
-              key={lesson.id}
-              lesson={lesson}
-              onSelect={() => setSelectedLessonForPractice(lesson)}
-            />
-          ))}
-        </div>
-      </section>
+          {/* SECTION 3: TED */}
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h2 className="text-base sm:text-lg font-black text-white">TED</h2>
+                <span className="px-2 py-0.5 bg-[#131d2b] border border-[#1e2d42] text-slate-400 text-xs font-bold rounded-full">
+                  {tedSection.length || 247}
+                </span>
+              </div>
+              <button
+                onClick={() => setActiveTag('# TED')}
+                className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
+              >
+                Xem tất cả
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {tedSection.slice(0, 4).map((lesson) => (
+                <VideoCard
+                  key={lesson.id}
+                  lesson={lesson}
+                  onSelect={() => setSelectedLessonForPractice(lesson)}
+                />
+              ))}
+            </div>
+          </section>
+
+          {/* SECTION 4: BBC learning english */}
+          <section className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <h2 className="text-base sm:text-lg font-black text-white">BBC learning english</h2>
+                <span className="px-2 py-0.5 bg-[#131d2b] border border-[#1e2d42] text-slate-400 text-xs font-bold rounded-full">
+                  {bbcSection.length || 173}
+                </span>
+              </div>
+              <button
+                onClick={() => setActiveTag('# BBC learning english')}
+                className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
+              >
+                Xem tất cả
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+              {bbcSection.slice(0, 4).map((lesson) => (
+                <VideoCard
+                  key={lesson.id}
+                  lesson={lesson}
+                  onSelect={() => setSelectedLessonForPractice(lesson)}
+                />
+              ))}
+            </div>
+          </section>
+        </>
+      )}
 
       {/* MODAL CHỌN CHẾ ĐỘ HỌC */}
       <PracticeModeModal

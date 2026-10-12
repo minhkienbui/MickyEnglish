@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import MickyMascot from '@/components/common/MickyMascot';
 import { useThemeStore } from '@/stores/useThemeStore';
+import { useLanguageStore } from '@/stores/useLanguageStore';
 import {
   Sparkles,
   ArrowRight,
@@ -32,23 +33,39 @@ import {
 } from 'lucide-react';
 import { mockPresetWords } from '@/data/mockVocab';
 import { mockDictationLessons } from '@/data/mockDictation';
+import { mockChineseVocabulary } from '@/data/mockChineseVocab';
+import { mockChineseLessons } from '@/data/mockChineseLessons';
 
 export default function HomePage() {
   const { theme } = useThemeStore();
   const isLight = theme === 'light';
+  const { targetLanguage } = useLanguageStore();
+  const isChinese = targetLanguage === 'zh';
 
   // State cho bộ tra từ điển nhanh
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResult, setSearchResult] = useState<typeof mockPresetWords[0] | null>(null);
+  const [searchResultZh, setSearchResultZh] = useState<typeof mockChineseVocabulary[0] | null>(null);
 
   // State cho Live Interactive Playground
   const [activePlaygroundTab, setActivePlaygroundTab] = useState<'word-order' | 'dictation' | 'bilingual' | 'flashcard'>('word-order');
 
   // State cho mini Word Order Game thử nghiệm trên trang chủ
-  const sampleWords = ['I', 'love', 'learning', 'English', 'every', 'day'];
+  const sampleWordsEn = ['I', 'love', 'learning', 'English', 'every', 'day'];
+  const sampleWordsZh = ['我', '在', 'Micky', '学习', '汉语', '！'];
+  const sampleWords = isChinese ? sampleWordsZh : sampleWordsEn;
   const [selectedWordIndices, setSelectedWordIndices] = useState<number[]>([]);
   const [shakeWordIndex, setShakeWordIndex] = useState<number | null>(null);
   const [isGameCompleted, setIsGameCompleted] = useState(false);
+
+  // Reset mini game khi chuyển ngôn ngữ
+  useEffect(() => {
+    setSelectedWordIndices([]);
+    setIsGameCompleted(false);
+    setSearchQuery('');
+    setSearchResult(null);
+    setSearchResultZh(null);
+  }, [targetLanguage]);
 
   // State cho Flashcard Demo
   const [isFlipped, setIsFlipped] = useState(false);
@@ -56,19 +73,32 @@ export default function HomePage() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
-    const found = mockPresetWords.find(
-      (w) =>
-        w.word.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
-        w.meaning.toLowerCase().includes(searchQuery.trim().toLowerCase())
-    );
-    setSearchResult(found || mockPresetWords[0]);
+    const q = searchQuery.trim().toLowerCase();
+    if (isChinese) {
+      const found = mockChineseVocabulary.find(
+        (w) =>
+          w.hanzi.includes(q) ||
+          w.pinyin.toLowerCase().includes(q) ||
+          w.meaning.toLowerCase().includes(q) ||
+          w.sinoVietnamese.toLowerCase().includes(q)
+      );
+      setSearchResultZh(found || mockChineseVocabulary[0]);
+    } else {
+      const found = mockPresetWords.find(
+        (w) =>
+          w.word.toLowerCase().includes(q) ||
+          w.meaning.toLowerCase().includes(q)
+      );
+      setSearchResult(found || mockPresetWords[0]);
+    }
   };
 
-  const speakAudio = (text: string) => {
+  const speakAudio = (text: string, customLang?: string) => {
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
       const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'en-US';
+      const isZh = customLang === 'zh-CN' || isChinese || /[一-龥]/.test(text);
+      utterance.lang = isZh ? 'zh-CN' : 'en-US';
       window.speechSynthesis.speak(utterance);
     }
   };
@@ -87,7 +117,10 @@ export default function HomePage() {
       setSelectedWordIndices(newIndices);
       if (newIndices.length === sampleWords.length) {
         setIsGameCompleted(true);
-        setTimeout(() => speakAudio('I love learning English every day!'), 400);
+        const fullMsg = isChinese
+          ? '我 在 Micky 学习 汉语 ！'
+          : 'I love learning English every day!';
+        setTimeout(() => speakAudio(fullMsg), 400);
       }
     } else {
       // Bấm sai -> rung lắc
@@ -122,30 +155,52 @@ export default function HomePage() {
           <div className="lg:col-span-8 space-y-6 text-left">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 text-xs font-black tracking-wider uppercase shadow-xs">
               <Sparkles className="w-4 h-4 text-emerald-500 animate-pulse" />
-              <span>Nền Tảng Tự Học Tiếng Anh Đa Kỹ Năng #1</span>
+              <span>
+                {isChinese
+                  ? '🇨🇳 Hệ Sinh Thái Luyện Thi HSK 3.0 & HSKK Tiêu Chuẩn Quốc Tế'
+                  : '🇬🇧 Nền Tảng Tự Học Tiếng Anh Đa Kỹ Năng #1'}
+              </span>
             </div>
 
             <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black leading-tight tracking-tight">
               Chinh phục{' '}
-              <span className="inline-block bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-400 bg-clip-text text-transparent underline decoration-emerald-500/40">
-                Tiếng Anh
-              </span>{' '}
-              tự nhiên qua phản xạ & trò chơi
+              {isChinese ? (
+                <span className="inline-block bg-gradient-to-r from-rose-500 via-amber-400 to-rose-400 bg-clip-text text-transparent underline decoration-rose-500/40">
+                  Tiếng Trung HSK
+                </span>
+              ) : (
+                <span className="inline-block bg-gradient-to-r from-emerald-500 via-teal-400 to-emerald-400 bg-clip-text text-transparent underline decoration-emerald-500/40">
+                  Tiếng Anh
+                </span>
+              )}{' '}
+              {isChinese ? 'qua mô hình sư phạm NhaiHSK đột phá' : 'tự nhiên qua phản xạ & trò chơi'}
             </h1>
 
             <p className={`text-sm sm:text-base font-semibold leading-relaxed max-w-2xl ${
               isLight ? 'text-slate-600' : 'text-slate-300'
             }`}>
-              Học nghe chép chính tả <strong>Dictation</strong>, nhại giọng chuẩn bản xứ <strong>Shadowing</strong>, trò chơi <strong>Xếp từ</strong>, viết phản xạ <strong>See & Write</strong> và luyện thi <strong>TOEIC / IELTS</strong> với phương pháp ngắt quãng Spaced Repetition thông minh.
+              {isChinese ? (
+                <>
+                  Tập viết chữ Hán ô Mễ <strong>(米字格)</strong> & ô Điền <strong>(田字格)</strong> xuất PDF A4, đọc hiểu bài khoá tra từ 1-chạm <strong>Inline Popover</strong>, bảng phát âm <strong>Pinyin 23 thanh mẫu & 214 Bộ thủ</strong>, và kho <strong>Đề thi HSK 1 - 6 & HSKK</strong> chấm điểm tự động.
+                </>
+              ) : (
+                <>
+                  Học nghe chép chính tả <strong>Dictation</strong>, nhại giọng chuẩn bản xứ <strong>Shadowing</strong>, trò chơi <strong>Xếp từ</strong>, viết phản xạ <strong>See & Write</strong> và luyện thi <strong>TOEIC / IELTS</strong> với phương pháp ngắt quãng Spaced Repetition thông minh.
+                </>
+              )}
             </p>
 
             {/* CTAs */}
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <Link
-                href="/dictation-shadowing"
-                className="px-8 py-3.5 bg-[#00c950] hover:bg-[#00b046] active:scale-95 text-white font-black text-sm sm:text-base rounded-2xl shadow-xl shadow-emerald-500/25 flex items-center gap-2 transition-all hover:scale-105 cursor-pointer"
+                href={isChinese ? "/practice/hanzi-writer" : "/dictation-shadowing"}
+                className={`px-8 py-3.5 active:scale-95 text-white font-black text-sm sm:text-base rounded-2xl shadow-xl flex items-center gap-2 transition-all hover:scale-105 cursor-pointer ${
+                  isChinese
+                    ? 'bg-rose-600 hover:bg-rose-500 shadow-rose-600/25'
+                    : 'bg-[#00c950] hover:bg-[#00b046] shadow-emerald-500/25'
+                }`}
               >
-                <span>Bắt đầu học miễn phí</span>
+                <span>{isChinese ? 'Tạo vở luyện viết chữ Hán' : 'Bắt đầu học miễn phí'}</span>
                 <ArrowRight className="w-5 h-5" />
               </Link>
 
@@ -157,8 +212,8 @@ export default function HomePage() {
                     : 'border-[#1e2d42] text-slate-200 hover:bg-[#131d2b] hover:border-slate-600'
                 }`}
               >
-                <BookCheck className="w-4 h-4 text-emerald-500" />
-                <span>Kho 100.000+ từ vựng</span>
+                <BookCheck className={`w-4 h-4 ${isChinese ? 'text-rose-500' : 'text-emerald-500'}`} />
+                <span>{isChinese ? 'Kho từ vựng HSK 1 - 6' : 'Kho 100.000+ từ vựng'}</span>
               </Link>
             </div>
 
@@ -167,13 +222,16 @@ export default function HomePage() {
               isLight ? 'text-slate-500' : 'text-slate-400'
             }`}>
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Hoàn toàn miễn phí
+                <CheckCircle2 className={`w-4 h-4 ${isChinese ? 'text-rose-500' : 'text-emerald-500'}`} />{' '}
+                {isChinese ? 'Chuẩn HSK 3.0 & HSKK' : 'Hoàn toàn miễn phí'}
               </span>
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Tự do tải video riêng
+                <CheckCircle2 className={`w-4 h-4 ${isChinese ? 'text-rose-500' : 'text-emerald-500'}`} />{' '}
+                {isChinese ? 'Phát âm chuẩn Bắc Kinh' : 'Tự do tải video riêng'}
               </span>
               <span className="flex items-center gap-1.5">
-                <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Lưu tiến độ học tập
+                <CheckCircle2 className={`w-4 h-4 ${isChinese ? 'text-rose-500' : 'text-emerald-500'}`} />{' '}
+                {isChinese ? 'Xuất file in PDF A4' : 'Lưu tiến độ học tập'}
               </span>
             </div>
           </div>
@@ -181,11 +239,18 @@ export default function HomePage() {
           {/* Right Column: Mascot & Interactive Speech */}
           <div className="lg:col-span-4 flex flex-col items-center justify-center relative pt-4 lg:pt-0">
             <div className="speech-bubble mb-3 animate-bounce max-w-[280px]">
-              Chào bạn! Hãy cùng Micky luyện tập 15 phút mỗi ngày để nói tiếng Anh tự nhiên như người bản xứ nhé! 💬
+              {isChinese
+                ? '你好！Hãy cùng Micky chinh phục HSK 1-6 và nói tiếng Trung lưu loát mỗi ngày nhé! 🇨🇳'
+                : 'Chào bạn! Hãy cùng Micky luyện tập 15 phút mỗi ngày để nói tiếng Anh tự nhiên như người bản xứ nhé! 💬'}
             </div>
 
-            <div className="relative group cursor-pointer" onClick={() => speakAudio('Hello! Welcome to Micky English!')}>
-              <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/30 transition-all" />
+            <div
+              className="relative group cursor-pointer"
+              onClick={() => speakAudio(isChinese ? '你好！欢迎来到米奇中文！' : 'Hello! Welcome to Micky English!')}
+            >
+              <div className={`absolute inset-0 rounded-full blur-2xl transition-all ${
+                isChinese ? 'bg-rose-500/20 group-hover:bg-rose-500/30' : 'bg-emerald-500/20 group-hover:bg-emerald-500/30'
+              }`} />
               <MickyMascot size={145} />
             </div>
           </div>
@@ -203,21 +268,63 @@ export default function HomePage() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Gõ thử một từ tiếng Anh (VD: Accomplish, Resilient, Negotiate...)"
+              placeholder={
+                isChinese
+                  ? 'Tra cứu Chữ Hán hoặc Pinyin (VD: 学习, 朋友, 汉语, nǐ hǎo...)'
+                  : 'Gõ thử một từ tiếng Anh (VD: Accomplish, Resilient, Negotiate...)'
+              }
               className={`w-full bg-transparent border-none outline-none text-xs sm:text-sm font-semibold px-3 ${
                 isLight ? 'text-slate-900 placeholder-slate-400' : 'text-white placeholder-slate-500'
               }`}
             />
             <button
               type="submit"
-              className="px-5 py-2.5 bg-[#00c950] hover:bg-[#00b046] active:scale-95 text-white font-black text-xs rounded-xl shadow-md transition-all shrink-0 cursor-pointer"
+              className={`px-5 py-2.5 active:scale-95 text-white font-black text-xs rounded-xl shadow-md transition-all shrink-0 cursor-pointer ${
+                isChinese ? 'bg-rose-600 hover:bg-rose-500' : 'bg-[#00c950] hover:bg-[#00b046]'
+              }`}
             >
               Tra từ ngay
             </button>
           </div>
 
-          {/* Live Search Result Card */}
-          {searchResult && (
+          {/* Live Search Result Card (Tiếng Trung) */}
+          {isChinese && searchResultZh && (
+            <div className={`mt-3 p-4 border rounded-2xl text-left space-y-2 animate-fade-in shadow-xl ${
+              isLight ? 'bg-white border-rose-300' : 'bg-[#131d2b] border-rose-500/40'
+            }`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <h4 className="text-2xl font-black text-rose-500">{searchResultZh.hanzi}</h4>
+                  <span className="text-xs text-rose-400 font-bold font-mono">{searchResultZh.pinyin}</span>
+                  <span className="text-xs text-slate-400 font-semibold">({searchResultZh.sinoVietnamese})</span>
+                  <button
+                    type="button"
+                    onClick={() => speakAudio(searchResultZh.hanzi, 'zh-CN')}
+                    className="p-1 rounded-lg bg-rose-500/20 text-rose-400 hover:bg-rose-500 hover:text-white transition-colors cursor-pointer"
+                    title="Phát âm"
+                  >
+                    <Volume2 className="w-4 h-4" />
+                  </button>
+                </div>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-950/60 text-rose-300 border border-rose-500/30">
+                  HSK {searchResultZh.hskLevel}
+                </span>
+              </div>
+              <p className={`text-xs font-bold ${isLight ? 'text-slate-800' : 'text-white'}`}>
+                🇻🇳 Nghĩa: {searchResultZh.meaning}
+              </p>
+              <div className={`text-xs p-2.5 rounded-xl border space-y-1 ${
+                isLight ? 'bg-slate-50 border-slate-200 text-slate-600' : 'bg-[#0b0f17] border-[#1e2d42] text-slate-300'
+              }`}>
+                <p className="font-medium text-rose-400">"{searchResultZh.exampleZh}"</p>
+                <p className="text-[11px] text-slate-400 italic">Pinyin: {searchResultZh.examplePinyin}</p>
+                <p className="text-[11px] text-slate-300">Dịch: {searchResultZh.exampleVi}</p>
+              </div>
+            </div>
+          )}
+
+          {/* Live Search Result Card (Tiếng Anh) */}
+          {!isChinese && searchResult && (
             <div className={`mt-3 p-4 border rounded-2xl text-left space-y-2 animate-fade-in shadow-xl ${
               isLight ? 'bg-white border-emerald-300' : 'bg-[#131d2b] border-emerald-500/40'
             }`}>
@@ -255,33 +362,57 @@ export default function HomePage() {
           <div className={`border rounded-2xl p-4 space-y-1 transition-all hover:scale-[1.02] ${
             isLight ? 'bg-white border-slate-200' : 'bg-[#121c2b] border-[#1e2d42]'
           }`}>
-            <span className="text-2xl sm:text-3xl font-black text-emerald-500 block">4.415+</span>
-            <span className={`text-xs font-black block ${isLight ? 'text-slate-800' : 'text-white'}`}>Bài học Dictation & Shadowing</span>
-            <span className="text-[10px] text-slate-400 font-semibold block">Luyện nghe nói phản xạ</span>
+            <span className="text-2xl sm:text-3xl font-black text-rose-500 block">
+              {isChinese ? '11.000+' : '4.415+'}
+            </span>
+            <span className={`text-xs font-black block ${isLight ? 'text-slate-800' : 'text-white'}`}>
+              {isChinese ? 'Từ vựng HSK 1 - 9 & HSKK' : 'Bài học Dictation & Shadowing'}
+            </span>
+            <span className="text-[10px] text-slate-400 font-semibold block">
+              {isChinese ? 'Phân cấp chuẩn HSK 3.0' : 'Luyện nghe nói phản xạ'}
+            </span>
           </div>
 
           <div className={`border rounded-2xl p-4 space-y-1 transition-all hover:scale-[1.02] ${
             isLight ? 'bg-white border-slate-200' : 'bg-[#121c2b] border-[#1e2d42]'
           }`}>
-            <span className="text-2xl sm:text-3xl font-black text-blue-500 block">150+</span>
-            <span className={`text-xs font-black block ${isLight ? 'text-slate-800' : 'text-white'}`}>Truyện Song Ngữ</span>
-            <span className="text-[10px] text-slate-400 font-semibold block">Đọc & Tra từ 1-chạm</span>
+            <span className="text-2xl sm:text-3xl font-black text-blue-500 block">
+              {isChinese ? '214' : '150+'}
+            </span>
+            <span className={`text-xs font-black block ${isLight ? 'text-slate-800' : 'text-white'}`}>
+              {isChinese ? 'Bộ thủ Khang Hy' : 'Truyện Song Ngữ'}
+            </span>
+            <span className="text-[10px] text-slate-400 font-semibold block">
+              {isChinese ? '7 quy tắc nét thuần bút' : 'Đọc & Tra từ 1-chạm'}
+            </span>
           </div>
 
           <div className={`border rounded-2xl p-4 space-y-1 transition-all hover:scale-[1.02] ${
             isLight ? 'bg-white border-slate-200' : 'bg-[#121c2b] border-[#1e2d42]'
           }`}>
-            <span className="text-2xl sm:text-3xl font-black text-amber-500 block">5.000+</span>
-            <span className={`text-xs font-black block ${isLight ? 'text-slate-800' : 'text-white'}`}>Câu See & Write</span>
-            <span className="text-[10px] text-slate-400 font-semibold block">Luyện viết phản xạ</span>
+            <span className="text-2xl sm:text-3xl font-black text-amber-500 block">
+              {isChinese ? 'A4 PDF' : '5.000+'}
+            </span>
+            <span className={`text-xs font-black block ${isLight ? 'text-slate-800' : 'text-white'}`}>
+              {isChinese ? 'Vở Ô Mễ & Ô Điền' : 'Câu See & Write'}
+            </span>
+            <span className="text-[10px] text-slate-400 font-semibold block">
+              {isChinese ? 'Xuất bản in ấn sắc nét' : 'Luyện viết phản xạ'}
+            </span>
           </div>
 
           <div className={`border rounded-2xl p-4 space-y-1 transition-all hover:scale-[1.02] ${
             isLight ? 'bg-white border-slate-200' : 'bg-[#121c2b] border-[#1e2d42]'
           }`}>
-            <span className="text-2xl sm:text-3xl font-black text-purple-500 block">503+</span>
-            <span className={`text-xs font-black block ${isLight ? 'text-slate-800' : 'text-white'}`}>Đề Thi Thử</span>
-            <span className="text-[10px] text-slate-400 font-semibold block">TOEIC, IELTS & VSTEP</span>
+            <span className="text-2xl sm:text-3xl font-black text-purple-500 block">
+              {isChinese ? '50+' : '503+'}
+            </span>
+            <span className={`text-xs font-black block ${isLight ? 'text-slate-800' : 'text-white'}`}>
+              {isChinese ? 'Đề Thi HSK 1 - 6 & HSKK' : 'Đề Thi Thử'}
+            </span>
+            <span className="text-[10px] text-slate-400 font-semibold block">
+              {isChinese ? 'Chấm điểm & giải thích' : 'TOEIC, IELTS & VSTEP'}
+            </span>
           </div>
         </div>
       </section>
@@ -296,7 +427,7 @@ export default function HomePage() {
             <span>Trải nghiệm ngay không cần cài đặt</span>
           </div>
           <h2 className="text-2xl sm:text-4xl font-black">
-            Khám phá phương pháp học cuốn hút tại Micky English
+            Khám phá phương pháp học cuốn hút tại {isChinese ? 'Micky Chinese (HSK 3.0)' : 'Micky English'}
           </h2>
           <p className="text-xs sm:text-sm text-slate-400 max-w-2xl mx-auto font-medium">
             Hãy thử bấm tương tác trực tiếp với các tính năng đặc sắc dưới đây:
@@ -310,14 +441,16 @@ export default function HomePage() {
             onClick={() => setActivePlaygroundTab('word-order')}
             className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
               activePlaygroundTab === 'word-order'
-                ? 'bg-[#00c950] text-white shadow-lg shadow-emerald-500/25 scale-105'
+                ? isChinese
+                  ? 'bg-rose-600 text-white shadow-lg shadow-rose-500/25 scale-105'
+                  : 'bg-[#00c950] text-white shadow-lg shadow-emerald-500/25 scale-105'
                 : isLight
                 ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 : 'bg-[#121c2b] text-slate-300 hover:bg-[#182638]'
             }`}
           >
             <Gamepad2 className="w-4 h-4" />
-            <span>Trò chơi Xếp từ (Word Order)</span>
+            <span>{isChinese ? 'Trò chơi Xếp câu Chữ Hán' : 'Trò chơi Xếp từ (Word Order)'}</span>
           </button>
 
           <button
@@ -325,14 +458,16 @@ export default function HomePage() {
             onClick={() => setActivePlaygroundTab('dictation')}
             className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
               activePlaygroundTab === 'dictation'
-                ? 'bg-[#00c950] text-white shadow-lg shadow-emerald-500/25 scale-105'
+                ? isChinese
+                  ? 'bg-rose-600 text-white shadow-lg shadow-rose-500/25 scale-105'
+                  : 'bg-[#00c950] text-white shadow-lg shadow-emerald-500/25 scale-105'
                 : isLight
                 ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 : 'bg-[#121c2b] text-slate-300 hover:bg-[#182638]'
             }`}
           >
             <Headphones className="w-4 h-4" />
-            <span>Dictation & Shadowing</span>
+            <span>{isChinese ? 'Khẩu ngữ Shadowing HSK' : 'Dictation & Shadowing'}</span>
           </button>
 
           <button
@@ -340,14 +475,16 @@ export default function HomePage() {
             onClick={() => setActivePlaygroundTab('bilingual')}
             className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
               activePlaygroundTab === 'bilingual'
-                ? 'bg-[#00c950] text-white shadow-lg shadow-emerald-500/25 scale-105'
+                ? isChinese
+                  ? 'bg-rose-600 text-white shadow-lg shadow-rose-500/25 scale-105'
+                  : 'bg-[#00c950] text-white shadow-lg shadow-emerald-500/25 scale-105'
                 : isLight
                 ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 : 'bg-[#121c2b] text-slate-300 hover:bg-[#182638]'
             }`}
           >
             <BookOpen className="w-4 h-4" />
-            <span>Truyện chêm Song ngữ</span>
+            <span>{isChinese ? 'Bài khoá HSK Tra từ Popover' : 'Truyện chêm Song ngữ'}</span>
           </button>
 
           <button
@@ -355,14 +492,16 @@ export default function HomePage() {
             onClick={() => setActivePlaygroundTab('flashcard')}
             className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-black flex items-center gap-2 transition-all cursor-pointer whitespace-nowrap ${
               activePlaygroundTab === 'flashcard'
-                ? 'bg-[#00c950] text-white shadow-lg shadow-emerald-500/25 scale-105'
+                ? isChinese
+                  ? 'bg-rose-600 text-white shadow-lg shadow-rose-500/25 scale-105'
+                  : 'bg-[#00c950] text-white shadow-lg shadow-emerald-500/25 scale-105'
                 : isLight
                 ? 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 : 'bg-[#121c2b] text-slate-300 hover:bg-[#182638]'
             }`}
           >
             <Layers className="w-4 h-4" />
-            <span>Flashcard Spaced Repetition</span>
+            <span>{isChinese ? 'Vở Tập Viết Ô Mễ / Ô Điền' : 'Flashcard Spaced Repetition'}</span>
           </button>
         </div>
 
@@ -373,11 +512,11 @@ export default function HomePage() {
           }`}>
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-[11px] font-black uppercase tracking-wider text-emerald-500 block">
-                  Bấm các từ theo thứ tự để ghép thành câu đúng:
+                <span className={`text-[11px] font-black uppercase tracking-wider block ${isChinese ? 'text-rose-500' : 'text-emerald-500'}`}>
+                  Bấm các {isChinese ? 'chữ Hán' : 'từ'} theo thứ tự để ghép thành câu đúng:
                 </span>
                 <p className="text-xs text-slate-400 font-semibold">
-                  "Tôi thích học tiếng Anh mỗi ngày."
+                  {isChinese ? '"Tôi đang học tiếng Trung trên Micky!"' : '"Tôi thích học tiếng Anh mỗi ngày."'}
                 </p>
               </div>
 
@@ -395,12 +534,18 @@ export default function HomePage() {
               isLight ? 'bg-slate-50 border-slate-200' : 'bg-[#0b0f17] border-[#1e2d42]'
             }`}>
               {selectedWordIndices.length === 0 ? (
-                <span className="text-xs text-slate-500 italic">Nhấp vào các từ ở pool bên dưới để xếp câu...</span>
+                <span className="text-xs text-slate-500 italic">
+                  {isChinese
+                    ? 'Nhấp vào các chữ Hán ở pool bên dưới để xếp câu...'
+                    : 'Nhấp vào các từ ở pool bên dưới để xếp câu...'}
+                </span>
               ) : (
                 selectedWordIndices.map((idx, i) => (
                   <span
                     key={i}
-                    className="px-3.5 py-1.5 rounded-xl bg-emerald-600 text-white font-black text-xs shadow-md animate-fade-in"
+                    className={`px-3.5 py-1.5 rounded-xl text-white font-black text-xs shadow-md animate-fade-in ${
+                      isChinese ? 'bg-rose-600' : 'bg-emerald-600'
+                    }`}
                   >
                     {sampleWords[idx]}
                   </span>
@@ -412,7 +557,10 @@ export default function HomePage() {
             <div className="space-y-2">
               <span className="text-[11px] font-bold text-slate-400 block">Chọn từ tiếp theo:</span>
               <div className="flex flex-wrap gap-2.5">
-                {['learning', 'day', 'I', 'every', 'love', 'English'].map((w, i) => {
+                {(isChinese
+                  ? ['汉语', '我', '！', '在', '学习', 'Micky']
+                  : ['learning', 'day', 'I', 'every', 'love', 'English']
+                ).map((w, i) => {
                   const originalIndex = sampleWords.indexOf(w);
                   const isUsed = selectedWordIndices.includes(originalIndex);
                   const isShaking = shakeWordIndex === originalIndex;
@@ -429,7 +577,11 @@ export default function HomePage() {
                           : isShaking
                           ? 'animate-shake bg-rose-500/20 text-rose-300 border border-rose-500'
                           : isLight
-                          ? 'bg-slate-100 hover:bg-emerald-500 hover:text-white border border-slate-200'
+                          ? isChinese
+                            ? 'bg-slate-100 hover:bg-rose-600 hover:text-white border border-slate-200'
+                            : 'bg-slate-100 hover:bg-emerald-500 hover:text-white border border-slate-200'
+                          : isChinese
+                          ? 'bg-[#172338] hover:bg-rose-600 text-slate-200 hover:text-white border border-[#1e2d42]'
                           : 'bg-[#172338] hover:bg-emerald-600 text-slate-200 hover:text-white border border-[#1e2d42]'
                       }`}
                     >
@@ -442,20 +594,30 @@ export default function HomePage() {
 
             {/* Victory Banner */}
             {isGameCompleted && (
-              <div className="p-4 bg-emerald-950/90 border border-emerald-500 rounded-2xl flex items-center justify-between gap-4 animate-fade-in">
+              <div className={`p-4 border rounded-2xl flex items-center justify-between gap-4 animate-fade-in ${
+                isChinese ? 'bg-rose-950/90 border-rose-500' : 'bg-emerald-950/90 border-emerald-500'
+              }`}>
                 <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black">
+                  <div className={`w-10 h-10 rounded-xl text-white flex items-center justify-center font-black ${
+                    isChinese ? 'bg-rose-600' : 'bg-emerald-600'
+                  }`}>
                     🎉
                   </div>
                   <div>
-                    <h4 className="text-xs font-black text-emerald-300">Chính xác tuyệt đối!</h4>
-                    <p className="text-[11px] text-slate-300">"I love learning English every day."</p>
+                    <h4 className={`text-xs font-black ${isChinese ? 'text-rose-300' : 'text-emerald-300'}`}>
+                      Chính xác tuyệt đối!
+                    </h4>
+                    <p className="text-[11px] text-slate-300">
+                      {isChinese ? '"我 在 Micky 学习 汉语 ！"' : '"I love learning English every day."'}
+                    </p>
                   </div>
                 </div>
 
                 <Link
                   href="/dictation-shadowing"
-                  className="px-4 py-2 bg-white text-emerald-700 font-black text-xs rounded-xl shadow-md hover:bg-emerald-50 transition-all shrink-0 cursor-pointer"
+                  className={`px-4 py-2 bg-white font-black text-xs rounded-xl shadow-md transition-all shrink-0 cursor-pointer ${
+                    isChinese ? 'text-rose-700 hover:bg-rose-50' : 'text-emerald-700 hover:bg-emerald-50'
+                  }`}
                 >
                   Chơi thêm nhiều câu nữa →
                 </Link>
@@ -471,36 +633,57 @@ export default function HomePage() {
           }`}>
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-[11px] font-black uppercase tracking-wider text-emerald-500 block">
+                <span className={`text-[11px] font-black uppercase tracking-wider block ${isChinese ? 'text-rose-500' : 'text-emerald-500'}`}>
                   Công nghệ Auto-pause dứt câu thông minh:
                 </span>
                 <h4 className={`text-base font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                  Balancing Stones in the River (TED Talk)
+                  {isChinese ? 'Giao Tiếp Hàng Ngày Tiếng Trung • 日常中文对话' : 'Balancing Stones in the River (TED Talk)'}
                 </h4>
               </div>
-              <span className="badge-micky-green">Level: B1</span>
+              <span className={isChinese ? 'px-2.5 py-0.5 rounded-full text-xs font-black bg-rose-950 text-rose-300 border border-rose-500/30' : 'badge-micky-green'}>
+                Level: {isChinese ? 'HSK 1' : 'B1'}
+              </span>
             </div>
 
             <div className="aspect-16/9 w-full bg-black rounded-2xl overflow-hidden border border-[#1e2d42] relative group flex items-center justify-center">
               <img
-                src="https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=800&q=80"
+                src={
+                  isChinese
+                    ? 'https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=800&q=80'
+                    : 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=800&q=80'
+                }
                 alt="Demo"
                 className="w-full h-full object-cover opacity-60"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-6 space-y-2">
-                <span className="text-xs font-bold text-emerald-400">Câu 1/14: (0:00 - 0:05)</span>
+                <span className={`text-xs font-bold ${isChinese ? 'text-rose-400' : 'text-emerald-400'}`}>
+                  {isChinese ? 'Câu 1/5: (0:00 - 0:04)' : 'Câu 1/14: (0:00 - 0:05)'}
+                </span>
                 <p className="text-base sm:text-lg font-black text-white">
-                  "Every summer, I come to this quiet river to practice the ancient art of balancing stones."
+                  {isChinese
+                    ? '“你好！很高兴见到你，你最近怎么样？”'
+                    : '“Every summer, I come to this quiet river to practice the ancient art of balancing stones.”'}
                 </p>
                 <p className="text-xs text-slate-300 font-medium italic">
-                  Mỗi mùa hè, tôi lại đến dòng sông tĩnh lặng này để thực hành nghệ thuật xếp đá cổ xưa.
+                  {isChinese
+                    ? 'Xin chào! Rất vui được gặp bạn, dạo này bạn thế nào?'
+                    : 'Mỗi mùa hè, tôi lại đến dòng sông tĩnh lặng này để thực hành nghệ thuật xếp đá cổ xưa.'}
                 </p>
               </div>
 
               <button
                 type="button"
-                onClick={() => speakAudio('Every summer, I come to this quiet river to practice the ancient art of balancing stones.')}
-                className="absolute w-14 h-14 rounded-full bg-[#00c950] text-white flex items-center justify-center shadow-2xl transition-transform hover:scale-110 cursor-pointer"
+                onClick={() =>
+                  speakAudio(
+                    isChinese
+                      ? '你好！很高兴见到你，你最近怎么样？'
+                      : 'Every summer, I come to this quiet river to practice the ancient art of balancing stones.',
+                    isChinese ? 'zh-CN' : 'en-US'
+                  )
+                }
+                className={`absolute w-14 h-14 rounded-full text-white flex items-center justify-center shadow-2xl transition-transform hover:scale-110 cursor-pointer ${
+                  isChinese ? 'bg-rose-600' : 'bg-[#00c950]'
+                }`}
               >
                 <Play className="w-6 h-6 fill-white ml-0.5" />
               </button>
@@ -509,8 +692,10 @@ export default function HomePage() {
             <div className="flex items-center justify-between pt-2">
               <span className="text-xs text-slate-400">💡 Video tự động dừng khi hết câu để bạn nghe chép hoặc nhại lại giọng.</span>
               <Link
-                href="/dictation-shadowing/balancing-stones-intro"
-                className="px-5 py-2.5 bg-[#00c950] hover:bg-[#00b046] text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer"
+                href={isChinese ? "/dictation-shadowing/zh-lesson-daily-greeting" : "/dictation-shadowing/balancing-stones-intro"}
+                className={`px-5 py-2.5 text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer ${
+                  isChinese ? 'bg-rose-600 hover:bg-rose-500' : 'bg-[#00c950] hover:bg-[#00b046]'
+                }`}
               >
                 Vào học bài này ngay →
               </Link>
@@ -518,93 +703,177 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* TAB 3: BILINGUAL NEWS DEMO */}
+        {/* TAB 3: BILINGUAL / READING DEMO */}
         {activePlaygroundTab === 'bilingual' && (
           <div className={`max-w-3xl mx-auto p-6 sm:p-8 rounded-3xl border shadow-xl text-left space-y-4 animate-fade-in ${
             isLight ? 'bg-white border-slate-200' : 'bg-[#111a28] border-[#1e2d42]'
           }`}>
-            <span className="text-[11px] font-black uppercase tracking-wider text-emerald-500 block">
-              Truyện song ngữ tra từ 1-chạm (Bấm vào từ in đậm để nghe & xem nghĩa):
+            <span className={`text-[11px] font-black uppercase tracking-wider block ${isChinese ? 'text-rose-500' : 'text-emerald-500'}`}>
+              {isChinese
+                ? 'Bài khoá HSK tra từ 1-chạm (Bấm vào chữ Hán để nghe phát âm & tra Pinyin/nghĩa):'
+                : 'Truyện song ngữ tra từ 1-chạm (Bấm vào từ in đậm để nghe & xem nghĩa):'}
             </span>
 
             <div className={`p-5 rounded-2xl border leading-relaxed text-sm font-semibold space-y-3 ${
               isLight ? 'bg-slate-50 border-slate-200 text-slate-800' : 'bg-[#0b0f17] border-[#1e2d42] text-slate-200'
             }`}>
-              <p>
-                Once upon a time in a peaceful valley, an ambitious{' '}
-                <button
-                  type="button"
-                  onClick={() => speakAudio('architect')}
-                  className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-500 hover:text-white transition-colors cursor-pointer"
-                  title="architect / kiến trúc sư"
-                >
-                  architect 🔊
-                </button>{' '}
-                wanted to build a bridge that could withstand any{' '}
-                <button
-                  type="button"
-                  onClick={() => speakAudio('storm')}
-                  className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/40 hover:bg-blue-500 hover:text-white transition-colors cursor-pointer"
-                  title="storm / cơn bão"
-                >
-                  storm 🔊
-                </button>
-                . He gathered the strongest{' '}
-                <button
-                  type="button"
-                  onClick={() => speakAudio('materials')}
-                  className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/40 hover:bg-amber-500 hover:text-white transition-colors cursor-pointer"
-                  title="materials / nguyên vật liệu"
-                >
-                  materials 🔊
-                </button>{' '}
-                and inspired the entire community.
-              </p>
+              {isChinese ? (
+                <p className="text-base sm:text-lg leading-loose font-serif">
+                  在{' '}
+                  <button
+                    type="button"
+                    onClick={() => speakAudio('北京', 'zh-CN')}
+                    className="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 border border-rose-500/40 hover:bg-rose-500 hover:text-white transition-colors cursor-pointer"
+                    title="Bắc Kinh / Běijīng"
+                  >
+                    北京 🔊
+                  </button>{' '}
+                  的 春天，很多{' '}
+                  <button
+                    type="button"
+                    onClick={() => speakAudio('留学生', 'zh-CN')}
+                    className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/40 hover:bg-blue-500 hover:text-white transition-colors cursor-pointer"
+                    title="Lưu học sinh / liúxuéshēng"
+                  >
+                    留学生 🔊
+                  </button>{' '}
+                  来到{' '}
+                  <button
+                    type="button"
+                    onClick={() => speakAudio('大学', 'zh-CN')}
+                    className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/40 hover:bg-amber-500 hover:text-white transition-colors cursor-pointer"
+                    title="Đại học / dàxué"
+                  >
+                    大学 🔊
+                  </button>{' '}
+                  学习{' '}
+                  <button
+                    type="button"
+                    onClick={() => speakAudio('汉语', 'zh-CN')}
+                    className="px-2 py-0.5 rounded bg-purple-500/20 text-purple-400 border border-purple-500/40 hover:bg-purple-500 hover:text-white transition-colors cursor-pointer"
+                    title="Tiếng Hán / hànyǔ"
+                  >
+                    汉语 🔊
+                  </button>
+                  。
+                </p>
+              ) : (
+                <p>
+                  Once upon a time in a peaceful valley, an ambitious{' '}
+                  <button
+                    type="button"
+                    onClick={() => speakAudio('architect')}
+                    className="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 hover:bg-emerald-500 hover:text-white transition-colors cursor-pointer"
+                    title="architect / kiến trúc sư"
+                  >
+                    architect 🔊
+                  </button>{' '}
+                  wanted to build a bridge that could withstand any{' '}
+                  <button
+                    type="button"
+                    onClick={() => speakAudio('storm')}
+                    className="px-2 py-0.5 rounded bg-blue-500/20 text-blue-400 border border-blue-500/40 hover:bg-blue-500 hover:text-white transition-colors cursor-pointer"
+                    title="storm / cơn bão"
+                  >
+                    storm 🔊
+                  </button>
+                  . He gathered the strongest{' '}
+                  <button
+                    type="button"
+                    onClick={() => speakAudio('materials')}
+                    className="px-2 py-0.5 rounded bg-amber-500/20 text-amber-400 border border-amber-500/40 hover:bg-amber-500 hover:text-white transition-colors cursor-pointer"
+                    title="materials / nguyên vật liệu"
+                  >
+                    materials 🔊
+                  </button>{' '}
+                  and inspired the entire community.
+                </p>
+              )}
             </div>
 
             <div className="flex items-center justify-between pt-2">
-              <span className="text-xs text-slate-400">📖 Đọc truyện thư giãn, tích lũy từ vựng tự nhiên theo ngữ cảnh.</span>
+              <span className="text-xs text-slate-400">
+                {isChinese
+                  ? '📖 Bấm vào từng chữ Hán để tra từ 1-chạm & lưu vào Spaced Repetition.'
+                  : '📖 Đọc truyện thư giãn, tích lũy từ vựng tự nhiên theo ngữ cảnh.'}
+              </span>
               <Link
-                href="/practice/reading"
-                className="px-5 py-2.5 bg-[#00c950] hover:bg-[#00b046] text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer"
+                href={isChinese ? "/practice/chinese-reading" : "/practice/reading"}
+                className={`px-5 py-2.5 text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer ${
+                  isChinese ? 'bg-rose-600 hover:bg-rose-500' : 'bg-[#00c950] hover:bg-[#00b046]'
+                }`}
               >
-                Đọc thêm truyện song ngữ →
+                {isChinese ? 'Đọc thêm bài khoá HSK →' : 'Đọc thêm truyện song ngữ →'}
               </Link>
             </div>
           </div>
         )}
 
-        {/* TAB 4: FLASHCARD SM-2 DEMO */}
+        {/* TAB 4: FLASHCARD / HANZI WRITER DEMO */}
         {activePlaygroundTab === 'flashcard' && (
           <div className="max-w-md mx-auto space-y-4 animate-fade-in">
-            <div
-              onClick={() => setIsFlipped(!isFlipped)}
-              className={`p-8 rounded-3xl border shadow-2xl cursor-pointer transition-all duration-300 min-h-[200px] flex flex-col items-center justify-center text-center space-y-3 ${
-                isLight ? 'bg-white border-slate-200' : 'bg-[#111a28] border-[#1e2d42]'
-              }`}
-            >
-              <span className="badge-micky-green text-[10px]">Chạm để lật thẻ</span>
-              {!isFlipped ? (
-                <>
-                  <h3 className="text-3xl font-black text-emerald-400">Resilient</h3>
-                  <p className="text-xs text-slate-400 font-mono">/rɪˈzɪl.jənt/ (adj)</p>
-                  <p className="text-xs text-slate-400">Bấm để xem nghĩa tiếng Việt & ví dụ</p>
-                </>
-              ) : (
-                <>
-                  <h3 className="text-2xl font-black text-white">Kiên cường, mau phục hồi</h3>
-                  <p className="text-xs text-slate-300 italic">"He is resilient and never gives up in tough times."</p>
-                  <span className="text-[11px] text-emerald-400 font-bold">Ôn tập lại sau: 3 ngày nữa (SM-2)</span>
-                </>
-              )}
-            </div>
-
-            <Link
-              href="/vocabulary"
-              className="inline-flex px-6 py-2.5 bg-[#00c950] hover:bg-[#00b046] text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer"
-            >
-              Luyện ôn 600 từ TOEIC ngay →
-            </Link>
+            {isChinese ? (
+              <div
+                className={`p-6 rounded-3xl border shadow-2xl transition-all duration-300 min-h-[220px] flex flex-col items-center justify-center text-center space-y-3 ${
+                  isLight ? 'bg-white border-slate-200' : 'bg-[#111a28] border-[#1e2d42]'
+                }`}
+              >
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-rose-950 text-rose-300 border border-rose-500/30">
+                  Ô chữ Mễ (米字格) Chuẩn In A4
+                </span>
+                <div className="flex items-center gap-3 py-2">
+                  {['学', '习', '汉', '语'].map((c, i) => (
+                    <div
+                      key={i}
+                      className="w-14 h-14 rounded-xl border border-rose-500/40 flex items-center justify-center text-2xl font-black font-serif text-rose-400 bg-rose-950/30 shadow-inner"
+                      style={{
+                        backgroundImage:
+                          'linear-gradient(45deg, rgba(244,63,94,0.08) 25%, transparent 25%), linear-gradient(-45deg, rgba(244,63,94,0.08) 25%, transparent 25%)',
+                      }}
+                    >
+                      {c}
+                    </div>
+                  ))}
+                </div>
+                <p className="text-xs text-slate-300 font-medium">
+                  Tự động chia lưới nét bút, in hoặc xuất PDF chuẩn A4 để tập viết bút mực.
+                </p>
+                <Link
+                  href="/practice/hanzi-writer"
+                  className="px-6 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer"
+                >
+                  Tạo vở tập viết chữ Hán ngay →
+                </Link>
+              </div>
+            ) : (
+              <div
+                onClick={() => setIsFlipped(!isFlipped)}
+                className={`p-8 rounded-3xl border shadow-2xl cursor-pointer transition-all duration-300 min-h-[200px] flex flex-col items-center justify-center text-center space-y-3 ${
+                  isLight ? 'bg-white border-slate-200' : 'bg-[#111a28] border-[#1e2d42]'
+                }`}
+              >
+                <span className="badge-micky-green text-[10px]">Chạm để lật thẻ</span>
+                {!isFlipped ? (
+                  <>
+                    <h3 className="text-3xl font-black text-emerald-400">Resilient</h3>
+                    <p className="text-xs text-slate-400 font-mono">/rɪˈzɪl.jənt/ (adj)</p>
+                    <p className="text-xs text-slate-400">Bấm để xem nghĩa tiếng Việt & ví dụ</p>
+                  </>
+                ) : (
+                  <>
+                    <h3 className="text-2xl font-black text-white">Kiên cường, mau phục hồi</h3>
+                    <p className="text-xs text-slate-300 italic">"He is resilient and never gives up in tough times."</p>
+                    <span className="text-[11px] text-emerald-400 font-bold">Ôn tập lại sau: 3 ngày nữa (SM-2)</span>
+                  </>
+                )}
+                <Link
+                  href="/vocabulary"
+                  className="inline-flex px-6 py-2.5 bg-[#00c950] hover:bg-[#00b046] text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer mt-2"
+                >
+                  Luyện ôn 600 từ TOEIC ngay →
+                </Link>
+              </div>
+            )}
           </div>
         )}
       </section>
@@ -619,109 +888,215 @@ export default function HomePage() {
             <span>Phương pháp độc quyền</span>
           </div>
           <h2 className="text-2xl sm:text-4xl font-black">
-            6 Trụ cột giúp bạn làm chủ Tiếng Anh từ gốc
+            {isChinese
+              ? '6 Trụ Cột Đột Phá Giúp Bạn Làm Chủ Tiếng Trung HSK & Khẩu Ngữ'
+              : '6 Trụ cột giúp bạn làm chủ Tiếng Anh từ gốc'}
           </h2>
           <p className="text-xs sm:text-sm text-slate-400 max-w-2xl mx-auto font-medium">
-            Mỗi kỹ năng được thiết kế có hệ thống bài tập thực hành chuyên biệt, không học vẹt ngữ pháp.
+            {isChinese
+              ? 'Mô hình học tập toàn diện chuẩn sư phạm NhaiHSK, kết hợp công nghệ luyện phát âm và tạo tài liệu in ấn độc quyền.'
+              : 'Mỗi kỹ năng được thiết kế có hệ thống bài tập thực hành chuyên biệt, không học vẹt ngữ pháp.'}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {/* Card 1: Dictation */}
-          <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
-            isLight ? 'bg-white border-slate-200 hover:border-emerald-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-emerald-500'
-          }`}>
-            <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-              <Headphones className="w-6 h-6" />
-            </div>
-            <h3 className="text-base sm:text-lg font-black">1. Nghe chép chính tả (Dictation)</h3>
-            <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              Tự động dừng khi dứt câu, lặp lại mốc thời gian cho đến khi tai bạn nghe rõ từng mạo từ, đuôi -ed, nối âm bản ngữ.
-            </p>
-            <Link href="/dictation-shadowing" className="inline-flex items-center gap-1 text-xs font-bold text-emerald-500 hover:underline">
-              Bắt đầu luyện nghe →
-            </Link>
-          </div>
+          {isChinese ? (
+            <>
+              {/* Card 1: Hanzi Writer */}
+              <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
+                isLight ? 'bg-white border-slate-200 hover:border-rose-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-rose-500'
+              }`}>
+                <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center">
+                  <PenTool className="w-6 h-6" />
+                </div>
+                <h3 className="text-base sm:text-lg font-black">1. Vở Tập Viết Ô Mễ & Ô Điền</h3>
+                <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                  Sinh lưới ô Mễ (米字格) và ô Điền (田字格) chuẩn sư phạm, watermark mờ tô theo nét bút thuận và xuất file in PDF A4 sắc nét.
+                </p>
+                <Link href="/practice/hanzi-writer" className="inline-flex items-center gap-1 text-xs font-bold text-rose-400 hover:underline">
+                  Tạo vở tập viết ngay →
+                </Link>
+              </div>
 
-          {/* Card 2: Shadowing */}
-          <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
-            isLight ? 'bg-white border-slate-200 hover:border-emerald-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-emerald-500'
-          }`}>
-            <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
-              <Volume2 className="w-6 h-6" />
-            </div>
-            <h3 className="text-base sm:text-lg font-black">2. Nhại giọng chuẩn (Shadowing)</h3>
-            <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              Ghi âm giọng nói nhại lại người bản xứ theo từng câu, điều chỉnh tốc độ 50%-75%-100% để hình thành phản xạ phát âm tự nhiên.
-            </p>
-            <Link href="/dictation-shadowing" className="inline-flex items-center gap-1 text-xs font-bold text-cyan-500 hover:underline">
-              Luyện phát âm ngay →
-            </Link>
-          </div>
+              {/* Card 2: Pinyin & Radicals */}
+              <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
+                isLight ? 'bg-white border-slate-200 hover:border-rose-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-rose-500'
+              }`}>
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
+                  <Volume2 className="w-6 h-6" />
+                </div>
+                <h3 className="text-base sm:text-lg font-black">2. Bảng Pinyin & 214 Bộ Thủ</h3>
+                <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                  Nghe phát âm 23 thanh mẫu & vận mẫu chuẩn giọng Bắc Kinh, tra cứu 214 bộ thủ Khang Hy theo số nét và 7 quy tắc thuần bút.
+                </p>
+                <Link href="/practice/pinyin-radicals" className="inline-flex items-center gap-1 text-xs font-bold text-amber-400 hover:underline">
+                  Bảng Pinyin & Bộ thủ →
+                </Link>
+              </div>
 
-          {/* Card 3: Word Order */}
-          <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
-            isLight ? 'bg-white border-slate-200 hover:border-emerald-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-emerald-500'
-          }`}>
-            <div className="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
-              <Gamepad2 className="w-6 h-6" />
-            </div>
-            <h3 className="text-base sm:text-lg font-black">3. Trò chơi Xếp từ (Word Order)</h3>
-            <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              Nối từ theo đúng thứ tự câu bạn nghe được. Hệ thống rung lắc cảnh báo khi chọn sai, giúp bạn nhớ cấu trúc câu vô thức.
-            </p>
-            <Link href="/dictation-shadowing" className="inline-flex items-center gap-1 text-xs font-bold text-purple-400 hover:underline">
-              Khám phá Game xếp từ →
-            </Link>
-          </div>
+              {/* Card 3: Reading Inline Popover */}
+              <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
+                isLight ? 'bg-white border-slate-200 hover:border-rose-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-rose-500'
+              }`}>
+                <div className="w-12 h-12 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
+                  <BookOpen className="w-6 h-6" />
+                </div>
+                <h3 className="text-base sm:text-lg font-black">3. Bài Khoá Tra Từ Popover 1-Chạm</h3>
+                <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                  Đọc hiểu bài khoá HSK 1 - 5, chạm vào chữ Hán bất kỳ để xem Chữ Hán, Pinyin, Hán-Việt, Nghĩa và lưu vào Sổ từ vựng.
+                </p>
+                <Link href="/practice/chinese-reading" className="inline-flex items-center gap-1 text-xs font-bold text-blue-400 hover:underline">
+                  Đọc bài khoá HSK →
+                </Link>
+              </div>
 
-          {/* Card 4: See & Write */}
-          <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
-            isLight ? 'bg-white border-slate-200 hover:border-emerald-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-emerald-500'
-          }`}>
-            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
-              <PenTool className="w-6 h-6" />
-            </div>
-            <h3 className="text-base sm:text-lg font-black">4. Viết phản xạ (See & Write)</h3>
-            <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              Nhìn ý nghĩa tiếng Việt và gõ lại câu tiếng Anh với gợi ý ký tự thông minh. Loại bỏ hoàn toàn tật dịch thầm trong đầu.
-            </p>
-            <Link href="/practice/see-write" className="inline-flex items-center gap-1 text-xs font-bold text-amber-500 hover:underline">
-              Luyện viết phản xạ →
-            </Link>
-          </div>
+              {/* Card 4: Chinese Shadowing */}
+              <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
+                isLight ? 'bg-white border-slate-200 hover:border-rose-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-rose-500'
+              }`}>
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                  <Headphones className="w-6 h-6" />
+                </div>
+                <h3 className="text-base sm:text-lg font-black">4. Dictation & Shadowing Khẩu Ngữ</h3>
+                <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                  Tự động dừng dứt câu để luyện nghe chép và nhại lại giọng tiếng Trung, phụ đề 3 dòng Hanzi + Pinyin + Tiếng Việt.
+                </p>
+                <Link href="/dictation-shadowing" className="inline-flex items-center gap-1 text-xs font-bold text-emerald-400 hover:underline">
+                  Luyện nghe nói tiếng Trung →
+                </Link>
+              </div>
 
-          {/* Card 5: Spaced Repetition */}
-          <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
-            isLight ? 'bg-white border-slate-200 hover:border-emerald-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-emerald-500'
-          }`}>
-            <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center">
-              <Clock className="w-6 h-6" />
-            </div>
-            <h3 className="text-base sm:text-lg font-black">5. Thuật toán Spaced Repetition</h3>
-            <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              Ứng dụng thuật toán SuperMemo SM-2 tự động tính toán thời điểm vàng ôn tập từ vựng (1 ngày, 3 ngày, 7 ngày) để đưa vào trí nhớ dài hạn.
-            </p>
-            <Link href="/vocabulary" className="inline-flex items-center gap-1 text-xs font-bold text-rose-400 hover:underline">
-              Xem sổ từ vựng →
-            </Link>
-          </div>
+              {/* Card 5: Spaced Repetition SRS */}
+              <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
+                isLight ? 'bg-white border-slate-200 hover:border-rose-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-rose-500'
+              }`}>
+                <div className="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
+                  <Clock className="w-6 h-6" />
+                </div>
+                <h3 className="text-base sm:text-lg font-black">5. Sổ Từ Vựng SRS (SM-2)</h3>
+                <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                  Hệ thống SuperMemo SM-2 tự động tính toán chu kỳ vàng nhắc ôn tập các từ vựng HSK 1 - 6 vào trí nhớ dài hạn vĩnh viễn.
+                </p>
+                <Link href="/vocabulary" className="inline-flex items-center gap-1 text-xs font-bold text-purple-400 hover:underline">
+                  Kho từ vựng HSK →
+                </Link>
+              </div>
 
-          {/* Card 6: Exam Simulation */}
-          <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
-            isLight ? 'bg-white border-slate-200 hover:border-emerald-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-emerald-500'
-          }`}>
-            <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
-              <GraduationCap className="w-6 h-6" />
-            </div>
-            <h3 className="text-base sm:text-lg font-black">6. Thi thử TOEIC & IELTS chuẩn format</h3>
-            <p className="text-xs text-slate-400 leading-relaxed font-medium">
-              Hơn 500 đề thi đầy đủ phần Nghe & Đọc có đồng hồ tính giờ chính xác, chấm điểm tự động và giải thích chi tiết từng câu.
-            </p>
-            <Link href="/kho-de" className="inline-flex items-center gap-1 text-xs font-bold text-indigo-400 hover:underline">
-              Làm đề thi thử ngay →
-            </Link>
-          </div>
+              {/* Card 6: HSK Exams */}
+              <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
+                isLight ? 'bg-white border-slate-200 hover:border-rose-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-rose-500'
+              }`}>
+                <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+                  <GraduationCap className="w-6 h-6" />
+                </div>
+                <h3 className="text-base sm:text-lg font-black">6. Phòng Thi HSK 1 - 6 & HSKK</h3>
+                <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                  Đầy đủ đề thi thử HSK 1 đến 6 chuẩn cấu trúc mới, hỗ trợ 2 chế độ Luyện đề (giải thích ngay) & Thi thử (bấm giờ tự nộp).
+                </p>
+                <Link href="/kho-de" className="inline-flex items-center gap-1 text-xs font-bold text-indigo-400 hover:underline">
+                  Làm đề thi HSK ngay →
+                </Link>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Card 1: Dictation */}
+              <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
+                isLight ? 'bg-white border-slate-200 hover:border-emerald-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-emerald-500'
+              }`}>
+                <div className="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                  <Headphones className="w-6 h-6" />
+                </div>
+                <h3 className="text-base sm:text-lg font-black">1. Nghe chép chính tả (Dictation)</h3>
+                <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                  Tự động dừng khi dứt câu, lặp lại mốc thời gian cho đến khi tai bạn nghe rõ từng mạo từ, đuôi -ed, nối âm bản ngữ.
+                </p>
+                <Link href="/dictation-shadowing" className="inline-flex items-center gap-1 text-xs font-bold text-emerald-500 hover:underline">
+                  Bắt đầu luyện nghe →
+                </Link>
+              </div>
+
+              {/* Card 2: Shadowing */}
+              <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
+                isLight ? 'bg-white border-slate-200 hover:border-emerald-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-emerald-500'
+              }`}>
+                <div className="w-12 h-12 rounded-2xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
+                  <Volume2 className="w-6 h-6" />
+                </div>
+                <h3 className="text-base sm:text-lg font-black">2. Nhại giọng chuẩn (Shadowing)</h3>
+                <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                  Ghi âm giọng nói nhại lại người bản xứ theo từng câu, điều chỉnh tốc độ 50%-75%-100% để hình thành phản xạ phát âm tự nhiên.
+                </p>
+                <Link href="/dictation-shadowing" className="inline-flex items-center gap-1 text-xs font-bold text-cyan-500 hover:underline">
+                  Luyện phát âm ngay →
+                </Link>
+              </div>
+
+              {/* Card 3: Word Order */}
+              <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
+                isLight ? 'bg-white border-slate-200 hover:border-emerald-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-emerald-500'
+              }`}>
+                <div className="w-12 h-12 rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center">
+                  <Gamepad2 className="w-6 h-6" />
+                </div>
+                <h3 className="text-base sm:text-lg font-black">3. Trò chơi Xếp từ (Word Order)</h3>
+                <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                  Nối từ theo đúng thứ tự câu bạn nghe được. Hệ thống rung lắc cảnh báo khi chọn sai, giúp bạn nhớ cấu trúc câu vô thức.
+                </p>
+                <Link href="/dictation-shadowing" className="inline-flex items-center gap-1 text-xs font-bold text-purple-400 hover:underline">
+                  Khám phá Game xếp từ →
+                </Link>
+              </div>
+
+              {/* Card 4: See & Write */}
+              <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
+                isLight ? 'bg-white border-slate-200 hover:border-emerald-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-emerald-500'
+              }`}>
+                <div className="w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center">
+                  <PenTool className="w-6 h-6" />
+                </div>
+                <h3 className="text-base sm:text-lg font-black">4. Viết phản xạ (See & Write)</h3>
+                <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                  Nhìn ý nghĩa tiếng Việt và gõ lại câu tiếng Anh với gợi ý ký tự thông minh. Loại bỏ hoàn toàn tật dịch thầm trong đầu.
+                </p>
+                <Link href="/practice/see-write" className="inline-flex items-center gap-1 text-xs font-bold text-amber-500 hover:underline">
+                  Luyện viết phản xạ →
+                </Link>
+              </div>
+
+              {/* Card 5: Spaced Repetition */}
+              <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
+                isLight ? 'bg-white border-slate-200 hover:border-emerald-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-emerald-500'
+              }`}>
+                <div className="w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center">
+                  <Clock className="w-6 h-6" />
+                </div>
+                <h3 className="text-base sm:text-lg font-black">5. Thuật toán Spaced Repetition</h3>
+                <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                  Ứng dụng thuật toán SuperMemo SM-2 tự động tính toán thời điểm vàng ôn tập từ vựng (1 ngày, 3 ngày, 7 ngày) để đưa vào trí nhớ dài hạn.
+                </p>
+                <Link href="/vocabulary" className="inline-flex items-center gap-1 text-xs font-bold text-rose-400 hover:underline">
+                  Xem sổ từ vựng →
+                </Link>
+              </div>
+
+              {/* Card 6: Exam Simulation */}
+              <div className={`p-6 rounded-3xl border transition-all hover:scale-[1.02] space-y-3.5 shadow-lg ${
+                isLight ? 'bg-white border-slate-200 hover:border-emerald-500' : 'bg-[#111a28] border-[#1e2d42] hover:border-emerald-500'
+              }`}>
+                <div className="w-12 h-12 rounded-2xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center">
+                  <GraduationCap className="w-6 h-6" />
+                </div>
+                <h3 className="text-base sm:text-lg font-black">6. Thi thử TOEIC & IELTS chuẩn format</h3>
+                <p className="text-xs text-slate-400 leading-relaxed font-medium">
+                  Hơn 500 đề thi đầy đủ phần Nghe & Đọc có đồng hồ tính giờ chính xác, chấm điểm tự động và giải thích chi tiết từng câu.
+                </p>
+                <Link href="/kho-de" className="inline-flex items-center gap-1 text-xs font-bold text-indigo-400 hover:underline">
+                  Làm đề thi thử ngay →
+                </Link>
+              </div>
+            </>
+          )}
         </div>
       </section>
 
@@ -731,24 +1106,30 @@ export default function HomePage() {
       <section className="space-y-6">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-500 text-[11px] font-black uppercase">
+            <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black uppercase ${
+              isChinese ? 'bg-rose-500/10 text-rose-400' : 'bg-emerald-500/10 text-emerald-500'
+            }`}>
               <Flame className="w-3.5 h-3.5" />
               <span>Trending tuần này</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-black mt-1">Bài học luyện nghe tuyển chọn</h2>
+            <h2 className="text-2xl sm:text-3xl font-black mt-1">
+              {isChinese ? 'Bài học khẩu ngữ tiếng Trung tuyển chọn' : 'Bài học luyện nghe tuyển chọn'}
+            </h2>
           </div>
 
           <Link
             href="/dictation-shadowing"
-            className="text-xs font-bold text-emerald-500 hover:text-emerald-400 flex items-center gap-1"
+            className={`text-xs font-bold flex items-center gap-1 ${
+              isChinese ? 'text-rose-400 hover:text-rose-300' : 'text-emerald-500 hover:text-emerald-400'
+            }`}
           >
-            <span>Xem tất cả 4.415+ bài học</span>
+            <span>{isChinese ? 'Xem tất cả bài học tiếng Trung' : 'Xem tất cả 4.415+ bài học'}</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {mockDictationLessons.slice(0, 3).map((lesson) => (
+          {(isChinese ? mockChineseLessons.slice(0, 3) : mockDictationLessons.slice(0, 3)).map((lesson) => (
             <Link
               key={lesson.id}
               href={`/dictation-shadowing/${lesson.id}`}
@@ -758,12 +1139,18 @@ export default function HomePage() {
             >
               <div className="relative aspect-16/9 w-full bg-slate-900 overflow-hidden">
                 <img
-                  src={lesson.thumbnail || 'https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=600&q=80'}
+                  src={
+                    lesson.thumbnail ||
+                    (lesson.youtubeId ? `https://img.youtube.com/vi/${lesson.youtubeId}/hqdefault.jpg` : '') ||
+                    'https://images.unsplash.com/photo-1518495973542-4542c06a5843?auto=format&fit=crop&w=600&q=80'
+                  }
                   alt={lesson.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
-                <div className="absolute top-3 right-3 px-2 py-0.5 rounded-md bg-[#2563eb] text-white text-[10px] font-black">
-                  {lesson.level || 'B1'}
+                <div className={`absolute top-3 right-3 px-2 py-0.5 rounded-md text-white text-[10px] font-black ${
+                  isChinese ? 'bg-rose-600' : 'bg-[#2563eb]'
+                }`}>
+                  {lesson.level || (isChinese ? 'HSK 1' : 'B1')}
                 </div>
                 <div className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-xs px-2 py-0.5 rounded text-[10px] font-bold text-white flex items-center gap-1">
                   <Clock className="w-3 h-3 text-slate-300" />
@@ -773,15 +1160,19 @@ export default function HomePage() {
 
               <div className="p-5 flex-1 flex flex-col justify-between space-y-3">
                 <div className="space-y-1">
-                  <span className="text-[11px] font-bold text-emerald-500 block">{lesson.topic}</span>
-                  <h3 className="text-sm font-black line-clamp-2 group-hover:text-emerald-400 transition-colors">
+                  <span className={`text-[11px] font-bold block ${isChinese ? 'text-rose-400' : 'text-emerald-500'}`}>
+                    {lesson.topic}
+                  </span>
+                  <h3 className={`text-sm font-black line-clamp-2 transition-colors ${
+                    isChinese ? 'group-hover:text-rose-400' : 'group-hover:text-emerald-400'
+                  }`}>
                     {lesson.title}
                   </h3>
                 </div>
 
                 <div className="flex items-center justify-between pt-2 border-t border-slate-700/30 text-[11px] font-bold text-slate-400">
-                  <span>{lesson.sentences?.length || 10} câu luyện tập</span>
-                  <span className="text-emerald-500 flex items-center gap-1 font-black">
+                  <span>{lesson.sentences?.length || 5} câu luyện tập</span>
+                  <span className={`flex items-center gap-1 font-black ${isChinese ? 'text-rose-400' : 'text-emerald-500'}`}>
                     Học ngay <ArrowRight className="w-3.5 h-3.5" />
                   </span>
                 </div>
@@ -866,26 +1257,40 @@ export default function HomePage() {
       {/* ========================================================================= */}
       {/* 6. FINAL CALL TO ACTION (CTA BANNER CUỐI TRANG)                           */}
       {/* ========================================================================= */}
-      <section className="relative rounded-3xl bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 p-8 sm:p-12 text-center text-white overflow-hidden shadow-2xl space-y-6">
+      <section className={`relative rounded-3xl p-8 sm:p-12 text-center text-white overflow-hidden shadow-2xl space-y-6 ${
+        isChinese
+          ? 'bg-gradient-to-r from-rose-600 via-amber-600 to-rose-700'
+          : 'bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700'
+      }`}>
         <div className="max-w-2xl mx-auto space-y-4 relative z-10">
           <h2 className="text-2xl sm:text-4xl font-black">
-            Bắt đầu hành trình thành thạo Tiếng Anh ngay hôm nay
+            {isChinese
+              ? 'Bắt đầu hành trình chinh phục HSK & Tiếng Trung ngay hôm nay'
+              : 'Bắt đầu hành trình thành thạo Tiếng Anh ngay hôm nay'}
           </h2>
-          <p className="text-xs sm:text-sm font-medium text-emerald-100 leading-relaxed">
-            Học miễn phí không giới hạn, không cần thẻ tín dụng. Tặng ngay 100 kim cương 💎 để mở khóa tất cả các chế độ luyện tập nâng cao.
+          <p className="text-xs sm:text-sm font-medium leading-relaxed opacity-90">
+            {isChinese
+              ? 'Luyện viết ô chữ Mễ/Điền, bảng Pinyin, tra từ bài khoá 1-chạm và làm đề thi HSK chuẩn 3.0 hoàn toàn miễn phí. Tặng 100 kim cương 💎 khi tạo tài khoản.'
+              : 'Học miễn phí không giới hạn, không cần thẻ tín dụng. Tặng ngay 100 kim cương 💎 để mở khóa tất cả các chế độ luyện tập nâng cao.'}
           </p>
           <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
             <Link
               href="/register"
-              className="px-8 py-3.5 bg-white text-emerald-800 hover:bg-emerald-50 active:scale-95 font-black text-sm sm:text-base rounded-2xl shadow-xl transition-all hover:scale-105 cursor-pointer"
+              className={`px-8 py-3.5 bg-white font-black text-sm sm:text-base rounded-2xl shadow-xl transition-all hover:scale-105 cursor-pointer ${
+                isChinese ? 'text-rose-800 hover:bg-rose-50' : 'text-emerald-800 hover:bg-emerald-50'
+              }`}
             >
               Tạo tài khoản miễn phí →
             </Link>
             <Link
-              href="/dictation-shadowing"
-              className="px-6 py-3.5 bg-emerald-900/60 hover:bg-emerald-900/80 border border-emerald-400/40 text-white font-black text-sm sm:text-base rounded-2xl transition-all cursor-pointer"
+              href={isChinese ? "/practice/hanzi-writer" : "/dictation-shadowing"}
+              className={`px-6 py-3.5 border text-white font-black text-sm sm:text-base rounded-2xl transition-all cursor-pointer ${
+                isChinese
+                  ? 'bg-rose-900/60 hover:bg-rose-900/80 border-rose-400/40'
+                  : 'bg-emerald-900/60 hover:bg-emerald-900/80 border-emerald-400/40'
+              }`}
             >
-              Học thử không cần đăng nhập
+              {isChinese ? 'Thử tạo vở viết chữ Hán' : 'Học thử không cần đăng nhập'}
             </Link>
           </div>
         </div>

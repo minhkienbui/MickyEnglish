@@ -38,6 +38,7 @@ export interface ShadowingPanelProps {
   playbackSpeed?: number;
   subMode?: 'step-by-step' | 'auto-flow';
   onSubModeChange?: (mode: 'step-by-step' | 'auto-flow') => void;
+  speechLang?: string;
 }
 
 export default function ShadowingPanel({
@@ -53,6 +54,7 @@ export default function ShadowingPanel({
   playbackSpeed = 1.0,
   subMode: externalSubMode,
   onSubModeChange,
+  speechLang,
 }: ShadowingPanelProps) {
   const { theme } = useThemeStore();
   const isLight = theme === 'light';
@@ -89,6 +91,9 @@ export default function ShadowingPanel({
       vietnameseMeaning: "bệnh viện, đồng thời che chắn cho tôi và",
     };
 
+  const isChinese = /[一-龥]/.test(currentSentence.text);
+  const detectedLang = speechLang || (isChinese ? 'zh-CN' : 'en-US');
+
   // Hook Web Speech API nhận diện giọng nói Realtime
   const {
     isListening,
@@ -99,7 +104,7 @@ export default function ShadowingPanel({
     stopListening,
     resetTranscript,
   } = useSpeechRecognition({
-    lang: 'en-US',
+    lang: detectedLang,
     continuous: true,
     interimResults: true,
     silenceTimeoutMs: subMode === 'auto-flow' ? 0 : 5000,
@@ -389,7 +394,7 @@ export default function ShadowingPanel({
                   : 'bg-[#121c2b] border-[#1e2d42] text-slate-400'
               }`}
             >
-              <Type className="w-3.5 h-3.5" /> T IPA
+              <Type className="w-3.5 h-3.5" /> {isChinese ? 'T Pinyin' : 'T IPA'}
             </button>
           </div>
 
@@ -403,12 +408,12 @@ export default function ShadowingPanel({
             />
           </div>
 
-          {/* Phiên âm IPA */}
+          {/* Phiên âm IPA / Pinyin */}
           {showIpa && currentSentence.phonetic && (
             <p className={`text-xs sm:text-sm font-mono text-center border-t pt-3 font-semibold tracking-wide ${
               isLight ? 'border-slate-200 text-emerald-700' : 'border-[#1e2d42] text-emerald-400'
             }`}>
-              /{currentSentence.phonetic}/
+              {isChinese ? currentSentence.phonetic : `/${currentSentence.phonetic}/`}
             </p>
           )}
 
