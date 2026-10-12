@@ -1,3 +1,10 @@
+import hsk1Data from './chinese/hsk1.json';
+import hsk2Data from './chinese/hsk2.json';
+import hsk3Data from './chinese/hsk3.json';
+import hsk4Data from './chinese/hsk4.json';
+import hsk5Data from './chinese/hsk5.json';
+import hsk6Data from './chinese/hsk6.json';
+
 export interface ChineseWordItem {
   id: string;
   hanzi: string; // Chữ Hán
@@ -5,368 +12,84 @@ export interface ChineseWordItem {
   sinoVietnamese: string; // Âm Hán-Việt
   meaning: string; // Nghĩa tiếng Việt
   hskLevel: number; // 1, 2, 3, 4, 5, 6
-  topic: string;
-  exampleZh: string;
-  examplePinyin: string;
-  exampleVi: string;
+  topic?: string;
+  exampleZh?: string;
+  examplePinyin?: string;
+  exampleVi?: string;
   radical?: string; // Bộ thủ
   strokeCount?: number; // Số nét
   audioText?: string;
-  level: number; // SRS level (0-5)
+  level?: number; // SRS level (0-5)
   nextReviewDate?: string;
 }
 
-export const mockChineseVocabulary: ChineseWordItem[] = [
-  // =================== HSK 1 ===================
-  {
-    id: 'zh-1-hello',
-    hanzi: '你好',
-    pinyin: 'nǐ hǎo',
-    sinoVietnamese: 'Nhĩ Hảo',
-    meaning: 'Xin chào',
-    hskLevel: 1,
-    topic: 'Chào hỏi & Giao tiếp cơ bản',
-    exampleZh: '你好！很高兴认识你。',
-    examplePinyin: 'Nǐ hǎo! Hěn gāoxìng rènshí nǐ.',
-    exampleVi: 'Xin chào! Rất vui được làm quen với bạn.',
-    radical: '亻 (Nhân đứng)',
-    strokeCount: 7,
-    level: 0,
-  },
-  {
-    id: 'zh-1-thanks',
-    hanzi: '谢谢',
-    pinyin: 'xièxie',
-    sinoVietnamese: 'Tạ Tạ',
-    meaning: 'Cảm ơn',
-    hskLevel: 1,
-    topic: 'Chào hỏi & Giao tiếp cơ bản',
-    exampleZh: '太谢谢你的帮助了！',
-    examplePinyin: 'Tài xièxie nǐ de bāngzhù le!',
-    exampleVi: 'Rất cảm ơn sự giúp đỡ của bạn!',
-    radical: '讠(Ngôn)',
-    strokeCount: 12,
-    level: 0,
-  },
-  {
-    id: 'zh-1-teacher',
-    hanzi: '老师',
-    pinyin: 'lǎoshī',
-    sinoVietnamese: 'Lão Sư',
-    meaning: 'Thầy giáo, cô giáo, giáo viên',
-    hskLevel: 1,
-    topic: 'Trường học & Nghề nghiệp',
-    exampleZh: '王老师是一位非常有经验的老师。',
-    examplePinyin: 'Wáng lǎoshī shì yí wèi fēicháng yǒu jīngyàn de lǎoshī.',
-    exampleVi: 'Thầy Vương là một giáo viên rất có kinh nghiệm.',
-    radical: '老 (Lão)',
-    strokeCount: 6,
-    level: 0,
-  },
-  {
-    id: 'zh-1-learn',
-    hanzi: '学习',
-    pinyin: 'xuéxí',
-    sinoVietnamese: 'Học Tập',
-    meaning: 'Học tập, nghiên cứu',
-    hskLevel: 1,
-    topic: 'Học tập & Đời sống',
-    exampleZh: '我每天都在MickyEnglish上学习汉语。',
-    examplePinyin: 'Wǒ měitiān dōu zài MickyEnglish shàng xuéxí hànyǔ.',
-    exampleVi: 'Tôi học tiếng Trung trên MickyEnglish mỗi ngày.',
-    radical: '子 (Tử)',
-    strokeCount: 8,
-    level: 0,
-  },
-  {
-    id: 'zh-1-chinese',
-    hanzi: '汉语',
-    pinyin: 'hànyǔ',
-    sinoVietnamese: 'Hán Ngữ',
-    meaning: 'Tiếng Hán, tiếng Trung',
-    hskLevel: 1,
-    topic: 'Ngôn ngữ & Văn hóa',
-    exampleZh: '汉语虽然难，但是很有趣。',
-    examplePinyin: 'Hànyǔ suīrán nán, dànshì hěn yǒuqù.',
-    exampleVi: 'Tiếng Trung tuy khó, nhưng rất thú vị.',
-    radical: '氵 (Ba chấm thủy)',
-    strokeCount: 5,
-    level: 0,
-  },
-  {
-    id: 'zh-1-friend',
-    hanzi: '朋友',
-    pinyin: 'péngyou',
-    sinoVietnamese: 'Bằng Hữu',
-    meaning: 'Bạn bè, bạn thân',
-    hskLevel: 1,
-    topic: 'Mối quan hệ',
-    exampleZh: '他是我的好朋友。',
-    examplePinyin: 'Tā shì wǒ de hǎo péngyou.',
-    exampleVi: 'Cậu ấy là bạn thân của tôi.',
-    radical: '月 (Nguyệt)',
-    strokeCount: 8,
-    level: 0,
-  },
-  {
-    id: 'zh-1-like',
-    hanzi: '喜欢',
-    pinyin: 'xǐhuan',
-    sinoVietnamese: 'Hỉ Hoan',
-    meaning: 'Thích, yêu thích',
-    hskLevel: 1,
-    topic: 'Cảm xúc & Sở thích',
-    exampleZh: '我很喜欢看中国电影。',
-    examplePinyin: 'Wǒ hěn xǐhuan kàn zhōngguó diànyǐng.',
-    exampleVi: 'Tôi rất thích xem phim Trung Quốc.',
-    radical: '士 (Sĩ)',
-    strokeCount: 12,
-    level: 0,
-  },
-  {
-    id: 'zh-1-eat',
-    hanzi: '吃',
-    pinyin: 'chī',
-    sinoVietnamese: 'Ngật',
-    meaning: 'Ăn',
-    hskLevel: 1,
-    topic: 'Ẩm thực & Đời sống',
-    exampleZh: '你想吃中国菜吗？',
-    examplePinyin: 'Nǐ xiǎng chī zhōngguó cài ma?',
-    exampleVi: 'Bạn muốn ăn món Trung Quốc không?',
-    radical: '口 (Khẩu)',
-    strokeCount: 6,
-    level: 0,
-  },
+// 6 Bộ từ vựng HSK 1 - 6 chính thức
+export const hsk1Words: ChineseWordItem[] = hsk1Data as ChineseWordItem[];
+export const hsk2Words: ChineseWordItem[] = hsk2Data as ChineseWordItem[];
+export const hsk3Words: ChineseWordItem[] = hsk3Data as ChineseWordItem[];
+export const hsk4Words: ChineseWordItem[] = hsk4Data as ChineseWordItem[];
+export const hsk5Words: ChineseWordItem[] = hsk5Data as ChineseWordItem[];
+export const hsk6Words: ChineseWordItem[] = hsk6Data as ChineseWordItem[];
 
-  // =================== HSK 2 ===================
-  {
-    id: 'zh-2-happy',
-    hanzi: '快乐',
-    pinyin: 'kuàilè',
-    sinoVietnamese: 'Khoái Lạc',
-    meaning: 'Vui vẻ, hạnh phúc',
-    hskLevel: 2,
-    topic: 'Cảm xúc & Tâm trạng',
-    exampleZh: '祝你生日快乐，万事如意！',
-    examplePinyin: 'Zhù nǐ shēngrì kuàilè, wànshì rúyì!',
-    exampleVi: 'Chúc bạn sinh nhật vui vẻ, vạn sự như ý!',
-    radical: '忄 (Tâm đứng)',
-    strokeCount: 7,
-    level: 0,
-  },
-  {
-    id: 'zh-2-travel',
-    hanzi: '旅游',
-    pinyin: 'lǚyóu',
-    sinoVietnamese: 'Lữ Du',
-    meaning: 'Du lịch, đi chơi',
-    hskLevel: 2,
-    topic: 'Du lịch & Giao thông',
-    exampleZh: '去年夏天我去北京旅游了。',
-    examplePinyin: 'Qùnián xiàtiān wǒ qù Běijīng lǚyóu le.',
-    exampleVi: 'Mùa hè năm ngoái tôi đã đi du lịch Bắc Kinh.',
-    radical: '方 (Phương)',
-    strokeCount: 10,
-    level: 0,
-  },
-  {
-    id: 'zh-2-weather',
-    hanzi: '天气',
-    pinyin: 'tiānqì',
-    sinoVietnamese: 'Thiên Khí',
-    meaning: 'Thời tiết',
-    hskLevel: 2,
-    topic: 'Thiên nhiên & Đời sống',
-    exampleZh: '今天天气非常晴朗。',
-    examplePinyin: 'Jīntiān tiānqì fēicháng qínglǎng.',
-    exampleVi: 'Thời tiết hôm nay vô cùng quang đãng.',
-    radical: '天 (Thiên)',
-    strokeCount: 4,
-    level: 0,
-  },
-  {
-    id: 'zh-2-exercise',
-    hanzi: '运动',
-    pinyin: 'yùndòng',
-    sinoVietnamese: 'Vận Động',
-    meaning: 'Vận động, thể thao',
-    hskLevel: 2,
-    topic: 'Sức khỏe & Thể thao',
-    exampleZh: '多运动对身体很有好处。',
-    examplePinyin: 'Duō yùndòng duì shēntǐ hěn yǒu hǎochù.',
-    exampleVi: 'Tập thể dục nhiều rất có lợi cho sức khỏe.',
-    radical: '辶 (Xước)',
-    strokeCount: 7,
-    level: 0,
-  },
-
-  // =================== HSK 3 ===================
-  {
-    id: 'zh-3-effort',
-    hanzi: '努力',
-    pinyin: 'nǔlì',
-    sinoVietnamese: 'Nỗ Lực',
-    meaning: 'Cố gắng, chăm chỉ, nỗ lực',
-    hskLevel: 3,
-    topic: 'Phát triển bản thân',
-    exampleZh: '只要你努力学习，一定能通过HSK考试。',
-    examplePinyin: 'Zhǐyào nǐ nǔlì xuéxí, yídìng néng tōngguò HSK kǎoshì.',
-    exampleVi: 'Chỉ cần bạn nỗ lực học tập, nhất định sẽ đỗ kỳ thi HSK.',
-    radical: '力 (Lực)',
-    strokeCount: 7,
-    level: 0,
-  },
-  {
-    id: 'zh-3-success',
-    hanzi: '成功',
-    pinyin: 'chénggōng',
-    sinoVietnamese: 'Thành Công',
-    meaning: 'Thành công, thắng lợi',
-    hskLevel: 3,
-    topic: 'Sự nghiệp & Công việc',
-    exampleZh: '坚持是成功的关键。',
-    examplePinyin: 'Jiānchí shì chénggōng de guānjiàn.',
-    exampleVi: 'Kiên trì là chìa khóa của thành công.',
-    radical: '戈 (Qua)',
-    strokeCount: 6,
-    level: 0,
-  },
-  {
-    id: 'zh-3-environment',
-    hanzi: '环境',
-    pinyin: 'huánjìng',
-    sinoVietnamese: 'Hoàn Cảnh',
-    meaning: 'Môi trường, hoàn cảnh',
-    hskLevel: 3,
-    topic: 'Xã hội & Đời sống',
-    exampleZh: '这里的学习环境非常好。',
-    examplePinyin: 'Zhèlǐ de xuéxí huánjìng fēicháng hǎo.',
-    exampleVi: 'Môi trường học tập ở đây rất tốt.',
-    radical: '王 (Ngọc)',
-    strokeCount: 8,
-    level: 0,
-  },
-  {
-    id: 'zh-3-understand',
-    hanzi: '明白',
-    pinyin: 'míngbai',
-    sinoVietnamese: 'Minh Bạch',
-    meaning: 'Hiểu, rõ ràng',
-    hskLevel: 3,
-    topic: 'Giao tiếp',
-    exampleZh: '你明白老师刚才讲的内容吗？',
-    examplePinyin: 'Nǐ míngbai lǎoshī gāngcái jiǎng de nèiróng ma?',
-    exampleVi: 'Bạn có hiểu nội dung thầy giáo vừa giảng không?',
-    radical: '日 (Nhật)',
-    strokeCount: 8,
-    level: 0,
-  },
-
-  // =================== HSK 4 ===================
-  {
-    id: 'zh-4-persist',
-    hanzi: '坚持',
-    pinyin: 'jiānchí',
-    sinoVietnamese: 'Kiên Trì',
-    meaning: 'Kiên trì, giữ vững',
-    hskLevel: 4,
-    topic: 'Ý chí & Động lực',
-    exampleZh: '坚持每天练字和Shadowing是学好外语的捷径。',
-    examplePinyin: 'Jiānchí měitiān liànzì hé Shadowing shì xué hǎo wàiyǔ de jiéjìng.',
-    exampleVi: 'Kiên trì luyện viết chữ và Shadowing mỗi ngày là đường tắt để giỏi ngoại ngữ.',
-    radical: '土 (Thổ)',
-    strokeCount: 9,
-    level: 0,
-  },
-  {
-    id: 'zh-4-experience',
-    hanzi: '经验',
-    pinyin: 'jīngyàn',
-    sinoVietnamese: 'Kinh Nghiệm',
-    meaning: 'Kinh nghiệm, trải nghiệm thực tế',
-    hskLevel: 4,
-    topic: 'Kinh doanh & Công việc',
-    exampleZh: '他在外企工作积累了丰富的管理经验。',
-    examplePinyin: 'Tā zài wàiqǐ gōngzuò jīlěi le fēngfù de guǎnlǐ jīngyàn.',
-    exampleVi: 'Anh ấy làm việc ở doanh nghiệp nước ngoài tích lũy được nhiều kinh nghiệm quản lý phong phú.',
-    radical: '纟(Mịch)',
-    strokeCount: 8,
-    level: 0,
-  },
-
-  // =================== HSK 5 ===================
-  {
-    id: 'zh-5-resilient',
-    hanzi: '坚韧',
-    pinyin: 'jiānrèn',
-    sinoVietnamese: 'Kiên Nhận',
-    meaning: 'Kiên cường, bền bỉ, dẻo dai',
-    hskLevel: 5,
-    topic: 'Phẩm chất & Tính cách',
-    exampleZh: '面对困难，她展现出了坚韧不拔的品格。',
-    examplePinyin: 'Miànduì kùnnan, tā zhǎnxiàn chū le jiānrèn bùbá de pǐngé.',
-    exampleVi: 'Đối mặt với gian nan, cô ấy đã thể hiện phẩm chất kiên cường bất khuất.',
-    radical: '土 (Thổ)',
-    strokeCount: 9,
-    level: 0,
-  },
-  {
-    id: 'zh-5-opportunity',
-    hanzi: '机遇',
-    pinyin: 'jīyù',
-    sinoVietnamese: 'Cơ Ngộ',
-    meaning: 'Cơ hội, thời cơ tốt',
-    hskLevel: 5,
-    topic: 'Kinh tế & Thời đại',
-    exampleZh: '我们要抓住时代赋予的发展机遇。',
-    examplePinyin: 'Wǒmen yào zhuāzhù shídài fùyǔ de fāzhǎn jīyù.',
-    exampleVi: 'Chúng ta phải nắm bắt cơ hội phát triển do thời đại mang lại.',
-    radical: '木 (Mộc)',
-    strokeCount: 10,
-    level: 0,
-  },
-
-  // =================== HSK 6 ===================
-  {
-    id: 'zh-6-profound',
-    hanzi: '博大精深',
-    pinyin: 'bó dà jīng shēn',
-    sinoVietnamese: 'Bác Đại Tinh Thâm',
-    meaning: 'Uyên bác và sâu sắc, rộng lớn bao la (nói về tri thức, văn hóa)',
-    hskLevel: 6,
-    topic: 'Thành ngữ & Triết lý',
-    exampleZh: '中国传统文化博大精深，值得终身学习。',
-    examplePinyin: 'Zhōngguó chuántǒng wénhuà bódà jīngshēn, zhídé zhōngshēn xuéxí.',
-    exampleVi: 'Văn hóa truyền thống Trung Hoa bác đại tinh thâm, xứng đáng học tập cả đời.',
-    radical: '十 (Thập)',
-    strokeCount: 12,
-    level: 0,
-  },
+// Toàn bộ 5.400+ từ vựng HSK 1 - 6 chuẩn hóa theo mô hình nhaihsk.com
+export const allHskWords: ChineseWordItem[] = [
+  ...hsk1Words,
+  ...hsk2Words,
+  ...hsk3Words,
+  ...hsk4Words,
+  ...hsk5Words,
+  ...hsk6Words,
 ];
 
+// Alias tương thích ngược cho các màn hình đã dùng mockChineseVocabulary
+export const mockChineseVocabulary: ChineseWordItem[] = allHskWords;
+
+// Hàm tiện ích lấy từ vựng theo cấp độ
+export function getChineseVocabByLevel(level: number): ChineseWordItem[] {
+  switch (level) {
+    case 1:
+      return hsk1Words;
+    case 2:
+      return hsk2Words;
+    case 3:
+      return hsk3Words;
+    case 4:
+      return hsk4Words;
+    case 5:
+      return hsk5Words;
+    case 6:
+      return hsk6Words;
+    default:
+      return allHskWords;
+  }
+}
+
+// Danh mục các bộ HSK phục vụ giao diện Sổ Từ Vựng
 export const hskDecks = [
   {
     id: 'hsk-1',
-    name: 'HSK 1 - 500 Từ Vỡ Lòng',
+    name: 'HSK 1 - 300 Từ Căn Bản',
     level: 'HSK 1',
-    count: 500,
-    description: 'Từ vựng căn bản cho người mới bắt đầu học tiếng Trung, giao tiếp đời thường đơn giản.',
+    hskLevelNum: 1,
+    count: hsk1Words.length,
+    description: 'Từ vựng căn bản cho người mới bắt đầu học tiếng Trung theo chuẩn NhaiHSK, giao tiếp đời thường.',
     color: 'from-emerald-500/20 to-teal-500/10 border-emerald-500/40 text-emerald-400',
   },
   {
     id: 'hsk-2',
-    name: 'HSK 2 - 772 Từ Sơ Cấp',
+    name: 'HSK 2 - 200 Từ Sơ Cấp',
     level: 'HSK 2',
-    count: 772,
-    description: 'Nắm vững các chủ đề sinh hoạt, mua sắm, gọi món, đi lại và hỏi đường.',
+    hskLevelNum: 2,
+    count: hsk2Words.length,
+    description: 'Nắm vững các chủ đề sinh hoạt, mua sắm, gọi món, đi lại và hỏi đường theo chuẩn sư phạm.',
     color: 'from-teal-500/20 to-cyan-500/10 border-teal-500/40 text-teal-400',
   },
   {
     id: 'hsk-3',
-    name: 'HSK 3 - 973 Từ Trung Cấp Nhẹ',
+    name: 'HSK 3 - 500 Từ Trung Cấp Nhẹ',
     level: 'HSK 3',
-    count: 973,
+    hskLevelNum: 3,
+    count: hsk3Words.length,
     description: 'Tự tin giao tiếp và diễn đạt quan điểm cá nhân trong học tập và công việc hàng ngày.',
     color: 'from-blue-500/20 to-indigo-500/10 border-blue-500/40 text-blue-400',
   },
@@ -374,23 +97,26 @@ export const hskDecks = [
     id: 'hsk-4',
     name: 'HSK 4 - 1000 Từ Trung Cấp Chuẩn',
     level: 'HSK 4',
-    count: 1000,
+    hskLevelNum: 4,
+    count: hsk4Words.length,
     description: 'Thảo luận các chủ đề sâu rộng, chuẩn bị du học hoặc làm việc tại doanh nghiệp Trung Quốc.',
     color: 'from-indigo-500/20 to-purple-500/10 border-indigo-500/40 text-indigo-400',
   },
   {
     id: 'hsk-5',
-    name: 'HSK 5 - 1071 Từ Cao Cấp',
+    name: 'HSK 5 - 1600 Từ Cao Cấp',
     level: 'HSK 5',
-    count: 1071,
+    hskLevelNum: 5,
+    count: hsk5Words.length,
     description: 'Đọc hiểu báo chí, tiểu thuyết, xem phim không phụ đề và thuyết trình chuyên nghiệp.',
     color: 'from-purple-500/20 to-pink-500/10 border-purple-500/40 text-purple-400',
   },
   {
     id: 'hsk-6',
-    name: 'HSK 6 - 1140 Từ Thành Thạo',
+    name: 'HSK 6 - 1800 Từ Thành Thạo',
     level: 'HSK 6',
-    count: 1140,
+    hskLevelNum: 6,
+    count: hsk6Words.length,
     description: 'Sử dụng tiếng Trung nhuần nhuyễn như người bản xứ, viết luận văn và nghiên cứu học thuật.',
     color: 'from-rose-500/20 to-red-500/10 border-rose-500/40 text-rose-400',
   },

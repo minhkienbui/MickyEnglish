@@ -23,7 +23,13 @@ import {
 import { useVocabStore } from '@/stores/useVocabStore';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useLanguageStore } from '@/stores/useLanguageStore';
-import { mockChineseVocabulary, hskDecks } from '@/data/mockChineseVocab';
+import {
+  mockChineseVocabulary,
+  allHskWords,
+  hskDecks,
+  getChineseVocabByLevel,
+  ChineseWordItem,
+} from '@/data/mockChineseVocab';
 import PremiumModal from '@/components/common/PremiumModal';
 
 export default function VocabularyHubPage() {
@@ -46,13 +52,17 @@ export default function VocabularyHubPage() {
   const [showPremiumModal, setShowPremiumModal] = useState(false);
   const [selectedDeck, setSelectedDeck] = useState<any>(null);
 
+  // Pagination cho danh sách từ vựng tiếng Trung HSK
+  const [chinesePage, setChinesePage] = useState(1);
+  const pageSize = 32;
+
   // Instant Dictionary Lookup result state
   const [lookupResult, setLookupResult] = useState<{
     word: string;
     phonetic: string;
     meaning: string;
-    exampleEn: string;
-    exampleVi: string;
+    exampleEn?: string;
+    exampleVi?: string;
   } | null>(null);
 
   const dueCount = getDueWords().length;
@@ -178,6 +188,7 @@ export default function VocabularyHubPage() {
     id: d.id,
     title: d.name,
     subtitle: d.level,
+    hskLevelNum: d.hskLevelNum,
     wordsCount: d.count,
     learnedCount: 0,
     isPro: false,
@@ -241,18 +252,73 @@ export default function VocabularyHubPage() {
     },
   ];
 
+  // Lọc từ vựng tiếng Trung HSK 1 - 6
+  const filteredChineseWords = useMemo(() => {
+    if (!isChinese) return [];
+    let list = allHskWords;
+
+    if (activeTag !== 'Tất cả' && activeTag.startsWith('# HSK')) {
+      const lv = parseInt(activeTag.replace('# HSK', '').trim(), 10);
+      if (!isNaN(lv)) {
+        list = getChineseVocabByLevel(lv);
+      }
+    } else if (selectedLevel !== 'Tất cả cấp độ') {
+      const lv = parseInt(selectedLevel.replace('HSK', '').trim(), 10);
+      if (!isNaN(lv)) {
+        list = getChineseVocabByLevel(lv);
+      }
+    }
+
+    if (deckSearch.trim()) {
+      const q = deckSearch.trim().toLowerCase();
+      list = list.filter(
+        (w) =>
+          w.hanzi.includes(q) ||
+          w.pinyin.toLowerCase().includes(q) ||
+          w.meaning.toLowerCase().includes(q) ||
+          w.sinoVietnamese.toLowerCase().includes(q)
+      );
+    }
+
+    return list;
+  }, [isChinese, activeTag, selectedLevel, deckSearch]);
+
+  const displayedChineseWords = useMemo(() => {
+    return filteredChineseWords.slice(0, chinesePage * pageSize);
+  }, [filteredChineseWords, chinesePage]);
+
   // Tra từ tức thì
   const handleInstantLookup = (term: string) => {
     if (!term.trim()) return;
+    const q = term.trim().toLowerCase();
+    if (isChinese) {
+      const found = allHskWords.find(
+        (w) =>
+          w.hanzi === term.trim() ||
+          w.pinyin.toLowerCase() === q ||
+          w.meaning.toLowerCase().includes(q) ||
+          w.sinoVietnamese.toLowerCase() === q
+      );
+      if (found) {
+        setLookupResult({
+          word: found.hanzi,
+          phonetic: found.pinyin,
+          meaning: `${found.sinoVietnamese ? `[${found.sinoVietnamese}] ` : ''}${found.meaning} (HSK ${found.hskLevel})`,
+          exampleEn: found.exampleZh || `包含 "${found.hanzi}" 的词语。`,
+          exampleVi: found.exampleVi || `Thuộc bộ từ vựng HSK ${found.hskLevel}.`,
+        });
+        return;
+      }
+    }
     const found = trendingWords.find(
-      (w) => w.word.toLowerCase() === term.toLowerCase()
+      (w) => w.word.toLowerCase() === q
     );
     if (found) {
       setLookupResult(found);
     } else {
       setLookupResult({
         word: term,
-        phonetic: isChinese ? 'nǐ hǎo' : '/əˈkeɪ.ʒən.əl/',
+        phonetic: isChinese ? 'pīnyīn' : '/əˈkeɪ.ʒən.əl/',
         meaning: `Nghĩa của từ "${term}" (Được tra tự động từ từ điển)`,
         exampleEn: isChinese ? `这是包含 "${term}" 的例句。` : `This is an example sentence containing the word ${term}.`,
         exampleVi: `Đây là câu ví dụ minh họa chứa từ ${term}.`,
@@ -552,11 +618,24 @@ export default function VocabularyHubPage() {
                 onChange={(e) => setSelectedLevel(e.target.value)}
                 className="w-full appearance-none bg-[#121c2b] border border-[#1e2d42] rounded-full pl-8 pr-8 py-2.5 text-xs text-slate-200 font-bold outline-none cursor-pointer"
               >
-                <option value="Tất cả cấp độ">Tất cả cấp độ</option>
-                <option value="A1-A2">A1 - A2 (Sơ cấp)</option>
-                <option value="B1">B1 (Trung cấp)</option>
-                <option value="B2">B2 (Trung cấp cao)</option>
-                <option value="C1">C1 (Nâng cao)</option>
+                <option value="Tất cả cấp độ">{isChinese ? 'Tất cả cấp độ HSK' : 'Tất cả cấp độ'}</option>
+                {isChinese ? (
+                  <>
+                    <option value="HSK 1">HSK 1 (300 từ)</option>
+                    <option value="HSK 2">HSK 2 (200 từ)</option>
+                    <option value="HSK 3">HSK 3 (500 từ)</option>
+                    <option value="HSK 4">HSK 4 (1.000 từ)</option>
+                    <option value="HSK 5">HSK 5 (1.600 từ)</option>
+                    <option value="HSK 6">HSK 6 (1.800 từ)</option>
+                  </>
+                ) : (
+                  <>
+                    <option value="A1-A2">A1 - A2 (Sơ cấp)</option>
+                    <option value="B1">B1 (Trung cấp)</option>
+                    <option value="B2">B2 (Trung cấp cao)</option>
+                    <option value="C1">C1 (Nâng cao)</option>
+                  </>
+                )}
               </select>
               <Filter className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-3.5 pointer-events-none" />
               <div className="absolute right-3 top-3 pointer-events-none text-slate-400 text-[10px]">▼</div>
@@ -573,7 +652,9 @@ export default function VocabularyHubPage() {
                   onClick={() => setActiveTag(tag)}
                   className={`px-3.5 py-1 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                     isActive
-                      ? 'bg-emerald-500 text-white shadow-md'
+                      ? isChinese
+                        ? 'bg-rose-600 text-white shadow-md'
+                        : 'bg-emerald-500 text-white shadow-md'
                       : 'bg-[#121c2b] text-slate-400 hover:text-white border border-[#1e2d42]'
                   }`}
                 >
@@ -583,21 +664,31 @@ export default function VocabularyHubPage() {
             })}
           </div>
 
-          {/* SECTION 1: TỪ VỰNG THÔNG DỤNG (7 BỘ TỪ) */}
+          {/* SECTION 1: CÁC BỘ TỪ VỰNG */}
           <section className="space-y-3">
             <div className="flex items-center justify-between">
               <h2 className="text-base font-black text-white flex items-center gap-2">
-                Từ vựng thông dụng <span className="text-xs text-slate-400 font-semibold">(7)</span>
+                {isChinese ? (
+                  <>
+                    6 Bộ từ vựng HSK 1 - 6 Chuẩn HSK 3.0 <span className="text-xs text-rose-400 font-semibold">(5.400+ từ)</span>
+                  </>
+                ) : (
+                  <>
+                    Từ vựng thông dụng <span className="text-xs text-slate-400 font-semibold">(7)</span>
+                  </>
+                )}
               </h2>
               <button
-                onClick={() => setActiveTag('# Từ vựng thông dụng')}
-                className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
+                onClick={() => setActiveTag('Tất cả')}
+                className={`text-xs font-bold transition-colors cursor-pointer ${
+                  isChinese ? 'text-rose-400 hover:text-rose-300' : 'text-emerald-400 hover:text-emerald-300'
+                }`}
               >
                 Xem tất cả &gt;
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {commonDecks.map((deck) => (
                 <DeckCard
                   key={deck.id}
@@ -614,36 +705,131 @@ export default function VocabularyHubPage() {
             </div>
           </section>
 
-          {/* SECTION 2: ENGLISH IN USE (4 BỘ TỪ) */}
-          <section className="space-y-3">
-            <div className="flex items-center justify-between">
-              <h2 className="text-base font-black text-white flex items-center gap-2">
-                English In Use <span className="text-xs text-slate-400 font-semibold">(4)</span>
-              </h2>
-              <button
-                onClick={() => setActiveTag('# English In Use')}
-                className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
-              >
-                Xem tất cả &gt;
-              </button>
-            </div>
+          {/* SECTION 2: DANH SÁCH TỪ VỰNG CHI TIẾT (TIẾNG TRUNG HSK HOẶC ENGLISH IN USE) */}
+          {isChinese ? (
+            <section className="space-y-4 pt-4 border-t border-[#1e2d42]">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                <div>
+                  <h2 className="text-base font-black text-white flex items-center gap-2">
+                    <span>📖 Danh Sách Từ Vựng HSK Chi Tiết</span>
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-500/30 font-bold">
+                      {filteredChineseWords.length} từ
+                    </span>
+                  </h2>
+                  <p className="text-xs text-slate-400">
+                    Bấm loa để nghe phát âm chuẩn Bắc Kinh, xem âm Hán-Việt và câu ví dụ minh họa.
+                  </p>
+                </div>
+              </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {englishInUseDecks.map((deck) => (
-                <DeckCard
-                  key={deck.id}
-                  deck={deck}
-                  onSelect={() => {
-                    if (deck.isPro) {
-                      setShowPremiumModal(true);
-                    } else {
-                      setSelectedDeck(deck);
-                    }
-                  }}
-                />
-              ))}
-            </div>
-          </section>
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+                {displayedChineseWords.map((word) => (
+                  <div
+                    key={word.id}
+                    className="p-3.5 bg-[#121c2b] border border-[#1e2d42] hover:border-rose-500/60 rounded-2xl space-y-2 transition-all shadow-sm group hover:-translate-y-0.5"
+                  >
+                    <div className="flex items-start justify-between">
+                      <div className="flex items-baseline gap-2">
+                        <span className="text-2xl font-black text-white group-hover:text-rose-400 transition-colors font-serif">
+                          {word.hanzi}
+                        </span>
+                        <span className="text-xs font-bold text-rose-400 font-mono">
+                          {word.pinyin}
+                        </span>
+                      </div>
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-black bg-rose-950/60 text-rose-300 border border-rose-500/20">
+                        HSK {word.hskLevel}
+                      </span>
+                    </div>
+
+                    <div className="text-xs space-y-0.5">
+                      {word.sinoVietnamese && (
+                        <p className="text-[11px] text-slate-400 font-medium">
+                          Âm Hán Việt: <span className="text-slate-200 font-bold">{word.sinoVietnamese}</span>
+                        </p>
+                      )}
+                      <p className="text-slate-300 font-semibold line-clamp-2">
+                        {word.meaning}
+                      </p>
+                    </div>
+
+                    {word.exampleZh && (
+                      <div className="p-2 bg-[#0d131d] border border-[#1e2d42]/60 rounded-xl text-[11px] space-y-0.5">
+                        <p className="text-rose-300/90 font-medium line-clamp-1">"{word.exampleZh}"</p>
+                        {word.exampleVi && <p className="text-slate-400 italic line-clamp-1">{word.exampleVi}</p>}
+                      </div>
+                    )}
+
+                    <div className="flex items-center justify-between pt-1 border-t border-[#1e2d42]/40">
+                      <button
+                        onClick={() => speakAudio(word.hanzi)}
+                        className="p-1.5 rounded-lg bg-rose-500/15 text-rose-400 hover:bg-rose-500 hover:text-white transition-colors cursor-pointer"
+                        title="Nghe phát âm"
+                      >
+                        <Volume2 className="w-3.5 h-3.5" />
+                      </button>
+
+                      <button
+                        onClick={() =>
+                          handleSaveToFlashcard({
+                            word: word.hanzi,
+                            phonetic: word.pinyin,
+                            meaning: `${word.sinoVietnamese ? `[${word.sinoVietnamese}] ` : ''}${word.meaning}`,
+                            exampleEn: word.exampleZh,
+                            exampleVi: word.exampleVi,
+                          })
+                        }
+                        className="px-2.5 py-1 bg-[#0d131d] hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 border border-[#1e2d42] rounded-lg text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                      >
+                        <Bookmark className="w-3 h-3" /> Lưu
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {displayedChineseWords.length < filteredChineseWords.length && (
+                <div className="pt-2 text-center">
+                  <button
+                    onClick={() => setChinesePage((p) => p + 1)}
+                    className="px-6 py-2.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-black rounded-full shadow-lg cursor-pointer transition-all hover:scale-105"
+                  >
+                    Xem thêm ({filteredChineseWords.length - displayedChineseWords.length} từ còn lại)
+                  </button>
+                </div>
+              )}
+            </section>
+          ) : (
+            <section className="space-y-3">
+              <div className="flex items-center justify-between">
+                <h2 className="text-base font-black text-white flex items-center gap-2">
+                  English In Use <span className="text-xs text-slate-400 font-semibold">(4)</span>
+                </h2>
+                <button
+                  onClick={() => setActiveTag('# English In Use')}
+                  className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
+                >
+                  Xem tất cả &gt;
+                </button>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {englishInUseDecks.map((deck) => (
+                  <DeckCard
+                    key={deck.id}
+                    deck={deck}
+                    onSelect={() => {
+                      if (deck.isPro) {
+                        setShowPremiumModal(true);
+                      } else {
+                        setSelectedDeck(deck);
+                      }
+                    }}
+                  />
+                ))}
+              </div>
+            </section>
+          )}
         </div>
       </div>
 
@@ -656,7 +842,9 @@ export default function VocabularyHubPage() {
                 <span className="text-3xl">{selectedDeck.icon}</span>
                 <div>
                   <h3 className="text-lg font-black">{selectedDeck.title}</h3>
-                  <p className="text-xs text-emerald-400 font-bold">{selectedDeck.wordsCount} từ vựng</p>
+                  <p className={`text-xs font-bold ${isChinese ? 'text-rose-400' : 'text-emerald-400'}`}>
+                    {selectedDeck.wordsCount} từ vựng
+                  </p>
                 </div>
               </div>
               <button
@@ -675,17 +863,27 @@ export default function VocabularyHubPage() {
                 <span className="font-bold text-white">0%</span>
               </div>
               <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-                <div className="w-0 h-full bg-emerald-500 rounded-full" />
+                <div className={`w-0 h-full rounded-full ${isChinese ? 'bg-rose-500' : 'bg-emerald-500'}`} />
               </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Link
                 href="/tuvung/on-tap"
-                className="flex-1 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs text-center rounded-2xl shadow-lg cursor-pointer"
+                className={`flex-1 py-3 text-white font-black text-xs text-center rounded-2xl shadow-lg cursor-pointer ${
+                  isChinese ? 'bg-rose-600 hover:bg-rose-500' : 'bg-emerald-600 hover:bg-emerald-500'
+                }`}
               >
-                Bắt đầu học bộ này
+                Luyện Tập Flashcard (SM-2)
               </Link>
+              {isChinese && (
+                <Link
+                  href="/practice/hanzi-writer"
+                  className="py-3 px-4 bg-amber-600 hover:bg-amber-500 text-white font-black text-xs text-center rounded-2xl shadow-lg cursor-pointer"
+                >
+                  Tạo Vở Viết A4
+                </Link>
+              )}
               <button
                 onClick={() => setSelectedDeck(null)}
                 className="px-4 py-3 bg-[#0d131d] hover:bg-slate-800 border border-[#1e2d42] text-slate-300 font-bold text-xs rounded-2xl cursor-pointer"

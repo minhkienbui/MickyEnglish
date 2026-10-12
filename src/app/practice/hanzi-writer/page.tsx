@@ -39,6 +39,61 @@ const PRESET_CHAR_SETS: { label: string; chars: HanziCharData[] }[] = [
     ],
   },
   {
+    label: 'HSK 2 Sơ cấp',
+    chars: [
+      { char: '高', pinyin: 'gāo', sinoVi: 'Cao', meaning: 'Cao, chiều cao', strokes: 10 },
+      { char: '兴', pinyin: 'xìng', sinoVi: 'Hứng', meaning: 'Hứng khởi, vui vẻ', strokes: 6 },
+      { char: '见', pinyin: 'jiàn', sinoVi: 'Kiến', meaning: 'Gặp gỡ, thấy', strokes: 4 },
+      { char: '到', pinyin: 'dào', sinoVi: 'Đáo', meaning: 'Đến, tới nơi', strokes: 8 },
+      { char: '帮', pinyin: 'bāng', sinoVi: 'Bang', meaning: 'Giúp đỡ', strokes: 9 },
+      { char: '助', pinyin: 'zhù', sinoVi: 'Trợ', meaning: 'Hỗ trợ, giúp sức', strokes: 7 },
+    ],
+  },
+  {
+    label: 'HSK 3 Trung cấp',
+    chars: [
+      { char: '努', pinyin: 'nǔ', sinoVi: 'Nỗ', meaning: 'Ra sức, cố gắng', strokes: 7 },
+      { char: '力', pinyin: 'lì', sinoVi: 'Lực', meaning: 'Sức lực, tài năng', strokes: 2 },
+      { char: '成', pinyin: 'chéng', sinoVi: 'Thành', meaning: 'Thành công, hoàn thành', strokes: 6 },
+      { char: '功', pinyin: 'gōng', sinoVi: 'Công', meaning: 'Công lao, kỳ tích', strokes: 5 },
+      { char: '坚', pinyin: 'jiān', sinoVi: 'Kiên', meaning: 'Vững chắc, kiên cường', strokes: 7 },
+      { char: '持', pinyin: 'chí', sinoVi: 'Trì', meaning: 'Duy trì, nắm giữ', strokes: 9 },
+    ],
+  },
+  {
+    label: 'HSK 4 Chuẩn B2',
+    chars: [
+      { char: '经', pinyin: 'jīng', sinoVi: 'Kinh', meaning: 'Trải qua, kinh nghiệm', strokes: 8 },
+      { char: '验', pinyin: 'yàn', sinoVi: 'Nghiệm', meaning: 'Kiểm nghiệm, trải qua', strokes: 10 },
+      { char: '发', pinyin: 'fā', sinoVi: 'Phát', meaning: 'Phát triển, sinh ra', strokes: 5 },
+      { char: '展', pinyin: 'zhǎn', sinoVi: 'Triển', meaning: 'Mở rộng, triển khai', strokes: 10 },
+      { char: '复', pinyin: 'fù', sinoVi: 'Phức', meaning: 'Phức tạp, lặp lại', strokes: 9 },
+      { char: '杂', pinyin: 'zá', sinoVi: 'Tạp', meaning: 'Nhiều mối, lẫn lộn', strokes: 6 },
+    ],
+  },
+  {
+    label: 'HSK 5 Cao cấp',
+    chars: [
+      { char: '机', pinyin: 'jī', sinoVi: 'Cơ', meaning: 'Thời cơ, cơ hội', strokes: 6 },
+      { char: '遇', pinyin: 'yù', sinoVi: 'Ngộ', meaning: 'Gặp gỡ, cơ duyên', strokes: 12 },
+      { char: '挑', pinyin: 'tiāo', sinoVi: 'Khiêu', meaning: 'Thách thức, khiêu chiến', strokes: 9 },
+      { char: '战', pinyin: 'zhàn', sinoVi: 'Chiến', meaning: 'Chiến đấu, chiến trận', strokes: 9 },
+      { char: '创', pinyin: 'chuàng', sinoVi: 'Sáng', meaning: 'Sáng tạo, khởi đầu', strokes: 6 },
+      { char: '新', pinyin: 'xīn', sinoVi: 'Tân', meaning: 'Mới mẻ, cải tiến', strokes: 13 },
+    ],
+  },
+  {
+    label: 'HSK 6 Thành thạo',
+    chars: [
+      { char: '博', pinyin: 'bó', sinoVi: 'Bác', meaning: 'Uyên bác, rộng lớn', strokes: 12 },
+      { char: '大', pinyin: 'dà', sinoVi: 'Đại', meaning: 'To lớn, vĩ đại', strokes: 3 },
+      { char: '精', pinyin: 'jīng', sinoVi: 'Tinh', meaning: 'Tinh hoa, tinh vi', strokes: 14 },
+      { char: '深', pinyin: 'shēn', sinoVi: 'Thâm', meaning: 'Sâu sắc, thâm ảo', strokes: 11 },
+      { char: '潜', pinyin: 'qián', sinoVi: 'Tiềm', meaning: 'Tiềm tàng, ẩn náu', strokes: 15 },
+      { char: '力', pinyin: 'lì', sinoVi: 'Lực', meaning: 'Năng lực, sức mạnh', strokes: 2 },
+    ],
+  },
+  {
     label: 'Số đếm 1-10',
     chars: [
       { char: '一', pinyin: 'yī', sinoVi: 'Nhất', meaning: 'Số một (1)', strokes: 1 },
