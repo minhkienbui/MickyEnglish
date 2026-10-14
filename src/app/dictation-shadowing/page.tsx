@@ -278,18 +278,18 @@ export default function DictationListPage() {
   }, [filteredLessons]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 font-sans">
-      {/* Top Search & Filter Bar chuẩn ảnh Bibung */}
+    <div className="w-full max-w-5xl mx-auto px-4 sm:px-8 py-8 space-y-8 font-sans">
+      {/* Top Search & Filter Bar chuẩn Warm Notebook */}
       <div className="flex flex-col md:flex-row items-center justify-between gap-3">
         {/* Search Box */}
         <div className="relative flex-1 w-full">
-          <Search className="w-4 h-4 text-slate-400 absolute left-4 top-3.5" />
+          <Search className="w-4 h-4 text-stone-400 absolute left-4 top-3.5" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Tìm kiếm video..."
-            className="w-full bg-[#121c2b] border border-[#1e2d42] focus:border-emerald-500 rounded-full pl-11 pr-4 py-2.5 text-xs text-white placeholder-slate-400 font-semibold outline-none transition-colors"
+            placeholder="Tìm kiếm video bài học, chủ đề..."
+            className="w-full bg-white dark:bg-stone-900 border-2 border-stone-800 rounded-xl pl-11 pr-4 py-2.5 text-xs text-stone-900 dark:text-white placeholder-stone-400 font-semibold outline-none shadow-[2px_2px_0px_#292524]"
           />
         </div>
 
@@ -299,7 +299,7 @@ export default function DictationListPage() {
             <select
               value={selectedLevel}
               onChange={(e) => setSelectedLevel(e.target.value)}
-              className="w-full appearance-none bg-[#121c2b] border border-[#1e2d42] hover:border-slate-600 rounded-full pl-9 pr-8 py-2.5 text-xs text-slate-200 font-bold outline-none cursor-pointer"
+              className="w-full appearance-none bg-white dark:bg-stone-900 border-2 border-stone-800 rounded-xl pl-9 pr-8 py-2.5 text-xs text-stone-900 dark:text-white font-cartoon font-bold outline-none cursor-pointer shadow-[2px_2px_0px_#292524]"
             >
               <option value="Tất cả cấp độ">Tất cả cấp độ</option>
               {isChinese ? (
@@ -322,17 +322,17 @@ export default function DictationListPage() {
                 </>
               )}
             </select>
-            <Filter className="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-3.5 pointer-events-none" />
-            <div className="absolute right-3.5 top-3.5 pointer-events-none text-slate-400 text-[10px]">▼</div>
+            <Filter className="w-3.5 h-3.5 text-stone-400 absolute left-3.5 top-3.5 pointer-events-none" />
+            <div className="absolute right-3.5 top-3.5 pointer-events-none text-stone-400 text-[10px]">▼</div>
           </div>
 
           {/* Button Bài học cộng đồng */}
           <button
             type="button"
             onClick={() => setShowCommunityModal(true)}
-            className="py-2.5 px-4 bg-[#121c2b] hover:bg-[#1a273a] text-slate-200 text-xs font-bold rounded-full border border-[#1e2d42] flex items-center gap-2 shadow-sm transition-all whitespace-nowrap cursor-pointer shrink-0"
+            className="py-2.5 px-4 bg-[#fffdfa] dark:bg-stone-800 hover:bg-amber-100 dark:hover:bg-stone-700 text-stone-800 dark:text-stone-200 text-xs font-cartoon font-bold rounded-xl border-2 border-stone-800 flex items-center gap-2 shadow-[2px_2px_0px_#292524] btn-press transition-all whitespace-nowrap cursor-pointer shrink-0"
           >
-            <Users className="w-3.5 h-3.5 text-slate-400" />
+            <Users className="w-3.5 h-3.5 text-amber-600" />
             Bài học cộng đồng
           </button>
 
@@ -340,15 +340,19 @@ export default function DictationListPage() {
           <button
             type="button"
             onClick={() => setShowAddVideoModal(true)}
-            className="py-2.5 px-5 bg-[#00c950] hover:bg-[#00b046] text-white text-xs font-black rounded-full flex items-center gap-1.5 shadow-lg shadow-emerald-600/20 transition-transform hover:scale-105 cursor-pointer shrink-0 whitespace-nowrap"
+            className={`py-2.5 px-5 font-cartoon text-xs font-bold rounded-xl border-2 border-stone-800 flex items-center gap-1.5 shadow-[3px_3px_0px_#292524] btn-press transition-transform hover:scale-105 cursor-pointer shrink-0 whitespace-nowrap ${
+              isChinese
+                ? 'bg-[#c53428] hover:bg-[#b02c21] text-white'
+                : 'bg-amber-300 hover:bg-amber-400 text-stone-900'
+            }`}
           >
             <Plus className="w-4 h-4" /> Thêm video
           </button>
         </div>
       </div>
 
-      {/* Category Pills (Tags) với underline xanh khi active */}
-      <div className="flex items-center gap-3 overflow-x-auto pb-2 scrollbar-none border-b border-[#1e2d42]/50">
+      {/* Category Pills (Tags) kiểu nhãn dán hoạt hình */}
+      <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">
         {tags.map((tag) => {
           const isActive = activeTag === tag;
           return (
@@ -358,53 +362,54 @@ export default function DictationListPage() {
                 setActiveTag(tag);
                 setSelectedChannel(null);
               }}
-              className={`pb-2 text-xs font-bold whitespace-nowrap transition-all cursor-pointer relative ${
-                isActive ? 'text-emerald-400 font-black' : 'text-slate-400 hover:text-slate-200'
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-cartoon font-bold whitespace-nowrap transition-all cursor-pointer border-2 border-stone-800 ${
+                isActive
+                  ? isChinese
+                    ? 'bg-[#c53428] text-white shadow-[2px_2px_0px_#292524] scale-105'
+                    : 'bg-amber-300 text-stone-900 shadow-[2px_2px_0px_#292524] scale-105'
+                  : 'bg-[#fffdfa] dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-amber-100 shadow-xs'
               }`}
             >
               {tag}
-              {isActive && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-emerald-400 rounded-full" />
-              )}
             </button>
           );
         })}
       </div>
 
-      {/* SECTION 1: Khám phá theo kênh (7.093 bài học) */}
+      {/* SECTION 1: Khám phá theo kênh */}
       <section className="space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
-            Khám phá theo kênh <span className="text-xs text-slate-400 font-semibold">(7.093 bài học)</span>
+          <h2 className="font-cartoon text-lg font-bold text-stone-900 dark:text-white flex items-center gap-2">
+            Khám phá theo kênh <span className="font-hand text-sm text-stone-500">(7.093 bài học)</span>
           </h2>
           <button
             onClick={() => setSelectedChannel(null)}
-            className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
+            className="font-cartoon text-xs font-bold text-[#c53428] dark:text-amber-400 hover:underline transition-colors cursor-pointer"
           >
             Xem tất cả
           </button>
         </div>
 
         {/* Channels Circular Carousel */}
-        <div className="flex items-center gap-6 overflow-x-auto pb-4 pt-1 scrollbar-none">
+        <div className="flex items-center gap-5 overflow-x-auto pb-3 pt-1 scrollbar-none">
           {channels.map((ch) => {
             const isSelected = selectedChannel === ch.name;
             return (
               <div
                 key={ch.id}
                 onClick={() => setSelectedChannel(isSelected ? null : ch.name)}
-                className="flex flex-col items-center gap-2 cursor-pointer group shrink-0"
+                className="flex flex-col items-center gap-1.5 cursor-pointer group shrink-0"
               >
                 <div
-                  className={`w-20 h-20 rounded-full ${ch.bgColor} flex items-center justify-center shadow-lg transition-transform group-hover:scale-105 border-2 ${
-                    isSelected ? 'border-emerald-400 ring-4 ring-emerald-500/20' : 'border-white/10'
+                  className={`w-18 h-18 rounded-2xl ${ch.bgColor} flex items-center justify-center transition-transform group-hover:scale-105 border-2 border-stone-800 shadow-[3px_3px_0px_#292524] ${
+                    isSelected ? 'ring-3 ring-amber-400 scale-105' : ''
                   }`}
                 >
-                  <span className={`${ch.textColor} select-none px-1 text-center`}>{ch.initial}</span>
+                  <span className={`${ch.textColor} select-none px-1 text-center font-cartoon`}>{ch.initial}</span>
                 </div>
                 <span
-                  className={`text-xs font-bold text-center max-w-[80px] truncate ${
-                    isSelected ? 'text-emerald-400' : 'text-slate-300 group-hover:text-white'
+                  className={`font-cartoon text-xs font-bold text-center max-w-[80px] truncate ${
+                    isSelected ? 'text-[#c53428] dark:text-amber-400' : 'text-stone-700 dark:text-stone-300 group-hover:text-stone-900'
                   }`}
                 >
                   {ch.name}
@@ -415,27 +420,27 @@ export default function DictationListPage() {
         </div>
       </section>
 
-      {/* SECTION: Video tải lên (Lưu trực tiếp trên website) */}
+      {/* SECTION: Video tải lên */}
       {uploadsSection.length > 0 && (
         <section className="space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <h2 className="text-base sm:text-lg font-black text-white flex items-center gap-2">
+              <h2 className="font-cartoon text-lg font-bold text-stone-900 dark:text-white flex items-center gap-2">
                 <span>📁 Video của bạn (Lưu trên website)</span>
               </h2>
-              <span className="px-2 py-0.5 bg-emerald-950 border border-emerald-500/40 text-emerald-400 text-xs font-bold rounded-full">
+              <span className="px-2 py-0.5 bg-amber-200 border border-stone-800 text-stone-900 font-cartoon text-xs font-bold rounded-full">
                 {uploadsSection.length}
               </span>
             </div>
             <button
               onClick={() => setActiveTag('# Video tải lên')}
-              className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
+              className="font-cartoon text-xs font-bold text-[#c53428] dark:text-amber-400 hover:underline transition-colors cursor-pointer"
             >
               Xem tất cả
             </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {uploadsSection.map((lesson) => (
               <VideoCard
                 key={lesson.id}
@@ -453,21 +458,21 @@ export default function DictationListPage() {
           <section className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <h2 className="text-base sm:text-lg font-black text-white">Khẩu ngữ giao tiếp HSK 1 - 2</h2>
-                <span className="px-2 py-0.5 bg-rose-950/60 border border-rose-500/30 text-rose-300 text-xs font-bold rounded-full">
+                <h2 className="font-cartoon text-lg font-bold text-stone-900 dark:text-white">Khẩu ngữ giao tiếp HSK 1 - 2</h2>
+                <span className="px-2 py-0.5 bg-red-100 border border-stone-800 text-[#c53428] font-cartoon text-xs font-bold rounded-full">
                   {chineseSpeakingSection.length || filteredLessons.length} bài
                 </span>
               </div>
               <button
                 onClick={() => setActiveTag('# Khẩu ngữ')}
-                className="text-xs font-bold text-rose-400 hover:text-rose-300 transition-colors cursor-pointer"
+                className="font-cartoon text-xs font-bold text-[#c53428] dark:text-amber-400 hover:underline transition-colors cursor-pointer"
               >
                 Xem tất cả
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {(chineseSpeakingSection.length > 0 ? chineseSpeakingSection : filteredLessons).slice(0, 4).map((lesson) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {(chineseSpeakingSection.length > 0 ? chineseSpeakingSection : filteredLessons).slice(0, 6).map((lesson) => (
                 <VideoCard
                   key={lesson.id}
                   lesson={lesson}
@@ -481,21 +486,21 @@ export default function DictationListPage() {
           <section className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <h2 className="text-base sm:text-lg font-black text-white">Ẩm thực & Đời sống HSK 2 - 3</h2>
-                <span className="px-2 py-0.5 bg-rose-950/60 border border-rose-500/30 text-rose-300 text-xs font-bold rounded-full">
+                <h2 className="font-cartoon text-lg font-bold text-stone-900 dark:text-white">Ẩm thực & Đời sống HSK 2 - 3</h2>
+                <span className="px-2 py-0.5 bg-red-100 border border-stone-800 text-[#c53428] font-cartoon text-xs font-bold rounded-full">
                   {chineseCultureSection.length || filteredLessons.length} bài
                 </span>
               </div>
               <button
                 onClick={() => setActiveTag('# Ẩm thực')}
-                className="text-xs font-bold text-rose-400 hover:text-rose-300 transition-colors cursor-pointer"
+                className="font-cartoon text-xs font-bold text-[#c53428] dark:text-amber-400 hover:underline transition-colors cursor-pointer"
               >
                 Xem tất cả
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {(chineseCultureSection.length > 0 ? chineseCultureSection : filteredLessons.slice().reverse()).slice(0, 4).map((lesson) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {(chineseCultureSection.length > 0 ? chineseCultureSection : filteredLessons.slice().reverse()).slice(0, 6).map((lesson) => (
                 <VideoCard
                   key={lesson.id}
                   lesson={lesson}
@@ -511,21 +516,21 @@ export default function DictationListPage() {
           <section className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <h2 className="text-base sm:text-lg font-black text-white">Youtube video</h2>
-                <span className="px-2 py-0.5 bg-[#131d2b] border border-[#1e2d42] text-slate-400 text-xs font-bold rounded-full">
+                <h2 className="font-cartoon text-lg font-bold text-stone-900 dark:text-white">Youtube video</h2>
+                <span className="px-2 py-0.5 bg-amber-200 border border-stone-800 text-stone-900 font-cartoon text-xs font-bold rounded-full">
                   {youtubeSection.length || 278}
                 </span>
               </div>
               <button
                 onClick={() => setActiveTag('# Youtube video')}
-                className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
+                className="font-cartoon text-xs font-bold text-[#c53428] dark:text-amber-400 hover:underline transition-colors cursor-pointer"
               >
                 Xem tất cả
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {youtubeSection.slice(0, 4).map((lesson) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {youtubeSection.slice(0, 6).map((lesson) => (
                 <VideoCard
                   key={lesson.id}
                   lesson={lesson}
@@ -539,21 +544,21 @@ export default function DictationListPage() {
           <section className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <h2 className="text-base sm:text-lg font-black text-white">TED</h2>
-                <span className="px-2 py-0.5 bg-[#131d2b] border border-[#1e2d42] text-slate-400 text-xs font-bold rounded-full">
+                <h2 className="font-cartoon text-lg font-bold text-stone-900 dark:text-white">TED</h2>
+                <span className="px-2 py-0.5 bg-amber-200 border border-stone-800 text-stone-900 font-cartoon text-xs font-bold rounded-full">
                   {tedSection.length || 247}
                 </span>
               </div>
               <button
                 onClick={() => setActiveTag('# TED')}
-                className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
+                className="font-cartoon text-xs font-bold text-[#c53428] dark:text-amber-400 hover:underline transition-colors cursor-pointer"
               >
                 Xem tất cả
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {tedSection.slice(0, 4).map((lesson) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {tedSection.slice(0, 6).map((lesson) => (
                 <VideoCard
                   key={lesson.id}
                   lesson={lesson}
@@ -567,21 +572,21 @@ export default function DictationListPage() {
           <section className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <h2 className="text-base sm:text-lg font-black text-white">BBC learning english</h2>
-                <span className="px-2 py-0.5 bg-[#131d2b] border border-[#1e2d42] text-slate-400 text-xs font-bold rounded-full">
+                <h2 className="font-cartoon text-lg font-bold text-stone-900 dark:text-white">BBC learning english</h2>
+                <span className="px-2 py-0.5 bg-amber-200 border border-stone-800 text-stone-900 font-cartoon text-xs font-bold rounded-full">
                   {bbcSection.length || 173}
                 </span>
               </div>
               <button
                 onClick={() => setActiveTag('# BBC learning english')}
-                className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
+                className="font-cartoon text-xs font-bold text-[#c53428] dark:text-amber-400 hover:underline transition-colors cursor-pointer"
               >
                 Xem tất cả
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-              {bbcSection.slice(0, 4).map((lesson) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+              {bbcSection.slice(0, 6).map((lesson) => (
                 <VideoCard
                   key={lesson.id}
                   lesson={lesson}
@@ -609,21 +614,21 @@ export default function DictationListPage() {
       {/* MODAL BÀI HỌC CỘNG ĐỒNG */}
       {showCommunityModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="relative w-full max-w-2xl bg-[#121c2b] border border-[#1e2d42] rounded-3xl p-6 text-white shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-[#1e2d42] pb-3">
+          <div className="relative w-full max-w-2xl bg-[#fffdfa] dark:bg-[#1a1714] border-2 border-stone-800 box-sketch rounded-2xl p-6 text-stone-900 dark:text-white space-y-4">
+            <div className="flex items-center justify-between border-b-2 border-stone-800 pb-3">
               <div className="flex items-center gap-2">
-                <Users className="w-5 h-5 text-emerald-400" />
-                <h3 className="text-lg font-black">Bài Học Do Cộng Đồng Đóng Góp</h3>
+                <Users className="w-5 h-5 text-amber-600" />
+                <h3 className="font-cartoon text-lg font-bold">Bài Học Do Cộng Đồng Đóng Góp</h3>
               </div>
               <button
                 onClick={() => setShowCommunityModal(false)}
-                className="text-slate-400 hover:text-white p-1"
+                className="text-stone-400 hover:text-stone-900 p-1 font-bold text-lg"
               >
                 ✕
               </button>
             </div>
-            <p className="text-xs text-slate-400">
-              Khám phá các video tiếng Anh được người học chia sẻ kèm phân đoạn phụ đề chất lượng cao.
+            <p className="font-hand text-sm text-stone-600 dark:text-stone-400">
+              Khám phá các video được cộng đồng học viên chia sẻ kèm phân đoạn phụ đề chuẩn từng câu.
             </p>
             <div className="space-y-3 max-h-96 overflow-y-auto pr-1">
               {allLessons.slice(0, 6).map((lesson) => (
@@ -633,20 +638,20 @@ export default function DictationListPage() {
                     setSelectedLessonForPractice(lesson);
                     setShowCommunityModal(false);
                   }}
-                  className="flex items-center justify-between p-3 bg-[#0d131d] border border-[#1e2d42] hover:border-emerald-500/50 rounded-2xl cursor-pointer transition-all"
+                  className="flex items-center justify-between p-3 bg-[#fff9ea] dark:bg-stone-900 border-2 border-stone-800 rounded-xl cursor-pointer hover:bg-amber-100 transition-all shadow-sm"
                 >
                   <div className="flex items-center gap-3">
                     <img
                       src={lesson.thumbnail || 'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=150&q=80'}
                       alt=""
-                      className="w-16 h-10 object-cover rounded-lg"
+                      className="w-16 h-10 object-cover rounded-lg border border-stone-800"
                     />
                     <div>
-                      <h4 className="text-xs font-bold text-white line-clamp-1">{lesson.title}</h4>
-                      <span className="text-[10px] text-slate-400">Cấp độ: {lesson.level || 'B1'} • {lesson.sentences?.length || 5} câu</span>
+                      <h4 className="font-cartoon text-xs font-bold text-stone-900 dark:text-white line-clamp-1">{lesson.title}</h4>
+                      <span className="font-hand text-xs text-stone-500">Cấp độ: {lesson.level || 'B1'} • {lesson.sentences?.length || 5} câu</span>
                     </div>
                   </div>
-                  <button className="px-3 py-1 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-xs font-bold">
+                  <button className="px-3 py-1 bg-amber-400 text-stone-900 border border-stone-800 rounded-lg font-cartoon text-xs font-bold shadow-xs">
                     Học ngay
                   </button>
                 </div>
@@ -659,19 +664,19 @@ export default function DictationListPage() {
   );
 }
 
-// Card bài học chuẩn phong cách Bibung
+// Card bài học phong cách Sổ tay hoạt hình 3D
 function VideoCard({ lesson, onSelect }: { lesson: DictationLesson; onSelect: () => void }) {
-  const isC1 = lesson.level === 'C1' || lesson.level === 'C2';
+  const isC1 = lesson.level === 'C1' || lesson.level === 'C2' || lesson.level === 'HSK 5' || lesson.level === 'HSK 6';
   const minutes = Math.floor((lesson.duration || 60) / 60);
   const seconds = ((lesson.duration || 60) % 60).toString().padStart(2, '0');
 
   return (
     <div
       onClick={onSelect}
-      className="group relative bg-[#121c2b] border border-[#1e2d42] hover:border-emerald-500/80 rounded-2xl overflow-hidden shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col"
+      className="group relative bg-[#fffdfa] dark:bg-[#1a1714] border-2 border-stone-800 rounded-2xl overflow-hidden box-sketch-sm hover:shadow-[5px_5px_0px_#292524] transition-all cursor-pointer flex flex-col justify-between"
     >
       {/* Thumbnail */}
-      <div className="relative aspect-16/9 w-full overflow-hidden bg-slate-900">
+      <div className="relative aspect-16/9 w-full overflow-hidden bg-stone-900 border-b-2 border-stone-800">
         <img
           src={
             lesson.thumbnail ||
@@ -679,38 +684,38 @@ function VideoCard({ lesson, onSelect }: { lesson: DictationLesson; onSelect: ()
             'https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=600&q=80'
           }
           alt={lesson.title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
 
         {/* Local Video Upload Badge */}
         {Boolean(lesson.videoUrl && !lesson.youtubeId) && (
-          <div className="absolute top-2.5 left-2.5 bg-emerald-600/90 text-white font-black text-[9px] px-2 py-0.5 rounded-full shadow-md flex items-center gap-1 z-10">
+          <div className="absolute top-2.5 left-2.5 bg-amber-300 border border-stone-800 text-stone-900 font-cartoon font-bold text-[10px] px-2 py-0.5 rounded shadow-sm z-10">
             <span>📁 Tải lên</span>
           </div>
         )}
 
-        {/* Level Badge (Xanh dương cho B1, Đỏ cho C1 như ảnh Bibung) */}
+        {/* Level Badge */}
         <div
-          className={`absolute top-2.5 right-2.5 font-black text-[10px] px-2 py-0.5 rounded-full shadow-md ${
-            isC1 ? 'bg-[#ef4444] text-white' : 'bg-[#2563eb] text-white'
+          className={`absolute top-2.5 right-2.5 font-cartoon font-bold text-[10px] px-2.5 py-0.5 rounded border border-stone-800 shadow-sm ${
+            isC1 ? 'bg-[#c53428] text-white' : 'bg-amber-300 text-stone-900'
           }`}
         >
           {lesson.level || 'B1'}
         </div>
 
         {/* Duration bottom left */}
-        <div className="absolute bottom-2 left-2 bg-black/70 backdrop-blur-xs px-1.5 py-0.5 rounded text-[10px] font-bold text-white flex items-center gap-1">
-          <Clock className="w-2.5 h-2.5 text-slate-300" />
+        <div className="absolute bottom-2 left-2 bg-black/75 backdrop-blur-xs px-1.5 py-0.5 rounded font-cartoon text-[10px] font-bold text-white flex items-center gap-1 border border-stone-700">
+          <Clock className="w-2.5 h-2.5 text-amber-400" />
           {minutes}:{seconds}
         </div>
 
-        {/* Views bottom right with Headphones icon */}
-        <div className="absolute bottom-2 right-2 bg-black/70 backdrop-blur-xs px-1.5 py-0.5 rounded text-[10px] font-bold text-white flex items-center gap-1">
-          <Headphones className="w-2.5 h-2.5 text-slate-300" />
+        {/* Views bottom right */}
+        <div className="absolute bottom-2 right-2 bg-black/75 backdrop-blur-xs px-1.5 py-0.5 rounded font-cartoon text-[10px] font-bold text-white flex items-center gap-1 border border-stone-700">
+          <Headphones className="w-2.5 h-2.5 text-amber-400" />
           {(lesson.views || 680) > 999
-            ? `${((lesson.views || 680) / 1000).toFixed(1)}K views`
-            : `${lesson.views || 680} views`}
+            ? `${((lesson.views || 680) / 1000).toFixed(1)}K`
+            : `${lesson.views || 680}`}
         </div>
       </div>
 
@@ -718,15 +723,21 @@ function VideoCard({ lesson, onSelect }: { lesson: DictationLesson; onSelect: ()
       <div className="p-3.5 flex-1 flex flex-col justify-between space-y-2">
         <div className="space-y-1">
           {lesson.speaker && (
-            <span className="text-[10px] font-medium text-slate-400 block">
+            <span className="font-hand text-xs text-stone-500 block">
               - {lesson.speaker}
             </span>
           )}
-          <h3 className="text-xs font-bold text-white line-clamp-2 leading-snug group-hover:text-emerald-300 transition-colors">
+          <h3 className="font-cartoon text-xs sm:text-sm font-bold text-stone-900 dark:text-white line-clamp-2 leading-snug group-hover:text-[#c53428] transition-colors">
             {lesson.title}
           </h3>
+        </div>
+
+        <div className="pt-2 border-t border-stone-200 dark:border-stone-800 flex items-center justify-between font-cartoon text-[11px] font-bold text-stone-600 dark:text-stone-400">
+          <span>{lesson.sentences?.length || 5} câu nhại</span>
+          <span className="text-[#c53428] dark:text-amber-400 font-bold group-hover:translate-x-0.5 transition-transform">Vào học ➔</span>
         </div>
       </div>
     </div>
   );
 }
+

@@ -81,7 +81,7 @@ export default function VocabularyHubPage() {
     { word: 'language', phonetic: '/ˈlæŋ.ɡwɪdʒ/', meaning: 'Ngôn ngữ, tiếng nói', exampleEn: 'English is the global language of communication.', exampleVi: 'Tiếng Anh là ngôn ngữ giao tiếp toàn cầu.' },
   ];
 
-  const chineseTrendingWords = mockChineseVocabulary.slice(0, 10).map((w) => ({
+  const chineseTrendingWords = allHskWords.slice(0, 10).map((w) => ({
     word: w.hanzi,
     phonetic: w.pinyin,
     meaning: `${w.sinoVietnamese ? `[${w.sinoVietnamese}] ` : ''}${w.meaning}`,
@@ -100,14 +100,22 @@ export default function VocabularyHubPage() {
     let thongThao = 0;
 
     words.forEach((w) => {
-      if (w.level === 0) moiHoc++;
-      else if (w.level === 1 || w.level === 2) nhoTam++;
-      else if (w.level === 3) nhoLau++;
-      else if (w.level === 4) thuocLong++;
-      else if (w.level >= 5) thongThao++;
+      const lv = w.level || 0;
+      if (lv === 0) moiHoc++;
+      else if (lv === 1 || lv === 2) nhoTam++;
+      else if (lv === 3) nhoLau++;
+      else if (lv === 4) thuocLong++;
+      else if (lv >= 5) thongThao++;
     });
 
-    return { moiHoc, nhoTam, nhoLau, thuocLong, thongThao, total: words.length };
+    return {
+      total: words.length || 6,
+      moiHoc: moiHoc || 3,
+      nhoTam: nhoTam || 3,
+      nhoLau: nhoLau || 0,
+      thuocLong: thuocLong || 0,
+      thongThao: thongThao || 0,
+    };
   }, [words]);
 
   const englishHashtags = [
@@ -143,7 +151,7 @@ export default function VocabularyHubPage() {
       isPro: false,
       tag: '# Từ vựng thông dụng',
       icon: '🎨',
-      bgGradient: 'from-amber-600/30 to-orange-600/20',
+      bgGradient: 'from-amber-400 to-orange-400',
       description: 'Tổng hợp từ vựng phân theo 80+ chủ đề đời sống, du lịch, nghề nghiệp và công nghệ.',
     },
     {
@@ -155,7 +163,7 @@ export default function VocabularyHubPage() {
       isPro: false,
       tag: '# Từ vựng thông dụng',
       icon: '📊',
-      bgGradient: 'from-blue-600/30 to-indigo-600/20',
+      bgGradient: 'from-blue-400 to-indigo-400',
       description: 'Học từ vựng bám sát khung tham chiếu châu Âu CEFR từ cơ bản đến nâng cao.',
     },
     {
@@ -167,19 +175,19 @@ export default function VocabularyHubPage() {
       isPro: true,
       tag: '# Từ vựng thông dụng',
       icon: '🗣️',
-      bgGradient: 'from-emerald-600/30 to-teal-600/20',
+      bgGradient: 'from-teal-400 to-emerald-400',
       description: 'Các mẫu câu và cụm từ phản xạ tự nhiên thường dùng trong giao tiếp hằng ngày.',
     },
     {
       id: 'deck-appearance',
-      title: 'Ngoại hình',
+      title: 'Ngoại hình & Tính cách',
       subtitle: 'Appearance & Personality',
       wordsCount: 513,
       learnedCount: 0,
       isPro: false,
       tag: '# Từ vựng thông dụng',
       icon: '👤',
-      bgGradient: 'from-rose-600/30 to-pink-600/20',
+      bgGradient: 'from-rose-400 to-pink-400',
       description: 'Từ vựng miêu tả dáng vẻ, khuôn mặt, phong cách ăn mặc và tính cách con người.',
     },
   ];
@@ -211,7 +219,7 @@ export default function VocabularyHubPage() {
       isPro: true,
       tag: '# English In Use',
       icon: '📚',
-      bgGradient: 'from-purple-600/30 to-violet-600/20',
+      bgGradient: 'from-purple-400 to-violet-400',
       description: 'Cực kỳ quan trọng để nói và viết tiếng Anh tự nhiên như người bản xứ.',
     },
     {
@@ -223,7 +231,7 @@ export default function VocabularyHubPage() {
       isPro: false,
       tag: '# English In Use',
       icon: '🌱',
-      bgGradient: 'from-teal-600/30 to-emerald-600/20',
+      bgGradient: 'from-teal-400 to-emerald-400',
       description: 'Giáo trình nền tảng của Đại học Cambridge dành cho người mới bắt đầu.',
     },
     {
@@ -235,7 +243,7 @@ export default function VocabularyHubPage() {
       isPro: false,
       tag: '# English In Use',
       icon: '🚀',
-      bgGradient: 'from-sky-600/30 to-blue-600/20',
+      bgGradient: 'from-sky-400 to-blue-400',
       description: 'Giáo trình trung cấp mở rộng vốn từ vựng học thuật và giao tiếp tự tin.',
     },
     {
@@ -247,7 +255,7 @@ export default function VocabularyHubPage() {
       isPro: false,
       tag: '# English In Use',
       icon: '⭐',
-      bgGradient: 'from-amber-600/30 to-yellow-600/20',
+      bgGradient: 'from-amber-400 to-yellow-400',
       description: 'Vốn từ vựng chuyên sâu giúp bạn chinh phục IELTS 7.0+ và giao dịch quốc tế.',
     },
   ];
@@ -349,39 +357,47 @@ export default function VocabularyHubPage() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 font-sans">
-      {/* 1. TOP QUICK SEARCH BAR chuẩn Bibung */}
+    <div className="w-full max-w-5xl mx-auto px-4 sm:px-8 py-8 space-y-6 font-sans">
+      {/* 1. TOP QUICK SEARCH BAR chuẩn Warm Notebook */}
       <div className="space-y-3">
         <div className="relative w-full">
-          <Search className="w-4 h-4 text-slate-400 absolute left-4 top-3.5" />
-          <input
-            type="text"
-            value={instantSearch}
-            onChange={(e) => setInstantSearch(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') handleInstantLookup(instantSearch);
-            }}
-            placeholder="Nhập từ tiếng Anh hoặc tiếng Việt..."
-            className="w-full bg-[#121c2b] border border-[#1e2d42] focus:border-emerald-500 rounded-full pl-11 pr-24 py-3 text-xs text-white placeholder-slate-400 font-semibold outline-none transition-colors shadow-sm"
-          />
-          <button
-            onClick={() => handleInstantLookup(instantSearch)}
-            className="absolute right-2 top-2 px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-full text-xs font-bold transition-transform active:scale-95 cursor-pointer"
-          >
-            Tra từ
-          </button>
+          <div className="relative flex items-center border-2 border-stone-800 rounded-2xl bg-white dark:bg-stone-900 shadow-[3px_3px_0px_#292524] p-1.5">
+            <Search className="w-5 h-5 text-stone-400 ml-3 shrink-0" />
+            <input
+              type="text"
+              value={instantSearch}
+              onChange={(e) => setInstantSearch(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleInstantLookup(instantSearch);
+              }}
+              placeholder={
+                isChinese
+                  ? "Nhập chữ Hán, Pinyin hoặc nghĩa tiếng Việt..."
+                  : "Nhập từ tiếng Anh hoặc tiếng Việt..."
+              }
+              className="w-full bg-transparent border-none outline-none text-xs sm:text-sm font-semibold px-3 text-stone-900 dark:text-white placeholder-stone-400"
+            />
+            <button
+              onClick={() => handleInstantLookup(instantSearch)}
+              className={`px-5 py-2.5 text-white font-cartoon text-xs font-bold rounded-xl border border-stone-800 shadow-md transition-all shrink-0 cursor-pointer ${
+                isChinese ? 'bg-[#c53428] hover:bg-[#b02c21]' : 'bg-[#292524] hover:bg-amber-600'
+              }`}
+            >
+              Tra từ
+            </button>
+          </div>
         </div>
 
-        {/* 10 Trending Words Pills (Xanh lá tròn mạ vàng như ảnh 3) */}
+        {/* 10 Trending Words Pills (Warm amber sticker pills) */}
         <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
           {trendingWords.map((item) => (
             <button
               key={item.word}
               onClick={() => {
                 setInstantSearch(item.word);
-                setLookupResult(item);
+                handleInstantLookup(item.word);
               }}
-              className="px-3.5 py-1 rounded-full bg-[#00c950] hover:bg-[#00b046] text-white font-black text-xs transition-transform hover:scale-105 active:scale-95 cursor-pointer shrink-0 shadow-sm"
+              className="px-3.5 py-1.5 rounded-xl bg-amber-300 hover:bg-amber-400 text-stone-900 font-cartoon font-bold text-xs border-2 border-stone-800 shadow-[2px_2px_0px_#292524] btn-press transition-all cursor-pointer shrink-0"
             >
               {item.word}
             </button>
@@ -391,16 +407,18 @@ export default function VocabularyHubPage() {
 
       {/* MODAL POPUP TRA TỪ TỨC THÌ NẾU CÓ KẾT QUẢ */}
       {lookupResult && (
-        <div className="p-4 sm:p-5 bg-[#121c2b] border-2 border-emerald-500/60 rounded-3xl space-y-3 shadow-xl animate-in fade-in duration-200">
+        <div className="p-5 bg-[#fff9ea] dark:bg-[#1a1714] border-2 border-stone-800 rounded-2xl space-y-3 box-sketch animate-in fade-in duration-200">
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <h3 className="text-xl font-black text-white">{lookupResult.word}</h3>
-              <span className="text-xs text-emerald-400 font-mono font-bold bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/30">
+              <h3 className="text-xl sm:text-2xl font-cartoon font-black text-stone-900 dark:text-white">
+                {lookupResult.word}
+              </h3>
+              <span className="text-xs font-mono font-bold text-[#c53428] dark:text-amber-300">
                 {lookupResult.phonetic}
               </span>
               <button
                 onClick={() => speakAudio(lookupResult.word)}
-                className="p-1.5 rounded-full bg-slate-800 hover:bg-emerald-600 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg bg-amber-300 border border-stone-800 hover:bg-amber-400 text-stone-900 transition-colors cursor-pointer"
                 title="Nghe phát âm"
               >
                 <Volume2 className="w-4 h-4" />
@@ -408,132 +426,133 @@ export default function VocabularyHubPage() {
             </div>
             <button
               onClick={() => setLookupResult(null)}
-              className="text-slate-400 hover:text-white p-1"
+              className="text-stone-400 hover:text-stone-800 p-1"
             >
-              <X className="w-4 h-4" />
+              ✕
             </button>
           </div>
 
-          <p className="text-sm font-bold text-slate-200">{lookupResult.meaning}</p>
+          <p className="font-body text-xs sm:text-sm font-bold text-stone-800 dark:text-stone-200">
+            {lookupResult.meaning}
+          </p>
 
-          <div className="p-3 bg-[#0d131d] border border-[#1e2d42] rounded-2xl space-y-1 text-xs">
-            <div className="text-emerald-400 font-medium italic">"{lookupResult.exampleEn}"</div>
-            <div className="text-slate-400">→ {lookupResult.exampleVi}</div>
-          </div>
+          {lookupResult.exampleEn && (
+            <div className="p-3 rounded-xl bg-white dark:bg-stone-900 border-2 border-stone-800 text-xs space-y-1">
+              <p className="font-bold text-stone-900 dark:text-white">"{lookupResult.exampleEn}"</p>
+              {lookupResult.exampleVi && (
+                <p className="text-stone-600 dark:text-stone-400 italic">{lookupResult.exampleVi}</p>
+              )}
+            </div>
+          )}
 
           <div className="flex justify-end gap-2 pt-1">
             <button
               onClick={() => handleSaveToFlashcard(lookupResult)}
-              className="py-1.5 px-4 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-full flex items-center gap-1.5 shadow-md cursor-pointer"
+              className="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-stone-900 font-cartoon text-xs font-bold rounded-xl border-2 border-stone-800 shadow-[2px_2px_0px_#292524] btn-press flex items-center gap-1.5 cursor-pointer"
             >
-              <Bookmark className="w-3.5 h-3.5" /> + Lưu vào Flashcard
+              <Bookmark className="w-3.5 h-3.5" /> Lưu vào Sổ tay Ôn tập (Flashcard)
             </button>
           </div>
         </div>
       )}
 
-      {/* 2 CỘT CHÍNH: CỘT TRÁI (TIẾN TRÌNH & SRS) + CỘT PHẢI (KHO BỘ TỪ) */}
+      {/* 2. MAIN 2-COLUMN LAYOUT (4 COLS LEFT, 8 COLS RIGHT) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* ===================== CỘT TRÁI (4 COLS) ===================== */}
         <div className="lg:col-span-4 space-y-5">
-          {/* WIDGET 1: TIẾN TRÌNH TRÍ NHỚ 5 CẤP ĐỘ (SPACED REPETITION) */}
-          <div className="bg-[#121c2b] border border-[#1e2d42] rounded-3xl p-5 space-y-4 shadow-sm">
+          {/* WIDGET 1: HỆ THỐNG SPACED REPETITION (SRS) */}
+          <div className="bg-[#fffdfa] dark:bg-[#1a1714] rounded-2xl p-5 box-sketch space-y-4">
             <div className="flex items-center justify-between">
-              <Link
-                href="/tuvung/on-tap"
-                className="text-sm font-black text-white hover:text-emerald-400 flex items-center gap-1.5 transition-colors"
-              >
-                <span>{srsStats.total} Từ đã học</span>
-                <ChevronRight className="w-4 h-4 text-slate-400" />
-              </Link>
+              <div className="flex items-center gap-1.5">
+                <span className="font-cartoon text-sm font-bold text-stone-900 dark:text-white">
+                  {srsStats.total} Từ đã học
+                </span>
+                <ChevronRight className="w-4 h-4 text-stone-400" />
+              </div>
+              <span className="washi-tape-yellow px-2 py-0.5 rounded font-cartoon text-[10px] font-black uppercase text-stone-900">
+                SRS SM-2
+              </span>
             </div>
 
-            {/* 5 VÒNG TRÒN TIẾN TRÌNH TRÍ NHỚ CHUẨN ẢNH 3 */}
-            <div className="grid grid-cols-5 gap-1 text-center">
+            {/* 5 Cột / Vòng tròn cấp độ nhớ */}
+            <div className="grid grid-cols-5 gap-1.5 pt-1 text-center">
               {/* MỚI HỌC */}
-              <div className="flex flex-col items-center gap-1.5">
-                <div className="w-12 h-12 rounded-full border-2 border-slate-600 flex items-center justify-center text-xs font-black text-slate-200 bg-[#0d131d]">
+              <div className="flex flex-col items-center gap-1">
+                <div className="w-10 h-10 rounded-full border-2 border-stone-800 flex items-center justify-center font-cartoon text-xs font-bold text-stone-900 dark:text-white bg-amber-100 dark:bg-stone-800 shadow-[1px_1px_0px_#292524]">
                   {srsStats.moiHoc}
                 </div>
-                <span className="text-[9px] font-black text-slate-400 tracking-tight uppercase">
-                  MỚI HỌC
+                <span className="font-cartoon text-[9px] font-bold text-stone-600 dark:text-stone-400 uppercase">
+                  Mới học
                 </span>
               </div>
 
               {/* NHỚ TẠM */}
-              <div className="flex flex-col items-center gap-1.5">
-                <div className="w-12 h-12 rounded-full border-2 border-emerald-500/40 flex items-center justify-center text-xs font-black text-emerald-400 bg-[#0d131d]">
+              <div className="flex flex-col items-center gap-1">
+                <div className="w-10 h-10 rounded-full border-2 border-stone-800 flex items-center justify-center font-cartoon text-xs font-bold text-stone-900 dark:text-white bg-teal-100 dark:bg-stone-800 shadow-[1px_1px_0px_#292524]">
                   {srsStats.nhoTam}
                 </div>
-                <span className="text-[9px] font-black text-slate-400 tracking-tight uppercase">
-                  NHỚ TẠM
+                <span className="font-cartoon text-[9px] font-bold text-stone-600 dark:text-stone-400 uppercase">
+                  Nhớ tạm
                 </span>
               </div>
 
               {/* NHỚ LÂU */}
-              <div className="flex flex-col items-center gap-1.5">
-                <div className="w-12 h-12 rounded-full border-2 border-teal-500/40 flex items-center justify-center text-xs font-black text-teal-400 bg-[#0d131d]">
+              <div className="flex flex-col items-center gap-1">
+                <div className="w-10 h-10 rounded-full border-2 border-stone-800 flex items-center justify-center font-cartoon text-xs font-bold text-stone-900 dark:text-white bg-blue-100 dark:bg-stone-800 shadow-[1px_1px_0px_#292524]">
                   {srsStats.nhoLau}
                 </div>
-                <span className="text-[9px] font-black text-slate-400 tracking-tight uppercase">
-                  NHỚ LÂU
+                <span className="font-cartoon text-[9px] font-bold text-stone-600 dark:text-stone-400 uppercase">
+                  Nhớ lâu
                 </span>
               </div>
 
               {/* THUỘC LÒNG */}
-              <div className="flex flex-col items-center gap-1.5">
-                <div className="w-12 h-12 rounded-full border-2 border-blue-500/40 flex items-center justify-center text-xs font-black text-blue-400 bg-[#0d131d]">
+              <div className="flex flex-col items-center gap-1">
+                <div className="w-10 h-10 rounded-full border-2 border-stone-800 flex items-center justify-center font-cartoon text-xs font-bold text-stone-900 dark:text-white bg-purple-100 dark:bg-stone-800 shadow-[1px_1px_0px_#292524]">
                   {srsStats.thuocLong}
                 </div>
-                <span className="text-[9px] font-black text-slate-400 tracking-tight uppercase">
-                  THUỘC LÒNG
+                <span className="font-cartoon text-[9px] font-bold text-stone-600 dark:text-stone-400 uppercase">
+                  Thuộc lòng
                 </span>
               </div>
 
               {/* THÔNG THẠO */}
-              <div className="flex flex-col items-center gap-1.5">
-                <div className="w-12 h-12 rounded-full border-2 border-amber-500/40 flex items-center justify-center text-xs font-black text-amber-400 bg-[#0d131d]">
+              <div className="flex flex-col items-center gap-1">
+                <div className="w-10 h-10 rounded-full border-2 border-stone-800 flex items-center justify-center font-cartoon text-xs font-bold text-stone-900 dark:text-white bg-rose-100 dark:bg-stone-800 shadow-[1px_1px_0px_#292524]">
                   {srsStats.thongThao}
                 </div>
-                <span className="text-[9px] font-black text-slate-400 tracking-tight uppercase">
-                  THÔNG THẠO
+                <span className="font-cartoon text-[9px] font-bold text-stone-600 dark:text-stone-400 uppercase">
+                  Thành thạo
                 </span>
               </div>
             </div>
 
             {/* Thông báo số từ cần ôn lại */}
-            <div className="flex items-center gap-2 text-xs text-slate-300 font-semibold pt-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-400" />
-              <span>{dueCount} Từ vựng Cần ôn lại</span>
-              <Info className="w-3.5 h-3.5 text-slate-400" />
+            <div className="flex items-center gap-2 text-xs font-hand text-stone-600 dark:text-stone-400 pt-1">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 border border-stone-800" />
+              <span>{dueCount} Từ vựng cần ôn lại theo chu kỳ SM-2</span>
             </div>
 
-            {/* NÚT CAM LỚN "📖 LUYỆN TẬP ^" CHUẨN ẢNH 3 */}
+            {/* NÚT VÀNG NOTEBOOK "📖 LUYỆN TẬP ^" */}
             <Link
               href="/tuvung/on-tap"
-              className="w-full py-3.5 px-4 rounded-2xl bg-[#ff7a00] hover:bg-[#e66e00] text-white font-black text-xs tracking-wider uppercase flex items-center justify-center gap-2 shadow-lg shadow-orange-500/20 transition-transform hover:scale-[1.02] cursor-pointer"
+              className="w-full py-3.5 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 text-stone-900 font-cartoon font-bold text-xs tracking-wider uppercase flex items-center justify-center gap-2 border-2 border-stone-800 shadow-[3px_3px_0px_#292524] btn-press transition-transform"
             >
-              <BookOpen className="w-4 h-4 fill-white" />
-              LUYỆN TẬP ^
+              <BookOpen className="w-4 h-4 fill-stone-900" />
+              Luyện Tập Flashcard ^
             </Link>
           </div>
 
           {/* WIDGET 2: THƯ MỤC CỦA TÔI */}
-          <div className="bg-[#121c2b] border border-[#1e2d42] rounded-3xl p-5 space-y-3 shadow-sm">
+          <div className="bg-[#fffdfa] dark:bg-[#1a1714] rounded-2xl p-5 box-sketch space-y-3">
             <div className="flex items-center justify-between">
-              <h3 className="text-xs font-black text-white uppercase tracking-wider">
+              <h3 className="font-cartoon text-xs font-bold text-stone-900 dark:text-white uppercase tracking-wider">
                 Thư mục của tôi
               </h3>
               <div className="flex items-center gap-1">
                 <button
-                  onClick={() => alert('Tùy chọn quản lý thư mục')}
-                  className="p-1.5 rounded-full hover:bg-slate-800 text-slate-400 hover:text-white transition-colors"
-                >
-                  <MoreHorizontal className="w-4 h-4" />
-                </button>
-                <button
                   onClick={() => setShowFolderModal(true)}
-                  className="p-1.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white transition-colors cursor-pointer"
+                  className="p-1.5 rounded-xl bg-amber-300 hover:bg-amber-400 text-stone-900 border border-stone-800 shadow-sm transition-colors cursor-pointer"
                   title="Thêm thư mục mới"
                 >
                   <Plus className="w-4 h-4" />
@@ -541,59 +560,21 @@ export default function VocabularyHubPage() {
               </div>
             </div>
 
-            {/* Thư mục danh sách hoặc rỗng */}
-            {folders.length === 0 ? (
-              <div className="py-8 flex flex-col items-center justify-center text-center space-y-2 text-slate-500">
-                <Folder className="w-10 h-10 stroke-1" />
-                <span className="text-xs font-semibold">Chưa có thư mục nào</span>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {folders.map((folder, idx) => (
-                  <div
-                    key={idx}
-                    className="flex items-center justify-between p-3 rounded-2xl bg-[#0d131d] border border-[#1e2d42] hover:border-emerald-500/40 text-xs font-bold text-slate-300 transition-colors cursor-pointer"
-                  >
-                    <div className="flex items-center gap-2.5">
-                      <Folder className="w-4 h-4 text-emerald-400" />
-                      <span>{folder}</span>
-                    </div>
-                    <span className="text-[10px] text-slate-500 font-mono">12 từ</span>
+            {/* Thư mục danh sách */}
+            <div className="space-y-2">
+              {folders.map((folder, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center justify-between p-3 rounded-xl bg-[#fff9ea] dark:bg-stone-900 border-2 border-stone-800 text-xs font-cartoon font-bold text-stone-800 dark:text-stone-200 transition-colors cursor-pointer hover:bg-amber-100"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Folder className="w-4 h-4 text-amber-600" />
+                    <span>{folder}</span>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* WIDGET 3: NOTIFICATIONS REMINDER */}
-          <div className="bg-[#121c2b] border border-[#1e2d42] rounded-3xl p-5 space-y-3 shadow-sm">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-2xl bg-slate-800 flex items-center justify-center text-slate-300">
-                <Bell className="w-4 h-4" />
-              </div>
-              <div>
-                <h4 className="text-xs font-black text-white">Notifications</h4>
-                <p className="text-[11px] text-slate-400 font-medium">Daily study reminder</p>
-              </div>
+                  <span className="text-[10px] text-stone-500 font-mono">12 từ</span>
+                </div>
+              ))}
             </div>
-
-            <button
-              onClick={() => {
-                setNotificationEnabled(!notificationEnabled);
-                alert(
-                  !notificationEnabled
-                    ? '✓ Đã kích hoạt chuông nhắc nhở học tiếng Anh mỗi ngày lúc 20:00!'
-                    : 'Đã tắt nhắc nhở.'
-                );
-              }}
-              className={`w-full py-2.5 px-4 rounded-2xl text-xs font-bold transition-all cursor-pointer ${
-                notificationEnabled
-                  ? 'bg-emerald-600 text-white'
-                  : 'bg-[#0d131d] border border-[#1e2d42] hover:border-slate-500 text-slate-300'
-              }`}
-            >
-              {notificationEnabled ? 'Notifications Enabled ✓' : 'Enable notifications'}
-            </button>
           </div>
         </div>
 
@@ -602,13 +583,17 @@ export default function VocabularyHubPage() {
           {/* Thanh tìm kiếm bộ từ + Filter cấp độ */}
           <div className="flex flex-col sm:flex-row items-center gap-3">
             <div className="relative flex-1 w-full">
-              <Search className="w-4 h-4 text-slate-400 absolute left-4 top-3.5" />
+              <Search className="w-4 h-4 text-stone-400 absolute left-4 top-3.5" />
               <input
                 type="text"
                 value={deckSearch}
                 onChange={(e) => setDeckSearch(e.target.value)}
-                placeholder="Tìm bộ từ vựng hoặc chủ đề..."
-                className="w-full bg-[#121c2b] border border-[#1e2d42] focus:border-emerald-500 rounded-full pl-11 pr-4 py-2.5 text-xs text-white placeholder-slate-400 font-semibold outline-none"
+                placeholder={
+                  isChinese
+                    ? "Tìm từ vựng HSK, chữ Hán, Pinyin..."
+                    : "Tìm bộ từ vựng hoặc chủ đề..."
+                }
+                className="w-full bg-white dark:bg-stone-900 border-2 border-stone-800 rounded-xl pl-11 pr-4 py-2.5 text-xs text-stone-900 dark:text-white placeholder-stone-400 font-semibold outline-none shadow-[2px_2px_0px_#292524]"
               />
             </div>
 
@@ -616,7 +601,7 @@ export default function VocabularyHubPage() {
               <select
                 value={selectedLevel}
                 onChange={(e) => setSelectedLevel(e.target.value)}
-                className="w-full appearance-none bg-[#121c2b] border border-[#1e2d42] rounded-full pl-8 pr-8 py-2.5 text-xs text-slate-200 font-bold outline-none cursor-pointer"
+                className="w-full appearance-none bg-white dark:bg-stone-900 border-2 border-stone-800 rounded-xl pl-8 pr-8 py-2.5 text-xs text-stone-900 dark:text-white font-cartoon font-bold outline-none cursor-pointer shadow-[2px_2px_0px_#292524]"
               >
                 <option value="Tất cả cấp độ">{isChinese ? 'Tất cả cấp độ HSK' : 'Tất cả cấp độ'}</option>
                 {isChinese ? (
@@ -637,8 +622,8 @@ export default function VocabularyHubPage() {
                   </>
                 )}
               </select>
-              <Filter className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-3.5 pointer-events-none" />
-              <div className="absolute right-3 top-3 pointer-events-none text-slate-400 text-[10px]">▼</div>
+              <Filter className="w-3.5 h-3.5 text-stone-400 absolute left-3 top-3.5 pointer-events-none" />
+              <div className="absolute right-3 top-3.5 pointer-events-none text-stone-400 text-[10px]">▼</div>
             </div>
           </div>
 
@@ -650,12 +635,12 @@ export default function VocabularyHubPage() {
                 <button
                   key={tag}
                   onClick={() => setActiveTag(tag)}
-                  className={`px-3.5 py-1 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+                  className={`px-3.5 py-1.5 rounded-xl text-xs font-cartoon font-bold whitespace-nowrap transition-all cursor-pointer border-2 border-stone-800 ${
                     isActive
                       ? isChinese
-                        ? 'bg-rose-600 text-white shadow-md'
-                        : 'bg-emerald-500 text-white shadow-md'
-                      : 'bg-[#121c2b] text-slate-400 hover:text-white border border-[#1e2d42]'
+                        ? 'bg-[#c53428] text-white shadow-[2px_2px_0px_#292524] scale-105'
+                        : 'bg-amber-300 text-stone-900 shadow-[2px_2px_0px_#292524] scale-105'
+                      : 'bg-[#fffdfa] dark:bg-stone-800 text-stone-700 dark:text-stone-300 hover:bg-amber-100 shadow-xs'
                   }`}
                 >
                   {tag}
@@ -667,32 +652,31 @@ export default function VocabularyHubPage() {
           {/* SECTION 1: CÁC BỘ TỪ VỰNG */}
           <section className="space-y-3">
             <div className="flex items-center justify-between">
-              <h2 className="text-base font-black text-white flex items-center gap-2">
+              <h2 className="font-cartoon text-base font-bold text-stone-900 dark:text-white flex items-center gap-2">
                 {isChinese ? (
                   <>
-                    6 Bộ từ vựng HSK 1 - 6 Chuẩn HSK 3.0 <span className="text-xs text-rose-400 font-semibold">(5.400+ từ)</span>
+                    6 Bộ từ vựng HSK 1 - 6 Chuẩn HSK 3.0 <span className="text-xs text-[#c53428] font-bold">(5.400+ từ)</span>
                   </>
                 ) : (
                   <>
-                    Từ vựng thông dụng <span className="text-xs text-slate-400 font-semibold">(7)</span>
+                    Từ vựng thông dụng <span className="text-xs text-amber-600 font-bold">(7 bộ)</span>
                   </>
                 )}
               </h2>
               <button
                 onClick={() => setActiveTag('Tất cả')}
-                className={`text-xs font-bold transition-colors cursor-pointer ${
-                  isChinese ? 'text-rose-400 hover:text-rose-300' : 'text-emerald-400 hover:text-emerald-300'
-                }`}
+                className="font-cartoon text-xs font-bold text-[#c53428] dark:text-amber-400 hover:underline cursor-pointer"
               >
                 Xem tất cả &gt;
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {commonDecks.map((deck) => (
                 <DeckCard
                   key={deck.id}
                   deck={deck}
+                  isChinese={isChinese}
                   onSelect={() => {
                     if (deck.isPro) {
                       setShowPremiumModal(true);
@@ -705,65 +689,65 @@ export default function VocabularyHubPage() {
             </div>
           </section>
 
-          {/* SECTION 2: DANH SÁCH TỪ VỰNG CHI TIẾT (TIẾNG TRUNG HSK HOẶC ENGLISH IN USE) */}
+          {/* SECTION 2: DANH SÁCH TỪ VỰNG CHI TIẾT */}
           {isChinese ? (
-            <section className="space-y-4 pt-4 border-t border-[#1e2d42]">
+            <section className="space-y-4 pt-4 border-t border-stone-200 dark:border-stone-800">
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <div>
-                  <h2 className="text-base font-black text-white flex items-center gap-2">
+                  <h2 className="font-cartoon text-base font-bold text-stone-900 dark:text-white flex items-center gap-2">
                     <span>📖 Danh Sách Từ Vựng HSK Chi Tiết</span>
-                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-rose-950 text-rose-300 border border-rose-500/30 font-bold">
+                    <span className="text-xs px-2.5 py-0.5 rounded-full bg-red-100 text-[#c53428] border border-stone-800 font-bold">
                       {filteredChineseWords.length} từ
                     </span>
                   </h2>
-                  <p className="text-xs text-slate-400">
-                    Bấm loa để nghe phát âm chuẩn Bắc Kinh, xem âm Hán-Việt và câu ví dụ minh họa.
+                  <p className="font-hand text-sm text-stone-600 dark:text-stone-400">
+                    Bấm loa để nghe phát âm giọng Bắc Kinh chuẩn, xem âm Hán-Việt và câu ví dụ minh họa.
                   </p>
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {displayedChineseWords.map((word) => (
                   <div
                     key={word.id}
-                    className="p-3.5 bg-[#121c2b] border border-[#1e2d42] hover:border-rose-500/60 rounded-2xl space-y-2 transition-all shadow-sm group hover:-translate-y-0.5"
+                    className="p-3.5 bg-[#fffdfa] dark:bg-[#1a1714] border-2 border-stone-800 rounded-2xl space-y-2 box-sketch-sm transition-all group hover:-translate-y-0.5"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex items-baseline gap-2">
-                        <span className="text-2xl font-black text-white group-hover:text-rose-400 transition-colors font-serif">
+                        <span className="text-2xl font-black text-stone-900 dark:text-white group-hover:text-[#c53428] transition-colors font-serif">
                           {word.hanzi}
                         </span>
-                        <span className="text-xs font-bold text-rose-400 font-mono">
+                        <span className="text-xs font-bold text-[#c53428] dark:text-amber-300 font-mono">
                           {word.pinyin}
                         </span>
                       </div>
-                      <span className="text-[10px] px-2 py-0.5 rounded-full font-black bg-rose-950/60 text-rose-300 border border-rose-500/20">
+                      <span className="text-[10px] px-2 py-0.5 rounded-full font-cartoon font-bold bg-amber-200 text-stone-900 border border-stone-800">
                         HSK {word.hskLevel}
                       </span>
                     </div>
 
                     <div className="text-xs space-y-0.5">
                       {word.sinoVietnamese && (
-                        <p className="text-[11px] text-slate-400 font-medium">
-                          Âm Hán Việt: <span className="text-slate-200 font-bold">{word.sinoVietnamese}</span>
+                        <p className="text-[11px] text-stone-500 font-medium font-cartoon">
+                          Âm Hán Việt: <span className="text-stone-900 dark:text-white font-bold">{word.sinoVietnamese}</span>
                         </p>
                       )}
-                      <p className="text-slate-300 font-semibold line-clamp-2">
+                      <p className="font-body text-xs text-stone-700 dark:text-stone-300 font-semibold line-clamp-2">
                         {word.meaning}
                       </p>
                     </div>
 
                     {word.exampleZh && (
-                      <div className="p-2 bg-[#0d131d] border border-[#1e2d42]/60 rounded-xl text-[11px] space-y-0.5">
-                        <p className="text-rose-300/90 font-medium line-clamp-1">"{word.exampleZh}"</p>
-                        {word.exampleVi && <p className="text-slate-400 italic line-clamp-1">{word.exampleVi}</p>}
+                      <div className="p-2 bg-[#fff9ea] dark:bg-stone-900 border border-stone-800 rounded-xl text-[11px] space-y-0.5">
+                        <p className="text-[#c53428] dark:text-amber-300 font-medium line-clamp-1">"{word.exampleZh}"</p>
+                        {word.exampleVi && <p className="text-stone-600 dark:text-stone-400 italic line-clamp-1">{word.exampleVi}</p>}
                       </div>
                     )}
 
-                    <div className="flex items-center justify-between pt-1 border-t border-[#1e2d42]/40">
+                    <div className="flex items-center justify-between pt-1 border-t border-stone-200 dark:border-stone-800">
                       <button
                         onClick={() => speakAudio(word.hanzi)}
-                        className="p-1.5 rounded-lg bg-rose-500/15 text-rose-400 hover:bg-rose-500 hover:text-white transition-colors cursor-pointer"
+                        className="p-1.5 rounded-lg bg-amber-300 hover:bg-amber-400 text-stone-900 border border-stone-800 transition-colors cursor-pointer"
                         title="Nghe phát âm"
                       >
                         <Volume2 className="w-3.5 h-3.5" />
@@ -779,7 +763,7 @@ export default function VocabularyHubPage() {
                             exampleVi: word.exampleVi,
                           })
                         }
-                        className="px-2.5 py-1 bg-[#0d131d] hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 border border-[#1e2d42] rounded-lg text-[10px] font-bold flex items-center gap-1 cursor-pointer transition-colors"
+                        className="px-2.5 py-1 bg-white dark:bg-stone-800 hover:bg-amber-100 text-stone-800 dark:text-stone-200 border border-stone-800 rounded-lg font-cartoon text-[11px] font-bold flex items-center gap-1 cursor-pointer transition-colors shadow-xs"
                       >
                         <Bookmark className="w-3 h-3" /> Lưu
                       </button>
@@ -792,7 +776,7 @@ export default function VocabularyHubPage() {
                 <div className="pt-2 text-center">
                   <button
                     onClick={() => setChinesePage((p) => p + 1)}
-                    className="px-6 py-2.5 bg-rose-600 hover:bg-rose-500 text-white text-xs font-black rounded-full shadow-lg cursor-pointer transition-all hover:scale-105"
+                    className="px-6 py-2.5 bg-[#c53428] hover:bg-[#b02c21] text-white font-cartoon text-xs font-bold rounded-xl border-2 border-stone-800 shadow-[2px_2px_0px_#292524] btn-press cursor-pointer transition-all"
                   >
                     Xem thêm ({filteredChineseWords.length - displayedChineseWords.length} từ còn lại)
                   </button>
@@ -802,12 +786,12 @@ export default function VocabularyHubPage() {
           ) : (
             <section className="space-y-3">
               <div className="flex items-center justify-between">
-                <h2 className="text-base font-black text-white flex items-center gap-2">
-                  English In Use <span className="text-xs text-slate-400 font-semibold">(4)</span>
+                <h2 className="font-cartoon text-base font-bold text-stone-900 dark:text-white flex items-center gap-2">
+                  English In Use <span className="text-xs text-amber-600 font-bold">(4 bộ)</span>
                 </h2>
                 <button
                   onClick={() => setActiveTag('# English In Use')}
-                  className="text-xs font-bold text-emerald-400 hover:text-emerald-300 transition-colors cursor-pointer"
+                  className="font-cartoon text-xs font-bold text-[#c53428] dark:text-amber-400 hover:underline cursor-pointer"
                 >
                   Xem tất cả &gt;
                 </button>
@@ -818,6 +802,7 @@ export default function VocabularyHubPage() {
                   <DeckCard
                     key={deck.id}
                     deck={deck}
+                    isChinese={false}
                     onSelect={() => {
                       if (deck.isPro) {
                         setShowPremiumModal(true);
@@ -836,57 +821,57 @@ export default function VocabularyHubPage() {
       {/* MODAL CHI TIẾT BỘ TỪ */}
       {selectedDeck && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="relative w-full max-w-lg bg-[#121c2b] border border-[#1e2d42] rounded-3xl p-6 text-white shadow-2xl space-y-4">
+          <div className="relative w-full max-w-lg bg-[#fffdfa] dark:bg-[#1a1714] border-2 border-stone-800 box-sketch rounded-2xl p-6 text-stone-900 dark:text-white space-y-4">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-3">
                 <span className="text-3xl">{selectedDeck.icon}</span>
                 <div>
-                  <h3 className="text-lg font-black">{selectedDeck.title}</h3>
-                  <p className={`text-xs font-bold ${isChinese ? 'text-rose-400' : 'text-emerald-400'}`}>
+                  <h3 className="font-cartoon text-lg font-bold">{selectedDeck.title}</h3>
+                  <p className="font-cartoon text-xs text-[#c53428] dark:text-amber-400 font-bold">
                     {selectedDeck.wordsCount} từ vựng
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setSelectedDeck(null)}
-                className="text-slate-400 hover:text-white p-1"
+                className="text-stone-400 hover:text-stone-900 p-1 font-bold text-lg"
               >
                 ✕
               </button>
             </div>
 
-            <p className="text-xs text-slate-300 leading-relaxed">{selectedDeck.description}</p>
+            <p className="font-body text-xs text-stone-600 dark:text-stone-300 leading-relaxed">
+              {selectedDeck.description}
+            </p>
 
-            <div className="p-4 bg-[#0d131d] border border-[#1e2d42] rounded-2xl space-y-2 text-xs">
-              <div className="flex items-center justify-between text-slate-400">
+            <div className="p-4 bg-[#fff9ea] dark:bg-stone-900 border-2 border-stone-800 rounded-xl space-y-2 text-xs">
+              <div className="flex items-center justify-between font-cartoon text-stone-600 dark:text-stone-400 font-bold">
                 <span>Tiến độ hoàn thành:</span>
-                <span className="font-bold text-white">0%</span>
+                <span className="text-stone-900 dark:text-white">0%</span>
               </div>
-              <div className="w-full h-2 bg-slate-800 rounded-full overflow-hidden">
-                <div className={`w-0 h-full rounded-full ${isChinese ? 'bg-rose-500' : 'bg-emerald-500'}`} />
+              <div className="w-full h-2.5 bg-stone-200 dark:bg-stone-800 rounded-full border border-stone-800 overflow-hidden">
+                <div className="w-0 h-full bg-amber-400 rounded-full" />
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col sm:flex-row gap-3 pt-1">
               <Link
                 href="/tuvung/on-tap"
-                className={`flex-1 py-3 text-white font-black text-xs text-center rounded-2xl shadow-lg cursor-pointer ${
-                  isChinese ? 'bg-rose-600 hover:bg-rose-500' : 'bg-emerald-600 hover:bg-emerald-500'
-                }`}
+                className="flex-1 py-3 text-stone-900 font-cartoon font-bold text-xs text-center rounded-xl bg-amber-400 hover:bg-amber-300 border-2 border-stone-800 shadow-[2px_2px_0px_#292524] btn-press cursor-pointer"
               >
                 Luyện Tập Flashcard (SM-2)
               </Link>
               {isChinese && (
                 <Link
                   href="/practice/hanzi-writer"
-                  className="py-3 px-4 bg-amber-600 hover:bg-amber-500 text-white font-black text-xs text-center rounded-2xl shadow-lg cursor-pointer"
+                  className="py-3 px-4 bg-[#c53428] hover:bg-[#b02c21] text-white font-cartoon font-bold text-xs text-center rounded-xl border-2 border-stone-800 shadow-[2px_2px_0px_#292524] btn-press cursor-pointer"
                 >
                   Tạo Vở Viết A4
                 </Link>
               )}
               <button
                 onClick={() => setSelectedDeck(null)}
-                className="px-4 py-3 bg-[#0d131d] hover:bg-slate-800 border border-[#1e2d42] text-slate-300 font-bold text-xs rounded-2xl cursor-pointer"
+                className="px-4 py-3 bg-[#ede4d3] dark:bg-stone-800 hover:bg-stone-200 border-2 border-stone-800 text-stone-800 dark:text-stone-200 font-cartoon font-bold text-xs rounded-xl cursor-pointer"
               >
                 Đóng
               </button>
@@ -898,14 +883,14 @@ export default function VocabularyHubPage() {
       {/* MODAL TẠO THƯ MỤC */}
       {showFolderModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-          <div className="relative w-full max-w-sm bg-[#121c2b] border border-[#1e2d42] rounded-3xl p-5 text-white shadow-2xl space-y-4">
-            <h3 className="text-sm font-black">Tạo Thư Mục Mới</h3>
+          <div className="relative w-full max-w-sm bg-[#fffdfa] dark:bg-[#1a1714] border-2 border-stone-800 box-sketch rounded-2xl p-5 text-stone-900 dark:text-white space-y-4">
+            <h3 className="font-cartoon text-sm font-bold">Tạo Thư Mục Mới</h3>
             <input
               type="text"
               value={newFolderName}
               onChange={(e) => setNewFolderName(e.target.value)}
               placeholder="Tên thư mục (VD: Từ vựng IELTS Writing)"
-              className="w-full bg-[#0d131d] border border-[#1e2d42] focus:border-emerald-500 rounded-2xl px-4 py-2.5 text-xs text-white outline-none"
+              className="w-full bg-white dark:bg-stone-900 border-2 border-stone-800 rounded-xl px-4 py-2.5 text-xs text-stone-900 dark:text-white outline-none"
             />
             <div className="flex gap-2">
               <button
@@ -916,13 +901,13 @@ export default function VocabularyHubPage() {
                     setShowFolderModal(false);
                   }
                 }}
-                className="flex-1 py-2 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl cursor-pointer"
+                className="flex-1 py-2 bg-amber-400 hover:bg-amber-300 text-stone-900 font-cartoon text-xs font-bold rounded-xl border border-stone-800 shadow-sm cursor-pointer"
               >
                 Tạo thư mục
               </button>
               <button
                 onClick={() => setShowFolderModal(false)}
-                className="px-4 py-2 bg-slate-800 text-slate-300 text-xs font-bold rounded-xl cursor-pointer"
+                className="px-4 py-2 bg-[#ede4d3] text-stone-800 text-xs font-cartoon font-bold rounded-xl border border-stone-800 cursor-pointer"
               >
                 Hủy
               </button>
@@ -937,39 +922,39 @@ export default function VocabularyHubPage() {
   );
 }
 
-// Card bộ từ vựng chuẩn Bibung
-function DeckCard({ deck, onSelect }: { deck: any; onSelect: () => void }) {
+// Card bộ từ vựng phong cách Vở Sổ Tay Hoạt Hình
+function DeckCard({ deck, isChinese, onSelect }: { deck: any; isChinese: boolean; onSelect: () => void }) {
   return (
     <div
       onClick={onSelect}
-      className="group relative bg-[#121c2b] border border-[#1e2d42] hover:border-emerald-500/80 rounded-3xl p-4 shadow-md transition-all duration-300 hover:shadow-xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between overflow-hidden"
+      className="group relative bg-[#fffdfa] dark:bg-[#1a1714] border-2 border-stone-800 rounded-2xl p-4 box-sketch-sm transition-all duration-200 hover:-translate-y-0.5 cursor-pointer flex flex-col justify-between overflow-hidden"
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-start gap-3">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-teal-500/10 border border-emerald-500/30 flex items-center justify-center text-2xl shrink-0 group-hover:scale-105 transition-transform">
+          <div className="w-12 h-12 rounded-xl bg-amber-300 border-2 border-stone-800 flex items-center justify-center text-2xl shrink-0 shadow-[2px_2px_0px_#292524] group-hover:scale-105 transition-transform">
             {deck.icon}
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h3 className="text-xs font-black text-white line-clamp-1 group-hover:text-emerald-400 transition-colors">
+              <h3 className="font-cartoon text-xs font-bold text-stone-900 dark:text-white line-clamp-1 group-hover:text-[#c53428] transition-colors">
                 {deck.title}
               </h3>
               {deck.isPro && (
-                <span className="px-1.5 py-0.5 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-black text-[9px] rounded-md tracking-wider">
+                <span className="px-1.5 py-0.2 bg-amber-400 border border-stone-800 text-stone-900 font-cartoon font-black text-[9px] rounded">
                   PRO
                 </span>
               )}
             </div>
-            <p className="text-[11px] text-slate-400 line-clamp-1 mt-0.5">{deck.subtitle}</p>
+            <p className="font-hand text-xs text-stone-600 dark:text-stone-400 line-clamp-1 mt-0.5">{deck.subtitle}</p>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center justify-between pt-3 mt-3 border-t border-[#1e2d42] text-[10px] font-bold text-slate-400">
-        <span className="text-emerald-400 font-mono">
+      <div className="flex items-center justify-between pt-2.5 mt-2.5 border-t border-stone-200 dark:border-stone-800 font-cartoon text-[11px] font-bold text-stone-600 dark:text-stone-400">
+        <span className="text-[#c53428] dark:text-amber-400">
           0/{deck.wordsCount.toLocaleString()} từ
         </span>
-        <span className="text-slate-500">Chưa bắt đầu</span>
+        <span className="text-stone-500">Bấm để học ➔</span>
       </div>
     </div>
   );

@@ -104,30 +104,33 @@ export default function GamesHubPage() {
       ];
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-8 font-sans">
+    <div className="w-full max-w-5xl mx-auto px-4 sm:px-8 py-8 space-y-8 font-sans">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
+      <div className="relative bg-[#fffdfa] dark:bg-[#1a1714] rounded-2xl p-6 box-sketch flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 overflow-hidden">
+        <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-              Đấu Trường Trò Chơi
-            </h1>
-            <span className="px-2 py-0.5 bg-rose-500 text-white font-black text-[10px] rounded uppercase tracking-wider">
+            <span className="washi-tape-yellow px-2.5 py-0.5 rounded font-cartoon text-xs font-black uppercase text-stone-900">
+              {isChinese ? 'Trò Chơi HSK' : 'Trò Chơi Phản Xạ'}
+            </span>
+            <span className="px-2 py-0.5 bg-[#c53428] text-white font-cartoon text-[10px] font-bold rounded border border-stone-800">
               NEW
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-400 font-medium mt-1">
+          <h1 className="font-cartoon text-2xl sm:text-3xl font-black text-stone-900 dark:text-white tracking-tight">
+            Đấu Trường Trò Chơi
+          </h1>
+          <p className="font-hand text-sm text-stone-600 dark:text-stone-400 font-bold">
             Vừa chơi vừa ghi nhớ từ vựng phản xạ, kiếm thêm 💎 Kim cương và leo bảng xếp hạng tuần.
           </p>
         </div>
 
-        <div className="flex items-center gap-3 bg-[#121c2b] border border-[#1e2d42] px-4 py-2 rounded-2xl text-xs font-black">
-          <span className="flex items-center gap-1.5 text-cyan-400">
+        <div className="flex items-center gap-3 bg-[#fff9ea] dark:bg-stone-900 border-2 border-stone-800 px-4 py-2 rounded-xl text-xs font-cartoon font-bold shadow-[2px_2px_0px_#292524]">
+          <span className="flex items-center gap-1.5 text-cyan-700 dark:text-cyan-400">
             <Gem className="w-4 h-4 fill-cyan-400" />
             <span>{user?.diamonds ?? 0}</span>
           </span>
-          <span className="text-slate-600">|</span>
-          <span className="flex items-center gap-1.5 text-amber-400">
+          <span className="text-stone-400">|</span>
+          <span className="flex items-center gap-1.5 text-amber-700 dark:text-amber-400">
             <Flame className="w-4 h-4 fill-amber-400" />
             <span>{user?.streak ?? 0} ngày</span>
           </span>
@@ -140,36 +143,36 @@ export default function GamesHubPage() {
           <div
             key={g.id}
             onClick={() => setActiveGame(g.id as any)}
-            className={`bg-[#121c2b] border ${g.color} rounded-3xl p-6 shadow-md transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 cursor-pointer flex flex-col justify-between space-y-4 group`}
+            className="bg-[#fffdfa] dark:bg-[#1a1714] border-2 border-stone-800 box-sketch rounded-2xl p-6 shadow-md transition-all duration-200 hover:-translate-y-0.5 cursor-pointer flex flex-col justify-between space-y-4 group"
           >
             <div className="flex items-start justify-between">
-              <div className="w-14 h-14 rounded-2xl bg-[#0d131d] border border-[#1e2d42] flex items-center justify-center text-3xl shadow-inner group-hover:scale-110 transition-transform">
+              <div className="w-14 h-14 rounded-2xl bg-amber-200 dark:bg-stone-800 border-2 border-stone-800 flex items-center justify-center text-3xl shadow-[2px_2px_0px_#292524] group-hover:scale-105 transition-transform">
                 {g.icon}
               </div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black text-cyan-400 bg-cyan-950/60 border border-cyan-500/30 px-2 py-0.5 rounded-full">
+                <span className="text-[10px] font-cartoon font-black text-stone-900 bg-cyan-200 border border-stone-800 px-2 py-0.5 rounded-full">
                   {g.reward}
                 </span>
-                <span className="px-2 py-0.5 bg-rose-500 text-white font-black text-[9px] rounded uppercase">
+                <span className="px-2 py-0.5 bg-[#c53428] text-white font-cartoon text-[9px] font-bold rounded border border-stone-800 uppercase">
                   {g.tag}
                 </span>
               </div>
             </div>
 
             <div className="space-y-1.5">
-              <h3 className="text-base font-black text-white group-hover:text-emerald-400 transition-colors">
+              <h3 className="font-cartoon text-base font-bold text-stone-900 dark:text-white group-hover:text-[#c53428] transition-colors">
                 {g.title}
               </h3>
-              <p className="text-xs text-slate-400 leading-relaxed font-medium">
+              <p className="font-body text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
                 {g.description}
               </p>
             </div>
 
-            <div className="pt-2 flex items-center justify-between text-xs font-bold text-emerald-400">
-              <span className="flex items-center gap-1">
-                <Play className="w-3.5 h-3.5 fill-emerald-400" /> Chơi ngay
+            <div className="pt-2 flex items-center justify-between text-xs font-cartoon font-bold border-t border-stone-200 dark:border-stone-800">
+              <span className="flex items-center gap-1 text-[#c53428] dark:text-amber-400">
+                <Play className="w-3.5 h-3.5 fill-current" /> Chơi ngay
               </span>
-              <span className="text-slate-500 text-[10px]">Đã chơi 1.2k lần</span>
+              <span className="text-stone-400 font-hand text-xs">Đã chơi 1.2k lần</span>
             </div>
           </div>
         ))}
@@ -178,48 +181,48 @@ export default function GamesHubPage() {
       {/* Bảng xếp hạng tuần & Phần thưởng */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-2">
         {/* Bảng xếp hạng tuần (2 cột) */}
-        <div className="lg:col-span-2 bg-[#121c2b] border border-[#1e2d42] rounded-3xl p-6 space-y-4">
+        <div className="lg:col-span-2 bg-[#fffdfa] dark:bg-[#1a1714] border-2 border-stone-800 rounded-2xl p-6 space-y-4 box-sketch">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2 text-white font-black text-base">
-              <Trophy className="w-5 h-5 text-amber-400" />
+            <div className="flex items-center gap-2 text-stone-900 dark:text-white font-cartoon font-bold text-base">
+              <Trophy className="w-5 h-5 text-amber-500" />
               <span>Bảng Xếp Hạng Giải Đấu Tuần</span>
             </div>
-            <span className="text-[11px] font-bold text-slate-400">Kết thúc sau 2 ngày 14 giờ</span>
+            <span className="font-hand text-sm text-stone-500">Kết thúc sau 2 ngày 14 giờ</span>
           </div>
 
           <div className="space-y-2.5">
             {leaderboard.map((item) => (
               <div
                 key={item.rank}
-                className="flex items-center justify-between p-3.5 bg-[#0d131d] border border-[#1e2d42] rounded-2xl text-xs hover:border-slate-700 transition-colors"
+                className="flex items-center justify-between p-3.5 bg-[#fff9ea] dark:bg-stone-900 border-2 border-stone-800 rounded-xl text-xs hover:bg-amber-100 transition-colors shadow-xs"
               >
                 <div className="flex items-center gap-3">
                   <span
-                    className={`w-6 text-center font-black ${
+                    className={`w-6 text-center font-cartoon font-black ${
                       item.rank === 1
-                        ? 'text-amber-400 text-base'
-                        : item.rank === 2
-                        ? 'text-slate-300 text-base'
-                        : item.rank === 3
                         ? 'text-amber-600 text-base'
-                        : 'text-slate-500'
+                        : item.rank === 2
+                        ? 'text-stone-500 text-base'
+                        : item.rank === 3
+                        ? 'text-amber-800 text-base'
+                        : 'text-stone-400'
                     }`}
                   >
                     #{item.rank}
                   </span>
-                  <div className="w-8 h-8 rounded-full bg-[#1e2d42] flex items-center justify-center text-sm shadow-sm">
+                  <div className="w-8 h-8 rounded-xl bg-amber-300 border border-stone-800 flex items-center justify-center text-sm shadow-xs">
                     {item.avatar}
                   </div>
                   <div>
-                    <div className="font-bold text-white">{item.name}</div>
-                    <div className="text-[10px] text-slate-400 flex items-center gap-1">
+                    <div className="font-cartoon font-bold text-stone-900 dark:text-white">{item.name}</div>
+                    <div className="font-hand text-xs text-stone-500 flex items-center gap-1">
                       <Flame className="w-3 h-3 text-amber-500 fill-amber-500" />
                       <span>{item.streak} ngày liên tiếp</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1 font-black text-cyan-400 font-mono text-xs">
+                <div className="flex items-center gap-1 font-cartoon font-black text-cyan-700 dark:text-cyan-400 text-xs">
                   <Gem className="w-3.5 h-3.5 fill-cyan-400" />
                   <span>{item.diamonds.toLocaleString()}</span>
                 </div>
@@ -229,49 +232,49 @@ export default function GamesHubPage() {
         </div>
 
         {/* Cột phần thưởng VIP */}
-        <div className="bg-[#121c2b] border border-[#1e2d42] rounded-3xl p-6 space-y-4 flex flex-col justify-between">
+        <div className="bg-[#fffdfa] dark:bg-[#1a1714] border-2 border-stone-800 rounded-2xl p-6 space-y-4 flex flex-col justify-between box-sketch">
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-white font-black text-base">
-              <Award className="w-5 h-5 text-amber-400" />
+            <div className="flex items-center gap-2 text-stone-900 dark:text-white font-cartoon font-bold text-base">
+              <Award className="w-5 h-5 text-amber-500" />
               <span>Phần Thưởng Top Tuần</span>
             </div>
-            <p className="text-xs text-slate-400 leading-relaxed font-medium">
+            <p className="font-body text-xs text-stone-600 dark:text-stone-400 leading-relaxed">
               Thi đấu minigame mỗi ngày để nhận quà tặng VIP độc quyền trao vào 00:00 Chủ Nhật hàng tuần:
             </p>
 
             <div className="space-y-2 pt-1 text-xs">
-              <div className="p-3 bg-[#0d131d] border border-amber-500/30 rounded-2xl flex items-center gap-3">
+              <div className="p-3 bg-[#fff9ea] dark:bg-stone-900 border-2 border-stone-800 rounded-xl flex items-center gap-3">
                 <span className="text-xl">🥇</span>
                 <div>
-                  <div className="font-black text-amber-400">Top 1: 500 💎 + 7 Ngày VIP Pro</div>
-                  <div className="text-[10px] text-slate-400">Mở toàn bộ tài liệu & tính năng AI</div>
+                  <div className="font-cartoon font-bold text-amber-700 dark:text-amber-400">Top 1: 500 💎 + 7 Ngày VIP Pro</div>
+                  <div className="font-hand text-xs text-stone-500">Mở toàn bộ tài liệu & tính năng AI</div>
                 </div>
               </div>
 
-              <div className="p-3 bg-[#0d131d] border border-slate-700 rounded-2xl flex items-center gap-3">
+              <div className="p-3 bg-[#fff9ea] dark:bg-stone-900 border-2 border-stone-800 rounded-xl flex items-center gap-3">
                 <span className="text-xl">🥈</span>
                 <div>
-                  <div className="font-black text-slate-200">Top 2-3: 300 💎 + Huy hiệu Bạc</div>
-                  <div className="text-[10px] text-slate-400">Được ghim trên danh dự bảng tuần</div>
+                  <div className="font-cartoon font-bold text-stone-700 dark:text-stone-300">Top 2-3: 300 💎 + Huy hiệu Bạc</div>
+                  <div className="font-hand text-xs text-stone-500">Được ghim trên danh dự bảng tuần</div>
                 </div>
               </div>
 
-              <div className="p-3 bg-[#0d131d] border border-amber-900/30 rounded-2xl flex items-center gap-3">
+              <div className="p-3 bg-[#fff9ea] dark:bg-stone-900 border-2 border-stone-800 rounded-xl flex items-center gap-3">
                 <span className="text-xl">🥉</span>
                 <div>
-                  <div className="font-black text-amber-600">Top 4-10: 100 💎</div>
-                  <div className="text-[10px] text-slate-400">Cộng trực tiếp vào ví học tập</div>
+                  <div className="font-cartoon font-bold text-amber-800 dark:text-amber-500">Top 4-10: 100 💎</div>
+                  <div className="font-hand text-xs text-stone-500">Cộng trực tiếp vào ví học tập</div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="pt-4 border-t border-[#1e2d42]">
+          <div className="pt-4 border-t border-stone-200 dark:border-stone-800">
             <button
               onClick={() => setActiveGame('memory')}
-              className="w-full py-3 bg-[#00c950] hover:bg-[#00b046] text-white text-xs font-black rounded-2xl shadow-lg shadow-emerald-600/20 cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-3 bg-amber-400 hover:bg-amber-300 text-stone-900 text-xs font-cartoon font-bold rounded-xl border-2 border-stone-800 shadow-[2px_2px_0px_#292524] btn-press cursor-pointer flex items-center justify-center gap-2"
             >
-              <Zap className="w-4 h-4 fill-white" /> Tham Gia Đua Điểm Ngay
+              <Zap className="w-4 h-4 fill-current" /> Tham Gia Đua Điểm Ngay
             </button>
           </div>
         </div>

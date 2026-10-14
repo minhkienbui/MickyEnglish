@@ -135,36 +135,38 @@ export default function PracticeHubPage() {
   const modes = isChinese ? chineseModes : englishModes;
 
   return (
-    <div className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-7 font-sans transition-colors ${
-      isLight ? 'text-slate-900' : 'text-slate-100'
-    }`}>
-      {/* 1. Header Luyện tập chuẩn Bibung */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className={`text-2xl sm:text-3xl font-black tracking-tight ${
-            isLight ? 'text-slate-900' : 'text-white'
-          }`}>
-            Luyện tập
+    <div className="w-full max-w-5xl mx-auto px-4 sm:px-8 py-8 space-y-8 font-sans">
+      {/* 1. Header Luyện tập chuẩn Warm Notebook */}
+      <div className="relative bg-[#fffdfa] dark:bg-[#1a1714] rounded-2xl p-6 sm:p-8 box-sketch flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 overflow-hidden">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="washi-tape-yellow px-2.5 py-0.5 rounded font-cartoon text-xs font-black uppercase text-stone-900">
+              {isChinese ? 'Kỹ Năng HSK 3.0' : 'Trung Tâm Luyện Tập'}
+            </span>
+            <span className="px-2 py-0.5 bg-[#c53428] text-white font-cartoon text-[10px] font-bold rounded border border-stone-800">
+              PRO
+            </span>
+          </div>
+          <h1 className="font-cartoon text-2xl sm:text-3xl font-black text-stone-900 dark:text-white tracking-tight">
+            {isChinese ? 'Trung Tâm Luyện Tập HSK' : 'Trung Tâm Luyện Tập Đa Kỹ Năng'}
           </h1>
-          <p className={`text-sm sm:text-base font-medium mt-1 ${
-            isLight ? 'text-slate-600' : 'text-slate-400'
-          }`}>
-            Chọn một chế độ để bắt đầu rèn luyện kỹ năng của bạn.
+          <p className="font-hand text-sm text-stone-600 dark:text-stone-400 font-bold">
+            Chọn một chế độ để bắt đầu rèn luyện kỹ năng phản xạ tự nhiên của bạn.
           </p>
         </div>
 
         <button
           onClick={() => setShowStatsModal(true)}
-          className="py-2.5 px-5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs sm:text-sm font-black rounded-full flex items-center gap-2 shadow-lg shadow-emerald-600/20 transition-transform hover:scale-105 cursor-pointer shrink-0"
+          className="py-2.5 px-5 bg-amber-300 hover:bg-amber-400 text-stone-900 font-cartoon font-bold text-xs sm:text-sm rounded-xl border-2 border-stone-800 shadow-[2px_2px_0px_#292524] btn-press flex items-center gap-2 transition-all cursor-pointer shrink-0"
         >
           <BarChart2 className="w-4 h-4" /> Thống kê
         </button>
       </div>
 
-      {/* 2. Grid 5 Chế Độ Luyện Tập Chuẩn Ảnh 4 */}
-      <div className="space-y-4">
-        {/* Hàng trên: 3 chế độ (Nhìn và viết, Luyện đọc, Tìm lỗi) */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      {/* 2. Grid Chế Độ Luyện Tập Chuẩn Vở Ghi Chép */}
+      <div className="space-y-5">
+        {/* Hàng trên: 3 chế độ */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
           {modes.slice(0, 3).map((mode) => (
             <PracticeCard
               key={mode.id}
@@ -175,8 +177,8 @@ export default function PracticeHubPage() {
           ))}
         </div>
 
-        {/* Hàng dưới: 2 chế độ (ChunkFlow, Đọc báo song ngữ) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Hàng dưới: 2 chế độ */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {modes.slice(3, 5).map((mode) => (
             <PracticeCard
               key={mode.id}
@@ -191,57 +193,47 @@ export default function PracticeHubPage() {
       {/* 3. Hai Widget Chân Trang: Hoạt Động Gần Đây & Bài Học Nổi Bật */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-2">
         {/* Hoạt động gần đây */}
-        <div className={`border rounded-3xl p-6 space-y-4 transition-colors ${
-          isLight
-            ? 'bg-white border-slate-200 shadow-sm'
-            : 'bg-[#121c2b] border-[#1e2d42]'
-        }`}>
-          <div className={`flex items-center gap-2 font-black text-base sm:text-lg ${
-            isLight ? 'text-slate-900' : 'text-white'
-          }`}>
-            <Clock className="w-5 h-5 text-emerald-500" />
+        <div className="bg-[#fffdfa] dark:bg-[#1a1714] border-2 border-stone-800 rounded-2xl p-6 space-y-4 box-sketch">
+          <div className="flex items-center gap-2 font-cartoon font-bold text-base sm:text-lg text-stone-900 dark:text-white">
+            <Clock className="w-5 h-5 text-amber-500" />
             <span>Hoạt động gần đây</span>
           </div>
 
           {!isAuthenticated ? (
             <div className="py-8 flex flex-col items-center justify-center text-center space-y-2">
-              <p className={`text-sm ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+              <p className="font-hand text-sm text-stone-600 dark:text-stone-400">
                 Đăng nhập để xem hoạt động luyện tập gần đây.
               </p>
               <Link
                 href="/login"
-                className="text-sm font-bold text-emerald-500 hover:underline"
+                className="font-cartoon text-xs font-bold text-[#c53428] hover:underline"
               >
                 Đăng nhập ngay &gt;
               </Link>
             </div>
           ) : (
             <div className="space-y-3">
-              <div className={`p-4 border rounded-2xl flex items-center justify-between text-sm transition-colors ${
-                isLight ? 'bg-slate-50 border-slate-200' : 'bg-[#0d131d] border-[#1e2d42]'
-              }`}>
+              <div className="p-4 bg-[#fff9ea] dark:bg-stone-900 border-2 border-stone-800 rounded-xl flex items-center justify-between text-xs shadow-xs">
                 <div>
-                  <div className={`font-bold text-sm sm:text-base ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                  <div className="font-cartoon font-bold text-sm text-stone-900 dark:text-white">
                     Tìm lỗi (10 Flashcards)
                   </div>
-                  <div className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                  <div className="font-hand text-xs text-stone-500">
                     Đạt 9/10 câu chính xác • +20 💎
                   </div>
                 </div>
-                <span className="text-xs text-emerald-500 font-bold">Vừa xong</span>
+                <span className="font-cartoon text-xs text-emerald-600 font-bold">Vừa xong</span>
               </div>
-              <div className={`p-4 border rounded-2xl flex items-center justify-between text-sm transition-colors ${
-                isLight ? 'bg-slate-50 border-slate-200' : 'bg-[#0d131d] border-[#1e2d42]'
-              }`}>
+              <div className="p-4 bg-[#fff9ea] dark:bg-stone-900 border-2 border-stone-800 rounded-xl flex items-center justify-between text-xs shadow-xs">
                 <div>
-                  <div className={`font-bold text-sm sm:text-base ${isLight ? 'text-slate-900' : 'text-white'}`}>
+                  <div className="font-cartoon font-bold text-sm text-stone-900 dark:text-white">
                     ChunkFlow: Work-Life Balance
                   </div>
-                  <div className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
+                  <div className="font-hand text-xs text-stone-500">
                     Hoàn thành 4 cụm câu • 100% trôi chảy
                   </div>
                 </div>
-                <span className={`text-xs font-medium ${isLight ? 'text-slate-400' : 'text-slate-500'}`}>
+                <span className="font-hand text-xs text-stone-500">
                   Hôm qua
                 </span>
               </div>
@@ -250,74 +242,43 @@ export default function PracticeHubPage() {
         </div>
 
         {/* Bài học nổi bật */}
-        <div className={`border rounded-3xl p-6 space-y-4 transition-colors ${
-          isLight
-            ? 'bg-white border-slate-200 shadow-sm'
-            : 'bg-[#121c2b] border-[#1e2d42]'
-        }`}>
-          <div className={`flex items-center gap-2 font-black text-base sm:text-lg ${
-            isLight ? 'text-slate-900' : 'text-white'
-          }`}>
+        <div className="bg-[#fffdfa] dark:bg-[#1a1714] border-2 border-stone-800 rounded-2xl p-6 space-y-4 box-sketch">
+          <div className="flex items-center gap-2 font-cartoon font-bold text-base sm:text-lg text-stone-900 dark:text-white">
             <Sparkles className="w-5 h-5 text-amber-500" />
-            <span>Bài học nổi bật</span>
+            <span>Bài học nổi bật tuần này</span>
           </div>
 
-          {!isAuthenticated ? (
-            <div className="py-8 flex flex-col items-center justify-center text-center space-y-2">
-              <p className={`text-sm ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                Đăng nhập để xem bài học nổi bật.
-              </p>
-              <Link
-                href="/login"
-                className="text-sm font-bold text-emerald-500 hover:underline"
-              >
-                Đăng nhập ngay &gt;
-              </Link>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              <Link
-                href="/practice/error-find"
-                className={`p-4 border rounded-2xl flex items-center justify-between text-sm cursor-pointer transition-colors ${
-                  isLight
-                    ? 'bg-slate-50 border-slate-200 hover:border-emerald-500 hover:shadow-xs'
-                    : 'bg-[#0d131d] border-[#1e2d42] hover:border-emerald-500/40'
-                }`}
-              >
-                <div>
-                  <div className={`font-bold text-sm sm:text-base flex items-center gap-2 ${
-                    isLight ? 'text-slate-900' : 'text-white'
-                  }`}>
-                    <span>10 Lỗi Giới Từ Thường Gặp Nhất</span>
-                    <span className="px-1.5 py-0.5 bg-rose-500 text-white text-[10px] font-black rounded">NEW</span>
-                  </div>
-                  <div className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                    Luyện mắt phát hiện lỗi in/on/at nhanh
-                  </div>
+          <div className="space-y-3">
+            <Link
+              href="/practice/bilingual-news"
+              className="p-4 bg-[#fff9ea] dark:bg-stone-900 border-2 border-stone-800 rounded-xl flex items-center justify-between text-xs cursor-pointer hover:bg-amber-100 transition-colors shadow-xs"
+            >
+              <div>
+                <div className="font-cartoon font-bold text-sm text-stone-900 dark:text-white">
+                  Tin Tức Công Nghệ AI 2026 (Song Ngữ)
                 </div>
-                <ArrowRight className="w-4 h-4 text-emerald-500" />
-              </Link>
+                <div className="font-hand text-xs text-stone-500">
+                  300 từ vựng nâng cao • Có đối chiếu tiếng Việt
+                </div>
+              </div>
+              <ArrowRight className="w-4 h-4 text-[#c53428]" />
+            </Link>
 
-              <Link
-                href="/practice/bilingual-news"
-                className={`p-4 border rounded-2xl flex items-center justify-between text-sm cursor-pointer transition-colors ${
-                  isLight
-                    ? 'bg-slate-50 border-slate-200 hover:border-emerald-500 hover:shadow-xs'
-                    : 'bg-[#0d131d] border-[#1e2d42] hover:border-emerald-500/40'
-                }`}
-              >
-                <div>
-                  <div className={`font-bold text-sm sm:text-base ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                    Tin Tức Công Nghệ AI 2026 (Song Ngữ)
-                  </div>
-                  <div className={`text-xs ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-                    300 từ vựng nâng cao • Có đối chiếu tiếng Việt
-                  </div>
+            <Link
+              href="/dictation-shadowing"
+              className="p-4 bg-[#fff9ea] dark:bg-stone-900 border-2 border-stone-800 rounded-xl flex items-center justify-between text-xs cursor-pointer hover:bg-amber-100 transition-colors shadow-xs"
+            >
+              <div>
+                <div className="font-cartoon font-bold text-sm text-stone-900 dark:text-white">
+                  The Art of Balancing Stones (TED Talk)
                 </div>
-                <ArrowRight className="w-4 h-4 text-emerald-500" />
-              </Link>
-            </div>
-          )}
+                <div className="font-hand text-xs text-stone-500">
+                  29 câu nhại • Luyện dẻo ngữ điệu tự nhiên
+                </div>
+              </div>
+              <ArrowRight className="w-4 h-4 text-[#c53428]" />
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -354,45 +315,36 @@ export default function PracticeHubPage() {
   );
 }
 
-// Card chế độ luyện tập chuẩn Bibung
+// Card chế độ luyện tập phong cách Vở Hoạt Hình 3D
 function PracticeCard({ mode, isLight, onClick }: { mode: any; isLight: boolean; onClick: () => void }) {
   const content = (
     <div
       onClick={mode.href ? undefined : onClick}
-      className={`group relative border rounded-3xl p-6 transition-all duration-300 hover:-translate-y-1 cursor-pointer flex flex-col justify-between space-y-4 h-full ${
-        isLight
-          ? 'bg-white border-slate-200 hover:border-emerald-500 shadow-xs hover:shadow-xl'
-          : 'bg-[#121c2b] border-[#1e2d42] hover:border-emerald-500/80 shadow-md hover:shadow-2xl'
-      }`}
+      className="group relative bg-[#fffdfa] dark:bg-[#1a1714] border-2 border-stone-800 box-sketch rounded-2xl p-6 transition-all duration-200 hover:-translate-y-0.5 cursor-pointer flex flex-col justify-between space-y-4 h-full"
     >
       <div className="flex items-start justify-between">
-        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center text-3xl shadow-inner group-hover:scale-110 transition-transform ${
-          isLight ? 'bg-slate-100 border border-slate-200' : 'bg-[#0d131d] border border-[#1e2d42]'
-        }`}>
+        <div className="w-14 h-14 rounded-2xl bg-amber-200 dark:bg-stone-800 border-2 border-stone-800 flex items-center justify-center text-3xl shadow-[2px_2px_0px_#292524] group-hover:scale-105 transition-transform">
           {mode.icon}
         </div>
         {mode.badge && (
-          <span className="px-2 py-0.5 bg-rose-500 text-white font-black text-[10px] rounded-md uppercase tracking-wider shadow-sm">
+          <span className="px-2 py-0.5 bg-[#c53428] text-white font-cartoon font-bold text-[10px] rounded border border-stone-800 uppercase tracking-wider shadow-xs">
             {mode.badge}
           </span>
         )}
       </div>
 
-      <div className="space-y-2">
-        <h3 className={`text-lg sm:text-xl font-black transition-colors ${
-          isLight ? 'text-slate-900 group-hover:text-emerald-600' : 'text-white group-hover:text-emerald-400'
-        }`}>
+      <div className="space-y-1.5">
+        <h3 className="font-cartoon text-base md:text-lg font-bold text-stone-900 dark:text-white transition-colors group-hover:text-[#c53428]">
           {mode.title}
         </h3>
-        <p className={`text-sm sm:text-base leading-relaxed font-medium ${
-          isLight ? 'text-slate-600' : 'text-slate-400'
-        }`}>
+        <p className="font-body text-xs text-stone-600 dark:text-stone-400 leading-relaxed font-medium">
           {mode.description}
         </p>
       </div>
 
-      <div className="pt-2 flex items-center text-sm font-bold text-emerald-600 dark:text-emerald-400 group-hover:translate-x-1 transition-transform">
-        <span>Bắt đầu luyện tập &gt;</span>
+      <div className="pt-2 border-t border-stone-200 dark:border-stone-800 flex items-center justify-between font-cartoon text-xs font-bold text-[#c53428] dark:text-amber-400">
+        <span>Bắt đầu luyện tập</span>
+        <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
       </div>
     </div>
   );
