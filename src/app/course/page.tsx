@@ -62,6 +62,13 @@ export default function CourseShelfPage() {
       patternCount: 120,
       color: '#c53428',
     },
+    {
+      slug: 'hsk7-9',
+      title: 'Nhai HSK 7–9',
+      wordsCount: 2200,
+      patternCount: 150,
+      color: '#c53428',
+    },
   ];
 
   return (

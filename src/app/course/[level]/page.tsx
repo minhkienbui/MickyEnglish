@@ -90,17 +90,25 @@ export default function CourseLevelPage() {
 
         {/* Level Switcher Quick Dropdown */}
         <div className="flex flex-wrap items-center gap-1.5 self-start md:self-center">
-          {[1, 2, 3, 4, 5, 6].map((num) => (
+          {[
+            { slug: 'hsk1', label: 'HSK 1', match: 1 },
+            { slug: 'hsk2', label: 'HSK 2', match: 2 },
+            { slug: 'hsk3', label: 'HSK 3', match: 3 },
+            { slug: 'hsk4', label: 'HSK 4', match: 4 },
+            { slug: 'hsk5', label: 'HSK 5', match: 5 },
+            { slug: 'hsk6', label: 'HSK 6', match: 6 },
+            { slug: 'hsk7-9', label: 'HSK 7–9', match: '7–9' },
+          ].map((lvl) => (
             <Link
-              key={num}
-              href={`/course/hsk${num}`}
+              key={lvl.slug}
+              href={`/course/${lvl.slug}`}
               className={`px-3 py-1.5 rounded-xl font-cartoon text-xs font-bold border-2 border-stone-800 transition-all ${
-                book.levelNumber === num
+                levelSlug === lvl.slug || String(book.levelNumber) === String(lvl.match)
                   ? 'bg-[#c53428] text-white shadow-[2px_2px_0px_#292524]'
                   : 'bg-[#fff9ea] dark:bg-stone-800 text-stone-800 dark:text-stone-300 hover:bg-amber-200 shadow-xs'
               }`}
             >
-              HSK {num}
+              {lvl.label}
             </Link>
           ))}
         </div>

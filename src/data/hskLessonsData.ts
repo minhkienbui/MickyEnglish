@@ -4,6 +4,7 @@ import hsk3Data from './chinese/hsk3.json';
 import hsk4Data from './chinese/hsk4.json';
 import hsk5Data from './chinese/hsk5.json';
 import hsk6Data from './chinese/hsk6.json';
+import hsk79Data from './chinese/hsk7-9.json';
 import { ChineseWordItem } from './mockChineseVocab';
 
 export interface HskLessonWord extends ChineseWordItem {
@@ -23,7 +24,7 @@ export interface HskLesson {
 
 export interface HskBookCourse {
   slug: string; // 'hsk1', 'hsk2', ...
-  levelNumber: number;
+  levelNumber: number | string;
   title: string;
   coverTitle: string;
   standardTitle: string;
@@ -764,29 +765,34 @@ export const HSK2_CURRICULUM: { title: string; titleZh: string; words: HskLesson
   },
 ];
 
-// Helper to chunk remaining levels (HSK 3-6)
-function createLessonsForOtherLevels(
-  level: number,
+// Helper to chunk remaining levels (HSK 3 - 7~9) using Standard Course curriculum
+function createLessonsFromCurriculum(
+  level: number | string,
   words: ChineseWordItem[],
-  lessonTitles: string[]
+  curriculum: { title: string; titleZh: string }[]
 ): HskLesson[] {
   const lessons: HskLesson[] = [];
-  const wordsPerLesson = Math.ceil(words.length / lessonTitles.length);
+  const wordsPerLesson = Math.max(1, Math.ceil(words.length / curriculum.length));
 
-  lessonTitles.forEach((title, idx) => {
+  curriculum.forEach((item, idx) => {
     const lessonNum = idx + 1;
     const start = idx * wordsPerLesson;
-    const end = start + wordsPerLesson;
+    const end = Math.min(words.length, start + wordsPerLesson);
     const slice = words.slice(start, end);
-    const lessonWords: HskLessonWord[] = slice.map((w) => ({
+    const lessonWords: HskLessonWord[] = slice.map((w, wIdx) => ({
       ...w,
+      id: w.id || `zh-hsk${level}-l${lessonNum}-${String(wIdx + 1).padStart(2, '0')}`,
       posBadge: w.topic || 'Từ vựng',
+      exampleZh: w.exampleZh || `这是${w.hanzi}。`,
+      exampleVi: w.exampleVi || w.meaning,
+      examplePinyin: w.examplePinyin || w.pinyin,
     }));
 
     lessons.push({
       id: `bai-${lessonNum}`,
       lessonNumber: lessonNum,
-      title,
+      title: item.title,
+      titleZh: item.titleZh,
       wordCount: lessonWords.length,
       words: lessonWords,
     });
@@ -795,44 +801,164 @@ function createLessonsForOtherLevels(
   return lessons;
 }
 
-const HSK2_LESSON_TITLES = [
-  'Đi máy bay đến Bắc Kinh', 'Sinh nhật vui vẻ!', 'Chúng ta đi xem phim nhé',
-  'Công việc mới của bạn thế nào?', 'Tôi thích chơi bóng rổ', 'Bên ngoài trời đang mưa',
-  'Bạn uống trà hay cà phê?', 'Căn phòng này rất sạch sẽ', 'Tôi bị cảm rồi',
-  'Hãy giúp tôi một chút', 'Đi bằng tàu điện ngầm nhanh hơn', 'Chiếc áo này đắt quá',
-  'Bạn học tiếng Trung bao lâu rồi?', 'Món vịt quay Bắc Kinh rất ngon', 'Hẹn gặp lại ở sân bay',
+// 20 BÀI HỌC CHUẨN GIÁO TRÌNH HSK 3 (标准教程 HSK 3)
+export const HSK3_CURRICULUM = [
+  { title: 'Cuối tuần bạn có dự định gì?', titleZh: '周末你有什么打算？' },
+  { title: 'Khi nào anh ấy trở về?', titleZh: '他什么时候回来？' },
+  { title: 'Trên bàn để rất nhiều đồ uống', titleZh: '桌子上放着很多饮料' },
+  { title: 'Cô ấy luôn cười khi nói chuyện với khách', titleZh: '她总是笑着跟客人说话' },
+  { title: 'Dạo này tôi ngày càng béo lên', titleZh: '我最近越来越胖了' },
+  { title: 'Sao đột nhiên lại tìm không thấy?', titleZh: '怎么突然找不到了？' },
+  { title: 'Tôi đi cùng bạn', titleZh: '我跟你一起去' },
+  { title: 'Bạn đi đâu tôi đi đó', titleZh: '你去哪儿我就去哪儿' },
+  { title: 'Tiếng Trung của cô ấy nói hay như người Trung Quốc', titleZh: '她的汉语说得跟中国人一样好' },
+  { title: 'Toán học khó hơn lịch sử nhiều', titleZh: '数学比历史难多了' },
+  { title: 'Đừng quên tắt máy điều hòa', titleZh: '别忘了把空调关了' },
+  { title: 'Hãy để những đồ quan trọng ở chỗ tôi', titleZh: '把重要的东西放在我这儿吧' },
+  { title: 'Tôi là đi bộ về', titleZh: '我是走回来的' },
+  { title: 'Bạn mang hoa quả qua đây', titleZh: '你把水果拿过来' },
+  { title: 'Những thứ khác đều không có vấn đề gì', titleZh: '其他都没什么问题' },
+  { title: 'Bây giờ tôi mệt đến mức tan ca chỉ muốn ngủ', titleZh: '我现在累得下了班就想睡觉' },
+  { title: 'Ai cũng có cách chữa khỏi "bệnh" của bạn', titleZh: '谁都有办法看好你的“病”' },
+  { title: 'Tôi tin rằng họ sẽ đồng ý', titleZh: '我相信他们会同意的' },
+  { title: 'Bạn không nhận ra sao?', titleZh: '你没看出来吗？' },
+  { title: 'Tôi đã sống ở đây hơn hai mươi năm rồi', titleZh: '我在这儿生活了二十多年' },
 ];
 
-const HSK3_LESSON_TITLES = [
-  'Kế hoạch du lịch mùa hè', 'Môi trường sống xung quanh ta', 'Thói quen sinh hoạt lành mạnh',
-  'Phỏng vấn xin việc làm thêm', 'Văn hóa uống trà của người Hoa', 'Phương tiện giao thông hiện đại',
-  'Mua sắm trực tuyến tiện lợi', 'Tình bạn thời đại học', 'Nỗ lực để đạt ước mơ',
-  'Khám phá ẩm thực Tứ Xuyên', 'Bảo vệ động vật hoang dã', 'Thể thao nâng cao sức khỏe',
-  'Âm nhạc và cuộc sống', 'Học tiếng Trung qua bài hát', 'Thành công bắt đầu từ kiên trì',
+// 20 BÀI HỌC CHUẨN GIÁO TRÌNH HSK 4 (标准教程 HSK 4)
+export const HSK4_CURRICULUM = [
+  { title: 'Tình yêu giản dị', titleZh: '简单的爱情' },
+  { title: 'Người bạn thực sự', titleZh: '真正的朋友' },
+  { title: 'Ông "suýt soát"', titleZh: '差不多先生' },
+  { title: 'Đừng quá coi trọng tiền bạc', titleZh: '不要太在乎钱' },
+  { title: 'Chỉ mua cái đúng, không mua cái đắt', titleZh: '只买对的，不买贵的' },
+  { title: 'Tiền nào của nấy', titleZh: '一分钱一分货' },
+  { title: 'Bác sĩ tốt nhất là chính mình', titleZh: '最好的医生是自己' },
+  { title: 'Cuộc sống không thiếu cái đẹp', titleZh: '生活中不缺少美' },
+  { title: 'Ánh nắng luôn ở sau mưa gió', titleZh: '阳光总在风雨后' },
+  { title: 'Tiêu chuẩn của hạnh phúc', titleZh: '幸福的标准' },
+  { title: 'Đọc sách tốt, đọc sách hay, thích đọc sách', titleZh: '读书好，读好书，好读书' },
+  { title: 'Dùng trái tim khám phá thế giới', titleZh: '用心发现世界' },
+  { title: 'Vừa uống trà vừa xem Kinh kịch', titleZh: '喝着茶看京剧' },
+  { title: 'Bảo vệ mẹ Trái Đất', titleZh: '保护地球母亲' },
+  { title: 'Nghệ thuật bắt nguồn từ cuộc sống', titleZh: '艺术源于生活' },
+  { title: 'Nghề nghiệp lý tưởng', titleZh: '理想的职业' },
+  { title: 'Con người và thiên nhiên', titleZh: '人与自然' },
+  { title: 'Khoa học công nghệ và đời sống', titleZh: '科技与生活' },
+  { title: 'Câu chuyện về mùi vị', titleZh: '味道的故事' },
+  { title: 'Bước vào thương trường', titleZh: '步入商海' },
 ];
 
-const HSK4_LESSON_TITLES = [
-  'Tình yêu và hôn nhân', 'Bí quyết phỏng vấn thành công', 'Áp lực công việc và cách vượt qua',
-  'Khoa học công nghệ và tương lai', 'Bảo vệ môi trường sinh thái', 'Nghệ thuật giao tiếp ứng xử',
-  'Đọc sách mở mang trí tuệ', 'Hạnh phúc thực sự là gì?', 'Sự phát triển của kinh tế số',
-  'Khám phá di sản Vạn Lý Trường Thành', 'Giáo dục trẻ em hiện đại', 'Sức mạnh của thái độ tích cực',
-  'Văn hóa kinh doanh phương Đông', 'Khởi nghiệp trong thời đại mới', 'Chinh phục đỉnh cao HSK 4',
+// 36 BÀI HỌC CHUẨN GIÁO TRÌNH HSK 5 (标准教程 HSK 5)
+export const HSK5_CURRICULUM = [
+  { title: 'Chi tiết của tình yêu', titleZh: '爱的细节' },
+  { title: 'Mùa đông Tế Nam', titleZh: '济南的冬天' },
+  { title: 'Đời người có lựa chọn, mọi thứ đều có thể', titleZh: '人生有选择，一切皆有可能' },
+  { title: 'Tử Lộ cõng gạo', titleZh: '子路负米' },
+  { title: 'Truyền thuyết Tế Công', titleZh: '济公的传说' },
+  { title: 'Nguồn gốc đêm Trừ Tịch', titleZh: '除夕的由来' },
+  { title: 'Hai mẩu chuyện thành ngữ', titleZh: '成语故事两则' },
+  { title: 'Triết lý "Sáng ba chiều bốn"', titleZh: '“朝三暮四”的哲学' },
+  { title: 'Mua bán không thành tình nghĩa còn', titleZh: '买卖不成人情在' },
+  { title: 'Kỳ tích của cuộc tranh luận', titleZh: '争论的奇迹' },
+  { title: 'Đạo đọc sách', titleZh: '读书之道' },
+  { title: 'Khí hậu và cuộc sống con người', titleZh: '气候与人类生活' },
+  { title: 'Thể thao và sức khỏe', titleZh: '体育与健康' },
+  { title: 'Phỏng vấn nhân vật', titleZh: '人物专访' },
+  { title: 'Sức hút của âm nhạc', titleZh: '音乐的魅力' },
+  { title: 'Lễ hội truyền thống và tập tục', titleZh: '传统节日与习俗' },
+  { title: 'Tiến gần thiên nhiên', titleZh: '走近自然' },
+  { title: 'Công nghệ thay đổi tương lai', titleZh: '科技改变未来' },
+  { title: 'Hương vị quê hương', titleZh: '家乡的味儿' },
+  { title: 'Ngụ ngôn và nhân sinh', titleZh: '寓言与人生' },
+  { title: 'Bí ẩn của ngôn ngữ', titleZh: '语言的奥秘' },
+  { title: 'Đời sống công nghệ hiện đại', titleZh: '现代科技生活' },
+  { title: 'Nghệ thuật giao tiếp ứng xử', titleZh: '人际交往的艺术' },
+  { title: 'Con người và đại dương', titleZh: '人类与海洋' },
+  { title: 'Trí tuệ và cảm hứng', titleZh: '智慧与灵感' },
+  { title: 'Vẻ đẹp nghệ thuật kiến trúc', titleZh: '建筑艺术之美' },
+  { title: 'Tiếng vọng lịch sử', titleZh: '历史的回声' },
+  { title: 'Suy ngẫm triết lý', titleZh: '哲理思考' },
+  { title: 'Ngã rẽ cuộc đời', titleZh: '人生十字路口' },
+  { title: 'Con đường sáng tạo nghệ thuật', titleZh: '艺术创作之路' },
+  { title: 'Bảo vệ tài nguyên thiên nhiên', titleZh: '自然资源的保护' },
+  { title: 'Giao lưu đa văn hóa', titleZh: '跨文化交流' },
+  { title: 'Góc nhìn kinh tế hiện đại', titleZh: '现代经济视角' },
+  { title: 'Y học và khoa học sự sống', titleZh: '医学与生命科学' },
+  { title: 'Khám phá không gian vũ trụ', titleZh: '探索宇宙空间' },
+  { title: 'Thách thức hướng tới tương lai', titleZh: '走向未来的挑战' },
 ];
 
-const HSK5_LESSON_TITLES = [
-  'Triết lý nhân sinh Trung Hoa', 'Thương mại quốc tế và hội nhập', 'Tâm lý học hành vi con người',
-  'Bảo tồn di sản văn hóa phi vật thể', 'Trí tuệ nhân tạo và việc làm', 'Nghệ thuật thư pháp và hội họa',
-  'Chiến lược quản trị doanh nghiệp', 'Y học cổ truyền phương Đông', 'Biến đổi khí hậu toàn cầu',
-  'Truyền thông đa phương tiện', 'Đô thị thông minh tương lai', 'Sức mạnh của tư duy phản biện',
-  'Thành ngữ và điển tích lịch sử', 'Hùng biện và thuyết trình', 'Thành thạo văn phong học thuật',
+// 40 BÀI HỌC CHUẨN GIÁO TRÌNH HSK 6 (标准教程 HSK 6)
+export const HSK6_CURRICULUM = [
+  { title: 'Thể thao thể hình & cuộc sống hiện đại', titleZh: '体育健身与现代生活' },
+  { title: 'Ý nghĩa sâu xa của truyện ngụ ngôn', titleZh: '寓言故事的深意' },
+  { title: 'Tình cảm cha mẹ & giáo dục gia đình', titleZh: '父母之爱与家庭教育' },
+  { title: 'Địa lý cảnh quan & bảo vệ sinh thái', titleZh: '地理风貌与生态保护' },
+  { title: 'Thám hiểm khoa học & bí ẩn vũ trụ', titleZh: '科学探索与宇宙奥秘' },
+  { title: 'Thẩm mỹ nghệ thuật & bồi dưỡng tâm hồn', titleZh: '艺术审美与心灵陶冶' },
+  { title: 'Suy ngẫm nhân sinh & trí tuệ đối nhân xử thế', titleZh: '人生哲思与处世智慧' },
+  { title: 'Sự biến đổi ngôn ngữ & sức hút chữ Hán', titleZh: '语言演变与文字魅力' },
+  { title: 'Lễ hội truyền thống & phong tục tập quán', titleZh: '传统节日与民俗风情' },
+  { title: 'Điển tích lịch sử & nguồn gốc thành ngữ', titleZh: '历史典故与成语源流' },
+  { title: 'Khoa học hiện đại & Trí tuệ nhân tạo', titleZh: '现代科技与人工智能' },
+  { title: 'Thương mại quốc tế & toàn cầu hóa kinh tế', titleZh: '商业贸易与经济全球化' },
+  { title: 'Nhận thức tâm lý & điều tiết cảm xúc', titleZh: '心理认知与情绪调节' },
+  { title: 'Đạo đức môi trường & phát triển bền vững', titleZh: '环境伦理与可持续发展' },
+  { title: 'Hệ thống pháp luật & công bằng xã hội', titleZh: '法律制度与社会公义' },
+  { title: 'Quan hệ quốc tế & giao lưu văn hóa', titleZh: '国际关系与文化交融' },
+  { title: 'Văn hóa ẩm thực & đạo dưỡng sinh', titleZh: '饮食文化与养生之道' },
+  { title: 'Thiết kế kiến trúc & mỹ học không gian', titleZh: '建筑设计与空间美学' },
+  { title: 'Phê bình văn học & thưởng thức kiệt tác', titleZh: '文学批评与名著鉴赏' },
+  { title: 'Tư biện triết học & định hướng giá trị', titleZh: '哲学思辨与价值取向' },
+  { title: 'Đột phá y học & y tế công cộng', titleZh: '医学突破与公共卫生' },
+  { title: 'Triết lý giáo dục & đào tạo nhân tài', titleZh: '教育理念与人才培养' },
+  { title: 'Quy hoạch đô thị & môi trường sống', titleZh: '城市规划与人居环境' },
+  { title: 'Truyền thông đại chúng & thời đại thông tin', titleZh: '媒体传播与信息时代' },
+  { title: 'Đa dạng sinh học & bảo tồn giống loài', titleZh: '生物多样性与物种保护' },
+  { title: 'Tư duy đổi mới & hành trình khởi nghiệp', titleZh: '创新思维与创业历程' },
+  { title: 'Văn minh lễ nghi & nếp sống xã hội', titleZh: '礼仪文明与社会风气' },
+  { title: 'Sân khấu điện ảnh & nghệ thuật đương đại', titleZh: '戏剧影视与当代艺术' },
+  { title: 'Biến đổi dân số & xã hội già hóa', titleZh: '人口变迁与老龄社会' },
+  { title: 'Chuyển dịch năng lượng & phát thải thấp', titleZh: '能源转型与绿色低碳' },
+  { title: 'Triết học khoa học & phương pháp nghiên cứu', titleZh: '科学哲学与探索方法' },
+  { title: 'Lý thuyết dịch thuật & truyền bá văn hóa', titleZh: '翻译理论与文化传播' },
+  { title: 'Điều tiết vĩ mô & ổn định tài chính', titleZh: '宏观调控与金融稳定' },
+  { title: 'Phát hiện khảo cổ & văn minh cổ đại', titleZh: '考古发现与古代文明' },
+  { title: 'Đạo đức học & đạo đức sinh học', titleZh: '伦理道德与生命伦理' },
+  { title: 'Thơ ca hiện đại & ý cảnh tản văn', titleZh: '现代诗歌与散文意境' },
+  { title: 'Đạo đức công nghệ & hố ngăn cách số', titleZh: '科技伦理与数字鸿沟' },
+  { title: 'Kinh tế du lịch & di sản văn hóa', titleZh: '旅游经济与文化遗产' },
+  { title: 'Nghiên cứu liên ngành & đổi mới toàn diện', titleZh: '跨学科研究与综合创新' },
+  { title: 'Đương đại Trung Quốc bước ra thế giới', titleZh: '走向世界的当代中国' },
 ];
 
-const HSK6_LESSON_TITLES = [
-  'Bác đại tinh thâm của Hán tự', 'Kinh tế chính trị vĩ mô', 'Văn học cổ điển và hiện đại',
-  'Nghiên cứu ngôn ngữ học so sánh', 'Phân tích diễn ngôn học thuật', 'Triết học Lão Trang và Nho gia',
-  'Nghệ thuật đàm phán cấp cao', 'Đổi mới sáng tạo công nghệ cao', 'Văn hóa Trà Đạo và Thiền tông',
-  'Phê bình văn học nghệ thuật', 'Địa lý nhân văn và dân tộc học', 'Chính sách kinh tế xanh',
-  'Luận bàn về giáo dục đại học', 'Dịch thuật nâng cao Trung - Việt', 'Chinh phục cấp độ HSK 6 xuất sắc',
+// 24 BÀI HỌC CHUẨN HSK 7–9 CAO CẤP (HSK 7–9 • 3.0 高等)
+export const HSK79_CURRICULUM = [
+  { title: 'Chính trị quốc tế & ngôn ngữ ngoại giao', titleZh: '国际政治与外交辞令' },
+  { title: 'Kinh tế vĩ mô & chính sách tài khóa', titleZh: '宏观经济与财政政策' },
+  { title: 'Kinh điển triết học & mô hình tư biện', titleZh: '哲学经典与思辨范式' },
+  { title: 'Lý luận luật học & xây dựng pháp quyền', titleZh: '法学理论与法治建设' },
+  { title: 'Cách mạng khoa học công nghệ & khám phá tiền tuyến', titleZh: '科技革命与前沿探索' },
+  { title: 'Văn hiến học & hiệu đính cổ tịch', titleZh: '文献学与古籍校勘' },
+  { title: 'Góc nhìn xã hội học về biến chuyển đương đại', titleZh: '社会学视野下的当代变迁' },
+  { title: 'Địa chính trị & chiến lược toàn cầu', titleZh: '地缘政治与全球战略' },
+  { title: 'Giám sát tài chính & phòng chống rủi ro', titleZh: '金融监管与风险防范' },
+  { title: 'Khoa học thần kinh nhận thức & tâm trí', titleZh: '认知神经科学与心智' },
+  { title: 'Thương mại đa quốc gia & trọng tài quốc tế', titleZh: '跨国贸易与国际仲裁' },
+  { title: 'Văn minh sinh thái & quản trị khí hậu toàn cầu', titleZh: '生态文明与全球气候治理' },
+  { title: 'Lý luận văn nghệ & tranh luận mỹ học', titleZh: '文艺理论与美学争鸣' },
+  { title: 'Đánh giá giáo dục đại học & đổi mới học thuật', titleZh: '高等教育评估与学术创新' },
+  { title: 'Đạo đức truyền thông báo chí & kiến tạo diễn ngôn', titleZh: '新闻传播伦理与话语建构' },
+  { title: 'Triết học lịch sử & giao thoa văn minh', titleZh: '历史哲学与文明互鉴' },
+  { title: 'Đạo đức công nghệ sinh học & công nghệ gen', titleZh: '生物技术伦理与基因工程' },
+  { title: 'Luật pháp quốc tế & tranh chấp chủ quyền lãnh thổ', titleZh: '国际法与领土主权争端' },
+  { title: 'Ngữ pháp học & tu từ học tiếng Hán hiện đại', titleZh: '现代汉语语法学与修辞学' },
+  { title: 'Giao tiếp đa văn hóa & đối dịch trong dịch thuật', titleZh: '跨文化交际与翻译对译' },
+  { title: 'Liên kết kinh tế khu vực & chuỗi cung ứng', titleZh: '区域经济一体化与供应链' },
+  { title: 'Hiến pháp học & bảo đảm quyền con người', titleZh: '宪法学与人权保障' },
+  { title: 'Đạo đức trí tuệ nhân tạo & cộng sinh người-máy', titleZh: '人工智能伦理与人机共生' },
+  { title: 'Viết luận văn học thuật nâng cao & bảo vệ luận án', titleZh: '高阶学术论文写作与答辩' },
 ];
 
 export const HSK_BOOKS: Record<string, HskBookCourse> = {
@@ -880,8 +1006,8 @@ export const HSK_BOOKS: Record<string, HskBookCourse> = {
     standardTitle: '标准教程 HSK 3 • 3.0',
     wordCountTotal: 483,
     patternCountTotal: 63,
-    lessonCount: 15,
-    lessons: createLessonsForOtherLevels(3, hsk3Data as ChineseWordItem[], HSK3_LESSON_TITLES),
+    lessonCount: 20,
+    lessons: createLessonsFromCurriculum(3, hsk3Data as ChineseWordItem[], HSK3_CURRICULUM),
   },
   hsk4: {
     slug: 'hsk4',
@@ -891,8 +1017,8 @@ export const HSK_BOOKS: Record<string, HskBookCourse> = {
     standardTitle: '标准教程 HSK 4 • 3.0',
     wordCountTotal: 1000,
     patternCountTotal: 80,
-    lessonCount: 15,
-    lessons: createLessonsForOtherLevels(4, hsk4Data as ChineseWordItem[], HSK4_LESSON_TITLES),
+    lessonCount: 20,
+    lessons: createLessonsFromCurriculum(4, hsk4Data as ChineseWordItem[], HSK4_CURRICULUM),
   },
   hsk5: {
     slug: 'hsk5',
@@ -902,8 +1028,8 @@ export const HSK_BOOKS: Record<string, HskBookCourse> = {
     standardTitle: '标准教程 HSK 5 • 3.0',
     wordCountTotal: 1600,
     patternCountTotal: 105,
-    lessonCount: 15,
-    lessons: createLessonsForOtherLevels(5, hsk5Data as ChineseWordItem[], HSK5_LESSON_TITLES),
+    lessonCount: 36,
+    lessons: createLessonsFromCurriculum(5, hsk5Data as ChineseWordItem[], HSK5_CURRICULUM),
   },
   hsk6: {
     slug: 'hsk6',
@@ -913,7 +1039,41 @@ export const HSK_BOOKS: Record<string, HskBookCourse> = {
     standardTitle: '标准教程 HSK 6 • 3.0',
     wordCountTotal: 1800,
     patternCountTotal: 120,
-    lessonCount: 15,
-    lessons: createLessonsForOtherLevels(6, hsk6Data as ChineseWordItem[], HSK6_LESSON_TITLES),
+    lessonCount: 40,
+    lessons: createLessonsFromCurriculum(6, hsk6Data as ChineseWordItem[], HSK6_CURRICULUM),
+  },
+  'hsk7-9': {
+    slug: 'hsk7-9',
+    levelNumber: '7–9',
+    title: 'Nhai HSK 7–9',
+    coverTitle: 'Nhai HSK 7–9',
+    standardTitle: 'HSK 7–9 • 3.0 高等',
+    wordCountTotal: 2200,
+    patternCountTotal: 150,
+    lessonCount: 24,
+    lessons: createLessonsFromCurriculum('7-9', hsk79Data as ChineseWordItem[], HSK79_CURRICULUM),
+  },
+  // Aliases for seamless routing
+  hsk7: {
+    slug: 'hsk7-9',
+    levelNumber: '7–9',
+    title: 'Nhai HSK 7–9',
+    coverTitle: 'Nhai HSK 7–9',
+    standardTitle: 'HSK 7–9 • 3.0 高等',
+    wordCountTotal: 2200,
+    patternCountTotal: 150,
+    lessonCount: 24,
+    lessons: createLessonsFromCurriculum('7-9', hsk79Data as ChineseWordItem[], HSK79_CURRICULUM),
+  },
+  hsk79: {
+    slug: 'hsk7-9',
+    levelNumber: '7–9',
+    title: 'Nhai HSK 7–9',
+    coverTitle: 'Nhai HSK 7–9',
+    standardTitle: 'HSK 7–9 • 3.0 高等',
+    wordCountTotal: 2200,
+    patternCountTotal: 150,
+    lessonCount: 24,
+    lessons: createLessonsFromCurriculum('7-9', hsk79Data as ChineseWordItem[], HSK79_CURRICULUM),
   },
 };
