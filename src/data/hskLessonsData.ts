@@ -482,7 +482,289 @@ export const HSK1_CURRICULUM: { title: string; titleZh: string; words: HskLesson
   },
 ];
 
-// Helper to chunk remaining levels (HSK 2-6)
+// 15 BÀI HỌC CHUẨN GIÁO TRÌNH HSK 2 (CHUẨN BẢN QUYỀN HSK 3.0 NHAIHSK)
+export const HSK2_CURRICULUM: { title: string; titleZh: string; words: HskLessonWord[] }[] = [
+  // BÀI 1: Tháng 9 đi Bắc Kinh du lịch là tốt nhất
+  {
+    title: 'Tháng 9 đi Bắc Kinh du lịch là tốt nhất',
+    titleZh: '九月去北京旅游最好',
+    words: [
+      { id: 'zh-hsk2-l1-01', hanzi: '旅游', pinyin: 'lǚyóu', sinoVietnamese: 'LỮ DU', meaning: 'Du lịch, đi chơi', hskLevel: 2, posBadge: 'Động từ', exampleZh: '九月去北京旅游最好。', examplePinyin: 'jiǔ yuè qù běijīng lǚyóu zuì hǎo.', exampleVi: 'Tháng chín đi Bắc Kinh du lịch là tốt nhất.' },
+      { id: 'zh-hsk2-l1-02', hanzi: '觉得', pinyin: 'juéde', sinoVietnamese: 'GIÁC ĐẮC', meaning: 'Cảm thấy, thấy rằng', hskLevel: 2, posBadge: 'Động từ', exampleZh: '我觉得九月的北京天气最好。', examplePinyin: 'wǒ juéde jiǔ yuè de běijīng tiānqì zuì hǎo.', exampleVi: 'Tôi thấy thời tiết Bắc Kinh tháng chín là đẹp nhất.' },
+      { id: 'zh-hsk2-l1-03', hanzi: '最', pinyin: 'zuì', sinoVietnamese: 'TỐI', meaning: 'Nhất (so sánh nhất)', hskLevel: 2, posBadge: 'Phó từ', exampleZh: '我最喜欢吃中国菜。', examplePinyin: 'wǒ zuì xǐhuan chī zhōngguó cài.', exampleVi: 'Tôi thích ăn món ăn Trung Quốc nhất.' },
+      { id: 'zh-hsk2-l1-04', hanzi: '为什么', pinyin: 'wèishénme', sinoVietnamese: 'VI THẬP MA', meaning: 'Tại sao, vì sao', hskLevel: 2, posBadge: 'Đại từ', exampleZh: '你为什么喜欢秋天？', examplePinyin: 'nǐ wèishénme xǐhuan qiūtiān?', exampleVi: 'Tại sao bạn thích mùa thu?' },
+      { id: 'zh-hsk2-l1-05', hanzi: '运动', pinyin: 'yùndòng', sinoVietnamese: 'VẬN ĐỘNG', meaning: 'Vận động, thể thao', hskLevel: 2, posBadge: 'Danh từ/Động từ', exampleZh: '多运动对身体好。', examplePinyin: 'duō yùndòng duì shēntǐ hǎo.', exampleVi: 'Vận động nhiều rất tốt cho sức khỏe.' },
+      { id: 'zh-hsk2-l1-06', hanzi: '踢足球', pinyin: 'tī zúqiú', sinoVietnamese: 'THÍCH TÚC CẦU', meaning: 'Đá bóng, đá banh', hskLevel: 2, posBadge: 'Cụm động từ', exampleZh: '下午我们一起去踢足球吧。', examplePinyin: 'xiàwǔ wǒmen yìqǐ qù tī zúqiú ba.', exampleVi: 'Chiều nay chúng mình cùng đi đá bóng nhé.' },
+      { id: 'zh-hsk2-l1-07', hanzi: '一起', pinyin: 'yìqǐ', sinoVietnamese: 'NHẤT KHỞI', meaning: 'Cùng nhau, cùng', hskLevel: 2, posBadge: 'Phó từ', exampleZh: '我们一起走吧。', examplePinyin: 'wǒmen yìqǐ zǒu ba.', exampleVi: 'Chúng ta cùng đi thôi.' },
+      { id: 'zh-hsk2-l1-08', hanzi: '要', pinyin: 'yào', sinoVietnamese: 'YẾU', meaning: 'Muốn, cần, sắp', hskLevel: 2, posBadge: 'Động từ', exampleZh: '我要买两张飞机票。', examplePinyin: 'wǒ yào mǎi liǎng zhāng fēijī piào.', exampleVi: 'Tôi muốn mua hai vé máy bay.' },
+      { id: 'zh-hsk2-l1-09', hanzi: '新', pinyin: 'xīn', sinoVietnamese: 'TÂN', meaning: 'Mới', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '这是我的新自行车。', examplePinyin: 'zhè shì wǒ de xīn zìxíngchē.', exampleVi: 'Đây là chiếc xe đạp mới của tôi.' },
+      { id: 'zh-hsk2-l1-10', hanzi: '它', pinyin: 'tā', sinoVietnamese: 'THA', meaning: 'Nó (chỉ con vật, đồ vật)', hskLevel: 2, posBadge: 'Đại từ', exampleZh: '小猫在哪里？它在桌子下。', examplePinyin: 'xiǎo māo zài nǎlǐ? tā zài zhuōzi xià.', exampleVi: 'Mèo con ở đâu? Nó ở dưới gầm bàn.' },
+      { id: 'zh-hsk2-l1-11', hanzi: '眼睛', pinyin: 'yǎnjing', sinoVietnamese: 'NHÃN TINH', meaning: 'Mắt, đôi mắt', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '它的眼睛真漂亮。', examplePinyin: 'tā de yǎnjing zhēn piàoliang.', exampleVi: 'Đôi mắt của nó thật đẹp.' },
+      { id: 'zh-hsk2-l1-12', hanzi: '九月', pinyin: 'jiǔ yuè', sinoVietnamese: 'CỬU NGUYỆT', meaning: 'Tháng chín', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '九月开学。', examplePinyin: 'jiǔ yuè kāixué.', exampleVi: 'Tháng chín bắt đầu khai giảng.' },
+    ],
+  },
+
+  // BÀI 2: Tôi mỗi ngày 6 giờ thức dậy
+  {
+    title: 'Tôi mỗi ngày 6 giờ thức dậy',
+    titleZh: '我每天六点起床',
+    words: [
+      { id: 'zh-hsk2-l2-01', hanzi: '生病', pinyin: 'shēng bìng', sinoVietnamese: 'SINH BỆNH', meaning: 'Bị ốm, ngã bệnh', hskLevel: 2, posBadge: 'Động từ', exampleZh: '他生病住院了。', examplePinyin: 'tā shēng bìng zhùyuàn le.', exampleVi: 'Anh ấy bị ốm phải nhập viện rồi.' },
+      { id: 'zh-hsk2-l2-02', hanzi: '每', pinyin: 'měi', sinoVietnamese: 'MỖI', meaning: 'Mỗi, từng', hskLevel: 2, posBadge: 'Đại từ', exampleZh: '我每天六点起床。', examplePinyin: 'wǒ měitiān liù diǎn qǐchuáng.', exampleVi: 'Tôi thức dậy lúc sáu giờ mỗi ngày.' },
+      { id: 'zh-hsk2-l2-03', hanzi: '早上', pinyin: 'zǎoshang', sinoVietnamese: 'TẢO THƯỢNG', meaning: 'Buổi sáng', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '早上空气很新鲜。', examplePinyin: 'zǎoshang kōngqì hěn xīnxiān.', exampleVi: 'Buổi sáng không khí rất trong lành.' },
+      { id: 'zh-hsk2-l2-04', hanzi: '跑步', pinyin: 'pǎo bù', sinoVietnamese: 'BÀO BỘ', meaning: 'Chạy bộ', hskLevel: 2, posBadge: 'Cụm động từ', exampleZh: '他喜欢在公园跑步。', examplePinyin: 'tā xǐhuan zài gōngyuán pǎo bù.', exampleVi: 'Anh ấy thích chạy bộ trong công viên.' },
+      { id: 'zh-hsk2-l2-05', hanzi: '起床', pinyin: 'qǐ chuáng', sinoVietnamese: 'KHỞI SÀNG', meaning: 'Thức dậy, rời giường', hskLevel: 2, posBadge: 'Cụm động từ', exampleZh: '你几点起床？', examplePinyin: 'nǐ jǐ diǎn qǐ chuáng?', exampleVi: 'Mấy giờ bạn thức dậy?' },
+      { id: 'zh-hsk2-l2-06', hanzi: '药', pinyin: 'yào', sinoVietnamese: 'DƯỢC', meaning: 'Thuốc', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '别忘了吃药。', examplePinyin: 'bié wàng le chī yào.', exampleVi: 'Đừng quên uống thuốc nhé.' },
+      { id: 'zh-hsk2-l2-07', hanzi: '出院', pinyin: 'chū yuàn', sinoVietnamese: 'XUẤT VIỆN', meaning: 'Xuất viện, ra viện', hskLevel: 2, posBadge: 'Động từ', exampleZh: '医生说下周可以出院。', examplePinyin: 'yīshēng shuō xià zhōu kěyǐ chū yuàn.', exampleVi: 'Bác sĩ bảo tuần sau có thể xuất viện.' },
+      { id: 'zh-hsk2-l2-08', hanzi: '高', pinyin: 'gāo', sinoVietnamese: 'CAO', meaning: 'Cao', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '大卫有一米八高。', examplePinyin: 'dàwèi yǒu yì mǐ bā gāo.', exampleVi: 'David cao một mét tám.' },
+      { id: 'zh-hsk2-l2-09', hanzi: '米', pinyin: 'mǐ', sinoVietnamese: 'MỄ', meaning: 'Mét (đơn vị đo chiều dài)', hskLevel: 2, posBadge: 'Lượng từ', exampleZh: '一百米跑。', examplePinyin: 'yì bǎi mǐ pǎo.', exampleVi: 'Chạy 100 mét.' },
+      { id: 'zh-hsk2-l2-10', hanzi: '知道', pinyin: 'zhīdào', sinoVietnamese: 'TRI ĐẠO', meaning: 'Biết, nắm rõ', hskLevel: 2, posBadge: 'Động từ', exampleZh: '我知道这件事情。', examplePinyin: 'wǒ zhīdào zhè jiàn shìqing.', exampleVi: 'Tôi biết chuyện này rồi.' },
+      { id: 'zh-hsk2-l2-11', hanzi: '休息', pinyin: 'xiūxi', sinoVietnamese: 'HƯU TỨC', meaning: 'Nghỉ ngơi', hskLevel: 2, posBadge: 'Động từ', exampleZh: '累了就休息一会儿。', examplePinyin: 'lèi le jiù xiūxi yíhuìr.', exampleVi: 'Mệt rồi thì nghỉ ngơi một lát.' },
+      { id: 'zh-hsk2-l2-12', hanzi: '忙', pinyin: 'máng', sinoVietnamese: 'MANG', meaning: 'Bận rộn, bận', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '最近你忙不忙？', examplePinyin: 'zuìjìn nǐ máng bù máng?', exampleVi: 'Dạo này bạn có bận không?' },
+      { id: 'zh-hsk2-l2-13', hanzi: '时间', pinyin: 'shíjiān', sinoVietnamese: 'THỜI GIAN', meaning: 'Thời gian', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '我没有时间。', examplePinyin: 'wǒ méiyǒu shíjiān.', exampleVi: 'Tôi không có thời gian.' },
+    ],
+  },
+
+  // BÀI 3: Cái màu đỏ bên trái là của tôi
+  {
+    title: 'Cái màu đỏ bên trái là của tôi',
+    titleZh: '左边那个红色的是我的',
+    words: [
+      { id: 'zh-hsk2-l3-01', hanzi: '手表', pinyin: 'shǒubiǎo', sinoVietnamese: 'THỦ BIỂU', meaning: 'Đồng hồ đeo tay', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '这块手表是新买的。', examplePinyin: 'zhè kuài shǒubiǎo shì xīn mǎi de.', exampleVi: 'Chiếc đồng hồ này là mới mua.' },
+      { id: 'zh-hsk2-l3-02', hanzi: '千', pinyin: 'qiān', sinoVietnamese: 'THIÊN', meaning: 'Nghìn, ngàn (1.000)', hskLevel: 2, posBadge: 'Số từ', exampleZh: '三千块钱。', examplePinyin: 'sān qiān kuài qián.', exampleVi: 'Ba nghìn đồng tệ.' },
+      { id: 'zh-hsk2-l3-03', hanzi: '报纸', pinyin: 'bàozhǐ', sinoVietnamese: 'BÁO CHỈ', meaning: 'Tờ báo, nhật báo', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '我看今天的报纸。', examplePinyin: 'wǒ kàn jīntiān de bàozhǐ.', exampleVi: 'Tôi đọc tờ báo hôm nay.' },
+      { id: 'zh-hsk2-l3-04', hanzi: '送', pinyin: 'sòng', sinoVietnamese: 'TỐNG', meaning: 'Tặng, tiễn, giao', hskLevel: 2, posBadge: 'Động từ', exampleZh: '这是送给你的礼物。', examplePinyin: 'zhè shì sòng gěi nǐ de lǐwù.', exampleVi: 'Đây là món quà tặng cho bạn.' },
+      { id: 'zh-hsk2-l3-05', hanzi: '一下', pinyin: 'yíxià', sinoVietnamese: 'NHẤT HẠ', meaning: 'Một lát, một chút', hskLevel: 2, posBadge: 'Lượng từ', exampleZh: '等我一下。', examplePinyin: 'děng wǒ yíxià.', exampleVi: 'Đợi tôi một chút.' },
+      { id: 'zh-hsk2-l3-06', hanzi: '牛奶', pinyin: 'niúnǎi', sinoVietnamese: 'NGƯU NÃI', meaning: 'Sữa bò', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '每天喝一杯牛奶。', examplePinyin: 'měitiān hē yì bēi niúnǎi.', exampleVi: 'Mỗi ngày uống một cốc sữa bò.' },
+      { id: 'zh-hsk2-l3-07', hanzi: '房间', pinyin: 'fángjiān', sinoVietnamese: 'PHÒNG GIAN', meaning: 'Căn phòng', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '房间很干净。', examplePinyin: 'fángjiān hěn gānjìng.', exampleVi: 'Căn phòng rất sạch sẽ.' },
+      { id: 'zh-hsk2-l3-08', hanzi: '丈夫', pinyin: 'zhàngfu', sinoVietnamese: 'TRƯỢNG PHU', meaning: 'Chồng', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '她丈夫在北京工作。', examplePinyin: 'tā zhàngfu zài běijīng gōngzuò.', exampleVi: 'Chồng cô ấy làm việc ở Bắc Kinh.' },
+      { id: 'zh-hsk2-l3-09', hanzi: '旁边', pinyin: 'pángbiān', sinoVietnamese: 'BÀNG BIÊN', meaning: 'Bên cạnh', hskLevel: 2, posBadge: 'Danh từ phương vị', exampleZh: '学校旁边有一家书店。', examplePinyin: 'xuéxiào pángbiān yǒu yì jiā shūdiàn.', exampleVi: 'Bên cạnh trường học có một hiệu sách.' },
+      { id: 'zh-hsk2-l3-10', hanzi: '真', pinyin: 'zhēn', sinoVietnamese: 'CHÂN', meaning: 'Thật, thật là', hskLevel: 2, posBadge: 'Phó từ', exampleZh: '今天真冷啊！', examplePinyin: 'jīntiān zhēn lěng a!', exampleVi: 'Hôm nay thật là lạnh!' },
+      { id: 'zh-hsk2-l3-11', hanzi: '颜色', pinyin: 'yánsè', sinoVietnamese: 'NHAN SẮC', meaning: 'Màu sắc', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '你喜欢什么颜色？', examplePinyin: 'nǐ xǐhuan shénme yánsè?', exampleVi: 'Bạn thích màu sắc gì?' },
+      { id: 'zh-hsk2-l3-12', hanzi: '粉色', pinyin: 'fěnsè', sinoVietnamese: 'PHẤN SẮC', meaning: 'Màu hồng phấn', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '她穿粉色的衣服。', examplePinyin: 'tā chuān fěnsè de yīfu.', exampleVi: 'Cô ấy mặc chiếc áo màu hồng phấn.' },
+      { id: 'zh-hsk2-l3-13', hanzi: '左边', pinyin: 'zuǒbian', sinoVietnamese: 'TẢ BIÊN', meaning: 'Bên trái, phía trái', hskLevel: 2, posBadge: 'Danh từ phương vị', exampleZh: '左边那个人是谁？', examplePinyin: 'zuǒbian nà ge rén shì shéi?', exampleVi: 'Người ở bên trái kia là ai?' },
+      { id: 'zh-hsk2-l3-14', hanzi: '红色', pinyin: 'hóngsè', sinoVietnamese: 'HỒNG SẮC', meaning: 'Màu đỏ', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '红色代表喜庆。', examplePinyin: 'hóngsè dàibiǎo xǐqìng.', exampleVi: 'Màu đỏ tượng trưng cho hỷ sự.' },
+    ],
+  },
+
+  // BÀI 4: Công việc này là anh ấy giới thiệu cho tôi
+  {
+    title: 'Công việc này là anh ấy giới thiệu cho tôi',
+    titleZh: '这个工作是他帮我介绍的',
+    words: [
+      { id: 'zh-hsk2-l4-01', hanzi: '生日', pinyin: 'shēngrì', sinoVietnamese: 'SINH NHẬT', meaning: 'Ngày sinh nhật', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '祝你生日快乐！', examplePinyin: 'zhù nǐ shēngrì kuàilè!', exampleVi: 'Chúc bạn sinh nhật vui vẻ!' },
+      { id: 'zh-hsk2-l4-02', hanzi: '快乐', pinyin: 'kuàilè', sinoVietnamese: 'KHOÁI LẠC', meaning: 'Vui vẻ, hạnh phúc', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '天天快乐。', examplePinyin: 'tiāntiān kuàilè.', exampleVi: 'Mỗi ngày đều vui vẻ.' },
+      { id: 'zh-hsk2-l4-03', hanzi: '接', pinyin: 'jiē', sinoVietnamese: 'TIẾP', meaning: 'Đón, nhận (điện thoại)', hskLevel: 2, posBadge: 'Động từ', exampleZh: '我去机场接朋友。', examplePinyin: 'wǒ qù jīchǎng jiē péngyou.', exampleVi: 'Tôi đến sân bay đón bạn.' },
+      { id: 'zh-hsk2-l4-04', hanzi: '晚上', pinyin: 'wǎnshang', sinoVietnamese: 'VÃN THƯỢNG', meaning: 'Buổi tối', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '晚上我们在家吃饭。', examplePinyin: 'wǎnshang wǒmen zài jiā chīfàn.', exampleVi: 'Buổi tối chúng tôi ăn cơm ở nhà.' },
+      { id: 'zh-hsk2-l4-05', hanzi: '问', pinyin: 'wèn', sinoVietnamese: 'VẤN', meaning: 'Hỏi', hskLevel: 2, posBadge: 'Động từ', exampleZh: '请问，图书馆在哪儿？', examplePinyin: 'qǐngwèn, túshūguǎn zài nǎr?', exampleVi: 'Xin hỏi, thư viện ở đâu ạ?' },
+      { id: 'zh-hsk2-l4-06', hanzi: '非常', pinyin: 'fēicháng', sinoVietnamese: 'PHI THƯỜNG', meaning: 'Vô cùng, hết sức, rất', hskLevel: 2, posBadge: 'Phó từ', exampleZh: '我非常喜欢汉语。', examplePinyin: 'wǒ fēicháng xǐhuan hànyǔ.', exampleVi: 'Tôi vô cùng yêu thích tiếng Trung.' },
+      { id: 'zh-hsk2-l4-07', hanzi: '开始', pinyin: 'kāishǐ', sinoVietnamese: 'KHAI THỦY', meaning: 'Bắt đầu', hskLevel: 2, posBadge: 'Động từ', exampleZh: '考试开始了。', examplePinyin: 'kǎoshì kāishǐ le.', exampleVi: 'Kỳ thi bắt đầu rồi.' },
+      { id: 'zh-hsk2-l4-08', hanzi: '已经', pinyin: 'yǐjīng', sinoVietnamese: 'DĨ KINH', meaning: 'Đã, rồi', hskLevel: 2, posBadge: 'Phó từ', exampleZh: '我已经吃饱了。', examplePinyin: 'wǒ yǐjīng chī bǎo le.', exampleVi: 'Tôi đã ăn no rồi.' },
+      { id: 'zh-hsk2-l4-09', hanzi: '长', pinyin: 'cháng', sinoVietnamese: 'TRƯỜNG', meaning: 'Dài', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '这条路很长。', examplePinyin: 'zhè tiáo lù hěn cháng.', exampleVi: 'Con đường này rất dài.' },
+      { id: 'zh-hsk2-l4-10', hanzi: '两', pinyin: 'liǎng', sinoVietnamese: 'LƯỠNG', meaning: 'Hai (dùng trước lượng từ)', hskLevel: 2, posBadge: 'Số từ', exampleZh: '两个星期。', examplePinyin: 'liǎng gè xīngqī.', exampleVi: 'Hai tuần lễ.' },
+      { id: 'zh-hsk2-l4-11', hanzi: '帮', pinyin: 'bāng', sinoVietnamese: 'BANG', meaning: 'Giúp, đỡ', hskLevel: 2, posBadge: 'Động từ', exampleZh: '请帮帮我。', examplePinyin: 'qǐng bāng bāng wǒ.', exampleVi: 'Xin hãy giúp tôi với.' },
+      { id: 'zh-hsk2-l4-12', hanzi: '介绍', pinyin: 'jièshào', sinoVietnamese: 'GIỚI THIỆU', meaning: 'Giới thiệu', hskLevel: 2, posBadge: 'Động từ', exampleZh: '我来介绍一下。', examplePinyin: 'wǒ lái jièshào yíxià.', exampleVi: 'Tôi xin giới thiệu một chút.' },
+    ],
+  },
+
+  // BÀI 5: Vậy mua chiếc này đi
+  {
+    title: 'Vậy mua chiếc này đi',
+    titleZh: '就买这件吧',
+    words: [
+      { id: 'zh-hsk2-l5-01', hanzi: '外面', pinyin: 'wàimiàn', sinoVietnamese: 'NGOẠI DIỆN', meaning: 'Bên ngoài, phía ngoài', hskLevel: 2, posBadge: 'Danh từ phương vị', exampleZh: '外面下大雪了。', examplePinyin: 'wàimiàn xià dàxuě le.', exampleVi: 'Bên ngoài tuyết rơi lớn rồi.' },
+      { id: 'zh-hsk2-l5-02', hanzi: '准备', pinyin: 'zhǔnbèi', sinoVietnamese: 'CHUẨN BỊ', meaning: 'Chuẩn bị', hskLevel: 2, posBadge: 'Động từ', exampleZh: '准备好了吗？', examplePinyin: 'zhǔnbèi hǎo le ma?', exampleVi: 'Đã chuẩn bị xong chưa?' },
+      { id: 'zh-hsk2-l5-03', hanzi: '就', pinyin: 'jiù', sinoVietnamese: 'TỰU', meaning: 'Thì, liền, ngay', hskLevel: 2, posBadge: 'Phó từ', exampleZh: '就买这件吧。', examplePinyin: 'jiù mǎi zhè jiàn ba.', exampleVi: 'Vậy mua chiếc này đi.' },
+      { id: 'zh-hsk2-l5-04', hanzi: '鱼', pinyin: 'yú', sinoVietnamese: 'NGƯ', meaning: 'Con cá', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '红烧鱼很好吃。', examplePinyin: 'hóngshāo yú hěn hǎochī.', exampleVi: 'Món cá kho rất ngon.' },
+      { id: 'zh-hsk2-l5-05', hanzi: '件', pinyin: 'jiàn', sinoVietnamese: 'KIỆN', meaning: 'Chiếc, cái, vụ (lượng từ quần áo, sự việc)', hskLevel: 2, posBadge: 'Lượng từ', exampleZh: '这件衣服多少钱？', examplePinyin: 'zhè jiàn yīfu duōshao qián?', exampleVi: 'Chiếc áo này bao nhiêu tiền?' },
+      { id: 'zh-hsk2-l5-06', hanzi: '还', pinyin: 'hái', sinoVietnamese: 'HOÀN', meaning: 'Còn, vẫn còn', hskLevel: 2, posBadge: 'Phó từ', exampleZh: '他还在教室。', examplePinyin: 'tā hái zài jiàoshì.', exampleVi: 'Anh ấy vẫn còn ở trong lớp học.' },
+      { id: 'zh-hsk2-l5-07', hanzi: '可以', pinyin: 'kěyǐ', sinoVietnamese: 'KHẢ DĨ', meaning: 'Có thể, được, tạm ổn', hskLevel: 2, posBadge: 'Động từ năng nguyện', exampleZh: '这件还可以。', examplePinyin: 'zhè jiàn kěyǐ.', exampleVi: 'Chiếc này cũng tạm được.' },
+      { id: 'zh-hsk2-l5-08', hanzi: '不错', pinyin: 'búcuò', sinoVietnamese: 'BẤT THÁC', meaning: 'Không tồi, khá tốt', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '他的汉语真不错。', examplePinyin: 'tā de hànyǔ zhēn búcuò.', exampleVi: 'Tiếng Trung của anh ấy khá tốt đấy.' },
+      { id: 'zh-hsk2-l5-09', hanzi: '考试', pinyin: 'kǎoshì', sinoVietnamese: 'KHẢO THÍ', meaning: 'Kỳ thi, thi cử', hskLevel: 2, posBadge: 'Danh từ/Động từ', exampleZh: '下周有一场HSK考试。', examplePinyin: 'xià zhōu yǒu yì chǎng HSK kǎoshì.', exampleVi: 'Tuần sau có một kỳ thi HSK.' },
+      { id: 'zh-hsk2-l5-10', hanzi: '意思', pinyin: 'yìsi', sinoVietnamese: 'Ý TỨ', meaning: 'Ý nghĩa, thú vị', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '这本书真有意思。', examplePinyin: 'zhè běn shū zhēn yǒu yìsi.', exampleVi: 'Cuốn sách này thật thú vị.' },
+      { id: 'zh-hsk2-l5-11', hanzi: '咖啡', pinyin: 'kāfēi', sinoVietnamese: 'CA PHÊ', meaning: 'Cà phê', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '我想喝一杯热咖啡。', examplePinyin: 'wǒ xiǎng hē yì bēi rè kāfēi.', exampleVi: 'Tôi muốn uống một tách cà phê nóng.' },
+      { id: 'zh-hsk2-l5-12', hanzi: '对', pinyin: 'duì', sinoVietnamese: 'ĐỐI', meaning: 'Đúng; đối với', hskLevel: 2, posBadge: 'Tính từ/Giới từ', exampleZh: '喝牛奶对身体好。', examplePinyin: 'hē niúnǎi duì shēntǐ hǎo.', exampleVi: 'Uống sữa bò rất tốt cho cơ thể.' },
+      { id: 'zh-hsk2-l5-13', hanzi: '以后', pinyin: 'yǐhòu', sinoVietnamese: 'DĨ HẬU', meaning: 'Sau này, sau khi', hskLevel: 2, posBadge: 'Danh từ phương vị', exampleZh: '吃饭以后去散步。', examplePinyin: 'chīfàn yǐhòu qù sànbù.', exampleVi: 'Sau khi ăn cơm thì đi dạo.' },
+    ],
+  },
+
+  // BÀI 6: Sao bạn không ăn nữa?
+  {
+    title: 'Sao bạn không ăn nữa?',
+    titleZh: '你怎么不吃了？',
+    words: [
+      { id: 'zh-hsk2-l6-01', hanzi: '门', pinyin: 'mén', sinoVietnamese: 'MÔN', meaning: 'Cánh cửa', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '请把门关上。', examplePinyin: 'qǐng bǎ mén guān shàng.', exampleVi: 'Xin hãy đóng cửa lại.' },
+      { id: 'zh-hsk2-l6-02', hanzi: '外', pinyin: 'wài', sinoVietnamese: 'NGOẠI', meaning: 'Bên ngoài', hskLevel: 2, posBadge: 'Danh từ phương vị', exampleZh: '门外有人。', examplePinyin: 'mén wài yǒu rén.', exampleVi: 'Bên ngoài cửa có người.' },
+      { id: 'zh-hsk2-l6-03', hanzi: '自行车', pinyin: 'zìxíngchē', sinoVietnamese: 'TỰ HÀNH XA', meaning: 'Xe đạp', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '骑自行车去学校。', examplePinyin: 'qí zìxíngchē qù xuéxiào.', exampleVi: 'Đạp xe đạp đến trường.' },
+      { id: 'zh-hsk2-l6-04', hanzi: '羊肉', pinyin: 'yángròu', sinoVietnamese: 'DƯƠNG NHỤC', meaning: 'Thịt dê, thịt cừu', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '北京涮羊肉很出名。', examplePinyin: 'běijīng shuàn yángròu hěn chūmíng.', exampleVi: 'Món lẩu nhúng thịt cừu Bắc Kinh rất nổi tiếng.' },
+      { id: 'zh-hsk2-l6-05', hanzi: '面条', pinyin: 'miàntiáo', sinoVietnamese: 'MIẾN ĐIỀU', meaning: 'Mì sợi, bún mì', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '中午我吃面条。', examplePinyin: 'zhōngwǔ wǒ chī miàntiáo.', exampleVi: 'Buổi trưa tôi ăn mì sợi.' },
+      { id: 'zh-hsk2-l6-06', hanzi: '打篮球', pinyin: 'dǎ lánqiú', sinoVietnamese: 'ĐẢ LAM CẦU', meaning: 'Chơi bóng rổ', hskLevel: 2, posBadge: 'Cụm động từ', exampleZh: '星期六去打篮球。', examplePinyin: 'xīngqīliù qù dǎ lánqiú.', exampleVi: 'Thứ bảy đi chơi bóng rổ.' },
+      { id: 'zh-hsk2-l6-07', hanzi: '因为', pinyin: 'yīnwèi', sinoVietnamese: 'NHÂN VI', meaning: 'Bởi vì, do', hskLevel: 2, posBadge: 'Liên từ', exampleZh: '因为下雨，所以没去。', examplePinyin: 'yīnwèi xià yǔ, suǒyǐ méi qù.', exampleVi: 'Bởi vì trời mưa nên không đi.' },
+      { id: 'zh-hsk2-l6-08', hanzi: '所以', pinyin: 'suǒyǐ', sinoVietnamese: 'SỞ DĨ', meaning: 'Cho nên, vì thế', hskLevel: 2, posBadge: 'Liên từ', exampleZh: '所以我很开心。', examplePinyin: 'suǒyǐ wǒ hěn kāixīn.', exampleVi: 'Cho nên tôi rất vui.' },
+      { id: 'zh-hsk2-l6-09', hanzi: '游泳', pinyin: 'yóu yǒng', sinoVietnamese: 'DU VỊNH', meaning: 'Bơi lội, bơi', hskLevel: 2, posBadge: 'Động từ', exampleZh: '夏天去游泳。', examplePinyin: 'xiàtiān qù yóu yǒng.', exampleVi: 'Mùa hè đi bơi lội.' },
+      { id: 'zh-hsk2-l6-10', hanzi: '经常', pinyin: 'jīngcháng', sinoVietnamese: 'KINH THƯỜNG', meaning: 'Thường xuyên', hskLevel: 2, posBadge: 'Phó từ', exampleZh: '他经常去图书馆。', examplePinyin: 'tā jīngcháng qù túshūguǎn.', exampleVi: 'Anh ấy thường xuyên đến thư viện.' },
+      { id: 'zh-hsk2-l6-11', hanzi: '公斤', pinyin: 'gōngjīn', sinoVietnamese: 'CÔNG CÂN', meaning: 'Kilôgam (kg)', hskLevel: 2, posBadge: 'Lượng từ', exampleZh: '五公斤苹果。', examplePinyin: 'wǔ gōngjīn píngguǒ.', exampleVi: 'Năm kilôgam táo.' },
+    ],
+  },
+
+  // BÀI 7: Nhà bạn cách công ty có xa không?
+  {
+    title: 'Nhà bạn cách công ty có xa không?',
+    titleZh: '你家离公司远吗？',
+    words: [
+      { id: 'zh-hsk2-l7-01', hanzi: '教室', pinyin: 'jiàoshì', sinoVietnamese: 'GIÁO THẤT', meaning: 'Phòng học, lớp học', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '请进教室。', examplePinyin: 'qǐng jìn jiàoshì.', exampleVi: 'Xin mời vào phòng học.' },
+      { id: 'zh-hsk2-l7-02', hanzi: '机场', pinyin: 'jīchǎng', sinoVietnamese: 'CƠ TRƯỜNG', meaning: 'Sân bay', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '去首都国际机场。', examplePinyin: 'qù shǒudū guójì jīchǎng.', exampleVi: 'Đến sân bay quốc tế Thủ Đô.' },
+      { id: 'zh-hsk2-l7-03', hanzi: '路', pinyin: 'lù', sinoVietnamese: 'LỘ', meaning: 'Đường đi, con đường', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '路上车很多。', examplePinyin: 'lù shang chē hěn duō.', exampleVi: 'Trên đường xe cộ rất đông.' },
+      { id: 'zh-hsk2-l7-04', hanzi: '离', pinyin: 'lí', sinoVietnamese: 'LY', meaning: 'Cách (khoảng cách)', hskLevel: 2, posBadge: 'Giới từ', exampleZh: '我家离学校不远。', examplePinyin: 'wǒ jiā lí xuéxiào bù yuǎn.', exampleVi: 'Nhà tôi cách trường học không xa.' },
+      { id: 'zh-hsk2-l7-05', hanzi: '公司', pinyin: 'gōngsī', sinoVietnamese: 'CÔNG TY', meaning: 'Công ty, hãng', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '他在大公司上班。', examplePinyin: 'tā zài dà gōngsī shàngbān.', exampleVi: 'Anh ấy đi làm ở công ty lớn.' },
+      { id: 'zh-hsk2-l7-06', hanzi: '远', pinyin: 'yuǎn', sinoVietnamese: 'VIỄN', meaning: 'Xa', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '路途很远。', examplePinyin: 'lùtú hěn yuǎn.', exampleVi: 'Đường đi rất xa xôi.' },
+      { id: 'zh-hsk2-l7-07', hanzi: '公共汽车', pinyin: 'gōnggòng qìchē', sinoVietnamese: 'CÔNG CỘNG KHÍ XA', meaning: 'Xe buýt, xe công cộng', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '坐公共汽车很便宜。', examplePinyin: 'zuò gōnggòng qìchē hěn piányi.', exampleVi: 'Đi xe buýt rất rẻ.' },
+      { id: 'zh-hsk2-l7-08', hanzi: '小时', pinyin: 'xiǎoshí', sinoVietnamese: 'TIỂU THỜI', meaning: 'Tiếng đồng hồ, giờ', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '坐车要两个小时。', examplePinyin: 'zuò chē yào liǎng gè xiǎoshí.', exampleVi: 'Đi xe mất hai tiếng đồng hồ.' },
+      { id: 'zh-hsk2-l7-09', hanzi: '慢', pinyin: 'màn', sinoVietnamese: 'MẠN', meaning: 'Chậm', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '请慢走。', examplePinyin: 'qǐng màn zǒu.', exampleVi: 'Xin đi thong thả.' },
+      { id: 'zh-hsk2-l7-10', hanzi: '快', pinyin: 'kuài', sinoVietnamese: 'KHOÁI', meaning: 'Nhanh', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '高铁真快！', examplePinyin: 'gāotiě zhēn kuài!', exampleVi: 'Tàu cao tốc thật là nhanh!' },
+      { id: 'zh-hsk2-l7-11', hanzi: '过', pinyin: 'guò', sinoVietnamese: 'QUÁ', meaning: 'Đón, trải qua; từng', hskLevel: 2, posBadge: 'Động từ', exampleZh: '过生日。', examplePinyin: 'guò shēngrì.', exampleVi: 'Đón sinh nhật.' },
+      { id: 'zh-hsk2-l7-12', hanzi: '走', pinyin: 'zǒu', sinoVietnamese: 'TẨU', meaning: 'Đi bộ, đi', hskLevel: 2, posBadge: 'Động từ', exampleZh: '我们走路去吧。', examplePinyin: 'wǒmen zǒulù qù ba.', exampleVi: 'Chúng mình đi bộ đi nhé.' },
+      { id: 'zh-hsk2-l7-13', hanzi: '到', pinyin: 'dào', sinoVietnamese: 'ĐÁO', meaning: 'Đến, tới nơi', hskLevel: 2, posBadge: 'Động từ', exampleZh: '到北京了。', examplePinyin: 'dào běijīng le.', exampleVi: 'Đến Bắc Kinh rồi.' },
+    ],
+  },
+
+  // BÀI 8: Để tôi nghĩ đã rồi nói cho bạn biết
+  {
+    title: 'Để tôi nghĩ đã rồi nói cho bạn biết',
+    titleZh: '让我想想再告诉你',
+    words: [
+      { id: 'zh-hsk2-l8-01', hanzi: '再', pinyin: 'zài', sinoVietnamese: 'TÁI', meaning: 'Lại, nữa, rồi hãy', hskLevel: 2, posBadge: 'Phó từ', exampleZh: '让我想想再告诉你。', examplePinyin: 'ràng wǒ xiǎng xiǎng zài gàosu nǐ.', exampleVi: 'Để tôi nghĩ đã rồi nói cho bạn biết.' },
+      { id: 'zh-hsk2-l8-02', hanzi: '让', pinyin: 'ràng', sinoVietnamese: 'NHƯỢNG', meaning: 'Bảo, cho phép, để', hskLevel: 2, posBadge: 'Động từ', exampleZh: '老师让我回答问题。', examplePinyin: 'lǎoshī ràng wǒ huídá wèntí.', exampleVi: 'Thầy giáo bảo tôi trả lời câu hỏi.' },
+      { id: 'zh-hsk2-l8-03', hanzi: '告诉', pinyin: 'gàosu', sinoVietnamese: 'CÁO TỐ', meaning: 'Bảo, kể cho', hskLevel: 2, posBadge: 'Động từ', exampleZh: '请告诉我你的电话。', examplePinyin: 'qǐng gàosu wǒ nǐ de diànhuà.', exampleVi: 'Xin hãy nói cho tôi số điện thoại của bạn.' },
+      { id: 'zh-hsk2-l8-04', hanzi: '等', pinyin: 'děng', sinoVietnamese: 'ĐẲNG', meaning: 'Đợi, chờ', hskLevel: 2, posBadge: 'Động từ', exampleZh: '请等我十分钟。', examplePinyin: 'qǐng děng wǒ shí fēnzhōng.', exampleVi: 'Xin hãy đợi tôi mười phút.' },
+      { id: 'zh-hsk2-l8-05', hanzi: '找', pinyin: 'zhǎo', sinoVietnamese: 'TRẢO', meaning: 'Tìm kiếm; thối lại tiền', hskLevel: 2, posBadge: 'Động từ', exampleZh: '你在找什么？', examplePinyin: 'nǐ zài zhǎo shénme?', exampleVi: 'Bạn đang tìm cái gì vậy?' },
+      { id: 'zh-hsk2-l8-06', hanzi: '事情', pinyin: 'shìqing', sinoVietnamese: 'SỰ TÌNH', meaning: 'Sự việc, chuyện', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '今天有很多事情要做。', examplePinyin: 'jīntiān yǒu hěn duō shìqing yào zuò.', exampleVi: 'Hôm nay có rất nhiều việc phải làm.' },
+      { id: 'zh-hsk2-l8-07', hanzi: '服务员', pinyin: 'fúwùyuán', sinoVietnamese: 'PHỤC VỤ VIÊN', meaning: 'Nhân viên phục vụ', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '服务员，请结账。', examplePinyin: 'fúwùyuán, qǐng jiézhàng.', exampleVi: 'Phục vụ ơi, xin tính tiền.' },
+      { id: 'zh-hsk2-l8-08', hanzi: '白', pinyin: 'bái', sinoVietnamese: 'BẠCH', meaning: 'Trắng', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '白色的衣服。', examplePinyin: 'báisè de yīfu.', exampleVi: 'Quần áo màu trắng.' },
+      { id: 'zh-hsk2-l8-09', hanzi: '黑', pinyin: 'hēi', sinoVietnamese: 'HẮC', meaning: 'Đen', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '黑色的头发。', examplePinyin: 'hēisè de tóufa.', exampleVi: 'Mái tóc màu đen.' },
+      { id: 'zh-hsk2-l8-10', hanzi: '贵', pinyin: 'guì', sinoVietnamese: 'QUÝ', meaning: 'Đắt đỏ, quý', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '这块手表太贵了。', examplePinyin: 'zhè kuài shǒubiǎo tài guì le.', exampleVi: 'Chiếc đồng hồ này đắt quá.' },
+    ],
+  },
+
+  // BÀI 9: Đề nhiều quá, tôi làm không hết
+  {
+    title: 'Đề nhiều quá, tôi làm không hết',
+    titleZh: '题太多，我没做完',
+    words: [
+      { id: 'zh-hsk2-l9-01', hanzi: '错', pinyin: 'cuò', sinoVietnamese: 'THÁC', meaning: 'Sai, nhầm', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '你做错了一道题。', examplePinyin: 'nǐ zuò cuò le yí dào tí.', exampleVi: 'Bạn làm sai mất một câu rồi.' },
+      { id: 'zh-hsk2-l9-02', hanzi: '从', pinyin: 'cóng', sinoVietnamese: 'TÙNG', meaning: 'Từ (thời gian, địa điểm)', hskLevel: 2, posBadge: 'Giới từ', exampleZh: '从北京到上海。', examplePinyin: 'cóng běijīng dào shànghǎi.', exampleVi: 'Từ Bắc Kinh đến Thượng Hải.' },
+      { id: 'zh-hsk2-l9-03', hanzi: '跳舞', pinyin: 'tiào wǔ', sinoVietnamese: 'KHIÊU VŨ', meaning: 'Nhảy múa, khiêu vũ', hskLevel: 2, posBadge: 'Cụm động từ', exampleZh: '她跳舞跳得非常好。', examplePinyin: 'tā tiào wǔ tiào de fēicháng hǎo.', exampleVi: 'Cô ấy khiêu vũ rất đẹp.' },
+      { id: 'zh-hsk2-l9-04', hanzi: '第一', pinyin: 'dì-yī', sinoVietnamese: 'ĐỆ NHẤT', meaning: 'Thứ nhất, số 1', hskLevel: 2, posBadge: 'Số từ', exampleZh: '他是第一名。', examplePinyin: 'tā shì dì-yī míng.', exampleVi: 'Cậu ấy đạt hạng nhất.' },
+      { id: 'zh-hsk2-l9-05', hanzi: '希望', pinyin: 'xīwàng', sinoVietnamese: 'HI VỌNG', meaning: 'Hi vọng, mong ước', hskLevel: 2, posBadge: 'Động từ/Danh từ', exampleZh: '希望你考试顺利。', examplePinyin: 'xīwàng nǐ kǎoshì shùnlì.', exampleVi: 'Hi vọng kỳ thi của bạn thuận lợi.' },
+      { id: 'zh-hsk2-l9-06', hanzi: '问题', pinyin: 'wèntí', sinoVietnamese: 'VẤN ĐỀ', meaning: 'Câu hỏi, vấn đề', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '没问题！', examplePinyin: 'méi wèntí!', exampleVi: 'Không thành vấn đề!' },
+      { id: 'zh-hsk2-l9-07', hanzi: '欢迎', pinyin: 'huānyíng', sinoVietnamese: 'HOAN NGHÊNH', meaning: 'Chào mừng, hoan nghênh', hskLevel: 2, posBadge: 'Động từ', exampleZh: '欢迎来到中国！', examplePinyin: 'huānyíng lái dào zhōngguó!', exampleVi: 'Hoan nghênh đến với Trung Quốc!' },
+      { id: 'zh-hsk2-l9-08', hanzi: '上班', pinyin: 'shàng bān', sinoVietnamese: 'THƯỢNG BAN', meaning: 'Đi làm', hskLevel: 2, posBadge: 'Cụm động từ', exampleZh: '八点半上班。', examplePinyin: 'bā diǎn bàn shàng bān.', exampleVi: 'Tám giờ rưỡi đi làm.' },
+      { id: 'zh-hsk2-l9-09', hanzi: '懂', pinyin: 'dǒng', sinoVietnamese: 'ĐỐNG', meaning: 'Hiểu, rõ', hskLevel: 2, posBadge: 'Động từ', exampleZh: '你听懂了吗？', examplePinyin: 'nǐ tīng dǒng le ma?', exampleVi: 'Bạn nghe có hiểu không?' },
+      { id: 'zh-hsk2-l9-10', hanzi: '完', pinyin: 'wán', sinoVietnamese: 'HOÀN', meaning: 'Xong, hoàn thành, hết', hskLevel: 2, posBadge: 'Động từ', exampleZh: '吃完饭了。', examplePinyin: 'chī wán fàn le.', exampleVi: 'Ăn xong cơm rồi.' },
+      { id: 'zh-hsk2-l9-11', hanzi: '题', pinyin: 'tí', sinoVietnamese: 'ĐỀ', meaning: 'Đề bài, câu hỏi bài tập', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '这道题很难。', examplePinyin: 'zhè dào tí hěn nán.', exampleVi: 'Câu hỏi này rất khó.' },
+    ],
+  },
+
+  // BÀI 10: Đừng tìm nữa, điện thoại ở trên bàn kìa
+  {
+    title: 'Đừng tìm nữa, điện thoại ở trên bàn kìa',
+    titleZh: '别找了，手机在桌子上呢',
+    words: [
+      { id: 'zh-hsk2-l10-01', hanzi: '别', pinyin: 'bié', sinoVietnamese: 'BIỆT', meaning: 'Đừng, chớ', hskLevel: 2, posBadge: 'Phó từ', exampleZh: '别找了，在这儿呢。', examplePinyin: 'bié zhǎo le, zài zhèr ne.', exampleVi: 'Đừng tìm nữa, ở đây nè.' },
+      { id: 'zh-hsk2-l10-02', hanzi: '鸡蛋', pinyin: 'jīdàn', sinoVietnamese: 'KÊ ĐÃN', meaning: 'Trứng gà', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '早上吃两个鸡蛋。', examplePinyin: 'zǎoshang chī liǎng gè jīdàn.', exampleVi: 'Buổi sáng ăn hai quả trứng gà.' },
+      { id: 'zh-hsk2-l10-03', hanzi: '西瓜', pinyin: 'xīguā', sinoVietnamese: 'TÂY QUA', meaning: 'Dưa hấu', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '夏天的西瓜很甜。', examplePinyin: 'xiàtiān de xīguā hěn tián.', exampleVi: 'Dưa hấu mùa hè rất ngọt.' },
+      { id: 'zh-hsk2-l10-04', hanzi: '正在', pinyin: 'zhèngzài', sinoVietnamese: 'CHÍNH TẠI', meaning: 'Đang (làm gì đó)', hskLevel: 2, posBadge: 'Phó từ', exampleZh: '我正在看书呢。', examplePinyin: 'wǒ zhèngzài kàn shū ne.', exampleVi: 'Tôi đang đọc sách đấy.' },
+      { id: 'zh-hsk2-l10-05', hanzi: '手机', pinyin: 'shǒujī', sinoVietnamese: 'THỦ CƠ', meaning: 'Điện thoại di động', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '别玩手机了。', examplePinyin: 'bié wán shǒujī le.', exampleVi: 'Đừng bấm nghịch điện thoại nữa.' },
+      { id: 'zh-hsk2-l10-06', hanzi: '洗', pinyin: 'xǐ', sinoVietnamese: 'TẨY', meaning: 'Rửa, giặt', hskLevel: 2, posBadge: 'Động từ', exampleZh: '洗衣服 / 洗手。', examplePinyin: 'xǐ yīfu / xǐ shǒu.', exampleVi: 'Giặt quần áo / Rửa tay.' },
+      { id: 'zh-hsk2-l10-07', hanzi: '穿', pinyin: 'chuān', sinoVietnamese: 'XUYÊN', meaning: 'Mặc (quần áo), đi (giày dép)', hskLevel: 2, posBadge: 'Động từ', exampleZh: '穿新衣服。', examplePinyin: 'chuān xīn yīfu.', exampleVi: 'Mặc quần áo mới.' },
+      { id: 'zh-hsk2-l10-08', hanzi: '玩', pinyin: 'wán', sinoVietnamese: 'NGOẠN', meaning: 'Chơi, vui chơi', hskLevel: 2, posBadge: 'Động từ', exampleZh: '去外面玩。', examplePinyin: 'qù wàimiàn wán.', exampleVi: 'Ra ngoài chơi.' },
+      { id: 'zh-hsk2-l10-09', hanzi: '唱歌', pinyin: 'chàng gē', sinoVietnamese: 'XƯỚNG CA', meaning: 'Hát, ca hát', hskLevel: 2, posBadge: 'Cụm động từ', exampleZh: '我们一起唱歌吧。', examplePinyin: 'wǒmen yìqǐ chàng gē ba.', exampleVi: 'Chúng mình cùng hát nhé.' },
+    ],
+  },
+
+  // BÀI 11: Anh ấy lớn hơn tôi 3 tuổi
+  {
+    title: 'Anh ấy lớn hơn tôi 3 tuổi',
+    titleZh: '他比我大三岁',
+    words: [
+      { id: 'zh-hsk2-l11-01', hanzi: '男', pinyin: 'nán', sinoVietnamese: 'NAM', meaning: 'Nam, đàn ông', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '他是男学生。', examplePinyin: 'tā shì nán xuéshēng.', exampleVi: 'Cậu ấy là học sinh nam.' },
+      { id: 'zh-hsk2-l11-02', hanzi: '女', pinyin: 'nǚ', sinoVietnamese: 'NỮ', meaning: 'Nữ, phụ nữ', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '女老师。', examplePinyin: 'nǚ lǎoshī.', exampleVi: 'Cô giáo.' },
+      { id: 'zh-hsk2-l11-03', hanzi: '孩子', pinyin: 'háizi', sinoVietnamese: 'HÀI TỬ', meaning: 'Trẻ con, con cái', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '孩子们在玩耍。', examplePinyin: 'háizimen zài wánshuǎ.', exampleVi: 'Lũ trẻ đang nô đùa.' },
+      { id: 'zh-hsk2-l11-04', hanzi: '右边', pinyin: 'yòubian', sinoVietnamese: 'HỮU BIÊN', meaning: 'Bên phải, phía phải', hskLevel: 2, posBadge: 'Danh từ phương vị', exampleZh: '右边是医院。', examplePinyin: 'yòubian shì yīyuàn.', exampleVi: 'Bên phải là bệnh viện.' },
+      { id: 'zh-hsk2-l11-05', hanzi: '比', pinyin: 'bǐ', sinoVietnamese: 'TỈ', meaning: 'So với, hơn', hskLevel: 2, posBadge: 'Giới từ', exampleZh: '他比我大三岁。', examplePinyin: 'tā bǐ wǒ dà sān suì.', exampleVi: 'Anh ấy lớn hơn tôi ba tuổi.' },
+      { id: 'zh-hsk2-l11-06', hanzi: '便宜', pinyin: 'piányi', sinoVietnamese: 'TIỆN NGHI', meaning: 'Rẻ', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '这件衣服很便宜。', examplePinyin: 'zhè jiàn yīfu hěn piányi.', exampleVi: 'Chiếc áo này rất rẻ.' },
+      { id: 'zh-hsk2-l11-07', hanzi: '说话', pinyin: 'shuō huà', sinoVietnamese: 'THUYẾT THOẠI', meaning: 'Nói chuyện', hskLevel: 2, posBadge: 'Cụm động từ', exampleZh: '请不要大声说话。', examplePinyin: 'qǐng búyào dàshēng shuō huà.', exampleVi: 'Xin đừng nói chuyện lớn tiếng.' },
+      { id: 'zh-hsk2-l11-08', hanzi: '可能', pinyin: 'kěnéng', sinoVietnamese: 'KHẢ NĂNG', meaning: 'Có thể, có lẽ', hskLevel: 2, posBadge: 'Phó từ', exampleZh: '明天可能下雨。', examplePinyin: 'míngtiān kěnéng xià yǔ.', exampleVi: 'Ngày mai có lẽ sẽ mưa.' },
+      { id: 'zh-hsk2-l11-09', hanzi: '去年', pinyin: 'qùnián', sinoVietnamese: 'KHỨ NIÊN', meaning: 'Năm ngoái', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '我去年来中国的。', examplePinyin: 'wǒ qùnián lái zhōngguó de.', exampleVi: 'Tôi đến Trung Quốc năm ngoái.' },
+    ],
+  },
+
+  // BÀI 12: Bạn mặc ít quá rồi
+  {
+    title: 'Bạn mặc ít quá rồi',
+    titleZh: '你穿得太少了',
+    words: [
+      { id: 'zh-hsk2-l12-01', hanzi: '得', pinyin: 'de', sinoVietnamese: 'ĐẮC', meaning: 'Trợ từ kết cấu (nối động từ và bổ ngữ)', hskLevel: 2, posBadge: 'Trợ từ', exampleZh: '你跑得真快。', examplePinyin: 'nǐ pǎo de zhēn kuài.', exampleVi: 'Bạn chạy thật là nhanh.' },
+      { id: 'zh-hsk2-l12-02', hanzi: '早', pinyin: 'zǎo', sinoVietnamese: 'TẢO', meaning: 'Sớm, buổi sáng', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '你起得真早！', examplePinyin: 'nǐ qǐ de zhēn zǎo!', exampleVi: 'Bạn dậy sớm thật đấy!' },
+      { id: 'zh-hsk2-l12-03', hanzi: '妻子', pinyin: 'qīzi', sinoVietnamese: 'THÊ TỬ', meaning: 'Vợ', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '这是我的妻子。', examplePinyin: 'zhè shì wǒ de qīzi.', exampleVi: 'Đây là vợ của tôi.' },
+      { id: 'zh-hsk2-l12-04', hanzi: '雪', pinyin: 'xuě', sinoVietnamese: 'TUYẾT', meaning: 'Tuyết', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '北京下雪了。', examplePinyin: 'běijīng xià xuě le.', exampleVi: 'Bắc Kinh có tuyết rơi rồi.' },
+      { id: 'zh-hsk2-l12-05', hanzi: '零', pinyin: 'líng', sinoVietnamese: 'LINH', meaning: 'Số không (0)', hskLevel: 2, posBadge: 'Số từ', exampleZh: '今天零下五度。', examplePinyin: 'jīntiān língxià wǔ dù.', exampleVi: 'Hôm nay âm 5 độ.' },
+      { id: 'zh-hsk2-l12-06', hanzi: '度', pinyin: 'dù', sinoVietnamese: 'ĐỘ', meaning: 'Độ (nhiệt độ)', hskLevel: 2, posBadge: 'Lượng từ', exampleZh: '三十度。', examplePinyin: 'sānshí dù.', exampleVi: 'Ba mươi độ.' },
+      { id: 'zh-hsk2-l12-07', hanzi: '进', pinyin: 'jìn', sinoVietnamese: 'TIẾN', meaning: 'Vào, bước vào', hskLevel: 2, posBadge: 'Động từ', exampleZh: '请进！', examplePinyin: 'qǐng jìn!', exampleVi: 'Xin mời vào!' },
+      { id: 'zh-hsk2-l12-08', hanzi: '近', pinyin: 'jìn', sinoVietnamese: 'CẬN', meaning: 'Gần', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '学校离这儿很近。', examplePinyin: 'xuéxiào lí zhèr hěn jìn.', exampleVi: 'Trường học cách đây rất gần.' },
+      { id: 'zh-hsk2-l12-09', hanzi: '次', pinyin: 'cì', sinoVietnamese: 'THỨ', meaning: 'Lần, lượt', hskLevel: 2, posBadge: 'Lượng từ', exampleZh: '我去过两次北京。', examplePinyin: 'wǒ qù guo liǎng cì běijīng.', exampleVi: 'Tôi từng đến Bắc Kinh hai lần.' },
+    ],
+  },
+
+  // BÀI 13: Cửa đang mở đấy
+  {
+    title: 'Cửa đang mở đấy',
+    titleZh: '门开着呢',
+    words: [
+      { id: 'zh-hsk2-l13-01', hanzi: '着', pinyin: 'zhe', sinoVietnamese: 'TRƯỚC', meaning: 'Đang (chỉ trạng thái kéo dài)', hskLevel: 2, posBadge: 'Trợ từ', exampleZh: '门开着呢。', examplePinyin: 'mén kāi zhe ne.', exampleVi: 'Cửa đang mở đấy.' },
+      { id: 'zh-hsk2-l13-02', hanzi: '手', pinyin: 'shǒu', sinoVietnamese: 'THỦ', meaning: 'Bàn tay', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '请把手伸出来。', examplePinyin: 'qǐng bǎ shǒu shēn chūlái.', exampleVi: 'Xin đưa tay ra.' },
+      { id: 'zh-hsk2-l13-03', hanzi: '拿', pinyin: 'ná', sinoVietnamese: 'NÃ', meaning: 'Cầm, nắm, lấy', hskLevel: 2, posBadge: 'Động từ', exampleZh: '他手里拿着一本书。', examplePinyin: 'tā shǒu lǐ ná zhe yì běn shū.', exampleVi: 'Trong tay anh ấy đang cầm một cuốn sách.' },
+      { id: 'zh-hsk2-l13-04', hanzi: '铅笔', pinyin: 'qiānbǐ', sinoVietnamese: 'DUYÊN BÚT', meaning: 'Bút chì', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '这支铅笔是谁的？', examplePinyin: 'zhè zhī qiānbǐ shì shéi de?', exampleVi: 'Chiếc bút chì này của ai?' },
+      { id: 'zh-hsk2-l13-05', hanzi: '班', pinyin: 'bān', sinoVietnamese: 'BAN', meaning: 'Lớp học, ca làm', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '我们班有十五个学生。', examplePinyin: 'wǒmen bān yǒu shíwǔ gè xuéshēng.', exampleVi: 'Lớp chúng tôi có mười lăm học sinh.' },
+      { id: 'zh-hsk2-l13-06', hanzi: '长', pinyin: 'zhǎng', sinoVietnamese: 'TRƯỞNG', meaning: 'Lớn lên, trông như', hskLevel: 2, posBadge: 'Động từ', exampleZh: '她长得很漂亮。', examplePinyin: 'tā zhǎng de hěn piàoliang.', exampleVi: 'Cô ấy lớn lên trông rất xinh xắn.' },
+      { id: 'zh-hsk2-l13-07', hanzi: '笑', pinyin: 'xiào', sinoVietnamese: 'TIẾU', meaning: 'Cười', hskLevel: 2, posBadge: 'Động từ', exampleZh: '别笑了。', examplePinyin: 'bié xiào le.', exampleVi: 'Đừng cười nữa.' },
+      { id: 'zh-hsk2-l13-08', hanzi: '宾馆', pinyin: 'bīnguǎn', sinoVietnamese: 'TÂN QUÁN', meaning: 'Khách sạn, nhà khách', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '我们住在国际宾馆。', examplePinyin: 'wǒmen zhù zài guójì bīnguǎn.', exampleVi: 'Chúng tôi ở khách sạn Quốc Tế.' },
+      { id: 'zh-hsk2-l13-09', hanzi: '一直', pinyin: 'yìzhí', sinoVietnamese: 'NHẤT TRỰC', meaning: 'Thẳng, liên tục', hskLevel: 2, posBadge: 'Phó từ', exampleZh: '一直往走。', examplePinyin: 'yìzhí wǎng qián zǒu.', exampleVi: 'Cứ đi thẳng về phía trước.' },
+      { id: 'zh-hsk2-l13-10', hanzi: '往', pinyin: 'wǎng', sinoVietnamese: 'VÃNG', meaning: 'Về hướng, hướng tới', hskLevel: 2, posBadge: 'Giới từ', exampleZh: '往前走就是地铁站。', examplePinyin: 'wǎng qián zǒu jiù shì dìtiězhàn.', exampleVi: 'Đi về phía trước là ga tàu điện ngầm.' },
+    ],
+  },
+
+  // BÀI 14: Bạn đã xem bộ phim đó chưa?
+  {
+    title: 'Bạn đã xem bộ phim đó chưa?',
+    titleZh: '你看过那个电影吗？',
+    words: [
+      { id: 'zh-hsk2-l14-01', hanzi: '过', pinyin: 'guo', sinoVietnamese: 'QUÁ', meaning: 'Từng (trợ từ động thái chỉ kinh nghiệm)', hskLevel: 2, posBadge: 'Trợ từ', exampleZh: '你看过那个电影吗？', examplePinyin: 'nǐ kàn guo nà ge diànyǐng ma?', exampleVi: 'Bạn đã từng xem bộ phim đó chưa?' },
+      { id: 'zh-hsk2-l14-02', hanzi: '虽然', pinyin: 'suīrán', sinoVietnamese: 'TUY NHIÊN', meaning: 'Mặc dù, tuy', hskLevel: 2, posBadge: 'Liên từ', exampleZh: '虽然很累，但是很开心。', examplePinyin: 'suīrán hěn lèi, dànshì hěn kāixīn.', exampleVi: 'Mặc dù rất mệt nhưng rất vui.' },
+      { id: 'zh-hsk2-l14-03', hanzi: '但是', pinyin: 'dànshì', sinoVietnamese: 'ĐÃN THỊ', meaning: 'Nhưng, thế nhưng', hskLevel: 2, posBadge: 'Liên từ', exampleZh: '但是他没来。', examplePinyin: 'dànshì tā méi lái.', exampleVi: 'Thế nhưng anh ấy không đến.' },
+      { id: 'zh-hsk2-l14-04', hanzi: '晴', pinyin: 'qíng', sinoVietnamese: 'TÌNH', meaning: 'Nắng, trời quang đãng', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '今天是个大晴天。', examplePinyin: 'jīntiān shì gè dà qíngtiān.', exampleVi: 'Hôm nay là một ngày nắng to.' },
+      { id: 'zh-hsk2-l14-05', hanzi: '百', pinyin: 'bǎi', sinoVietnamese: 'BÁCH', meaning: 'Trăm (100)', hskLevel: 2, posBadge: 'Số từ', exampleZh: '一百个人。', examplePinyin: 'yì bǎi gè rén.', exampleVi: 'Một trăm người.' },
+      { id: 'zh-hsk2-l14-06', hanzi: '船', pinyin: 'chuán', sinoVietnamese: 'THUYỀN', meaning: 'Thuyền, tàu thủy', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '坐船去海南岛。', examplePinyin: 'zuò chuán qù hǎinándǎo.', exampleVi: 'Đi thuyền đến đảo Hải Nam.' },
+    ],
+  },
+
+  // BÀI 15: Năm mới sắp đến rồi
+  {
+    title: 'Năm mới sắp đến rồi',
+    titleZh: '新年就要到了',
+    words: [
+      { id: 'zh-hsk2-l15-01', hanzi: '新年', pinyin: 'xīnnián', sinoVietnamese: 'TÂN NIÊN', meaning: 'Năm mới, tết', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '新年快乐！', examplePinyin: 'xīnnián kuàilè!', exampleVi: 'Chúc mừng năm mới!' },
+      { id: 'zh-hsk2-l15-02', hanzi: '快要', pinyin: 'kuàiyào', sinoVietnamese: 'KHOÁI YẾU', meaning: 'Sắp sửa, sắp', hskLevel: 2, posBadge: 'Phó từ', exampleZh: '新年快要到了。', examplePinyin: 'xīnnián kuàiyào dào le.', exampleVi: 'Năm mới sắp sửa đến rồi.' },
+      { id: 'zh-hsk2-l15-03', hanzi: '票', pinyin: 'piào', sinoVietnamese: 'PHIẾU', meaning: 'Vé', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '你买到火车票了吗？', examplePinyin: 'nǐ mǎi dào huǒchē piào le ma?', exampleVi: 'Bạn đã mua được vé tàu hỏa chưa?' },
+      { id: 'zh-hsk2-l15-04', hanzi: '火车站', pinyin: 'huǒchēzhàn', sinoVietnamese: 'HỎA XA TRẠM', meaning: 'Ga xe lửa, bến tàu hỏa', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '火车站很多人。', examplePinyin: 'huǒchēzhàn hěn duō rén.', exampleVi: 'Ga tàu hỏa rất đông người.' },
+      { id: 'zh-hsk2-l15-05', hanzi: '更', pinyin: 'gèng', sinoVietnamese: 'CANH', meaning: 'Càng, hơn nữa', hskLevel: 2, posBadge: 'Phó từ', exampleZh: '明天天气会更好。', examplePinyin: 'míngtiān tiānqì huì gèng hǎo.', exampleVi: 'Ngày mai thời tiết sẽ còn đẹp hơn.' },
+      { id: 'zh-hsk2-l15-06', hanzi: '妹妹', pinyin: 'mèimei', sinoVietnamese: 'MUỘI MUỘI', meaning: 'Em gái', hskLevel: 2, posBadge: 'Danh từ', exampleZh: '妹妹今年七岁了。', examplePinyin: 'mèimei jīnnián qī suì le.', exampleVi: 'Em gái năm nay bảy tuổi rồi.' },
+      { id: 'zh-hsk2-l15-07', hanzi: '阴', pinyin: 'yīn', sinoVietnamese: 'ÂM', meaning: 'U ám, nhiều mây, râm', hskLevel: 2, posBadge: 'Tính từ', exampleZh: '今天是阴天。', examplePinyin: 'jīntiān shì yīntiān.', exampleVi: 'Hôm nay là ngày trời râm.' },
+    ],
+  },
+];
+
+// Helper to chunk remaining levels (HSK 3-6)
 function createLessonsForOtherLevels(
   level: number,
   words: ChineseWordItem[],
@@ -581,7 +863,14 @@ export const HSK_BOOKS: Record<string, HskBookCourse> = {
     wordCountTotal: 213,
     patternCountTotal: 45,
     lessonCount: 15,
-    lessons: createLessonsForOtherLevels(2, hsk2Data as ChineseWordItem[], HSK2_LESSON_TITLES),
+    lessons: HSK2_CURRICULUM.map((item, idx) => ({
+      id: `bai-${idx + 1}`,
+      lessonNumber: idx + 1,
+      title: item.title,
+      titleZh: item.titleZh,
+      wordCount: item.words.length,
+      words: item.words,
+    })),
   },
   hsk3: {
     slug: 'hsk3',
