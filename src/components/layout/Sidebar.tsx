@@ -55,6 +55,7 @@ export default function Sidebar() {
 
   const chineseNavItems = [
     { name: 'Trang chủ HSK', href: '/', icon: Home, badge: null },
+    { name: 'Kệ sách HSK 1–6', href: '/course', icon: BookOpen, badge: 'HOT' },
     { name: 'Lộ trình HSK 1–6', href: '/roadmap', icon: Route, badge: 'CHUẨN' },
     { name: 'Shadowing Tiếng Trung', href: '/dictation-shadowing', icon: Headphones, badge: null },
     { name: 'Từ vựng HSK 1 - 6', href: '/vocabulary', icon: BookCheck, badge: '5.4K' },
