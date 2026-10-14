@@ -6,10 +6,10 @@ import { usePathname } from 'next/navigation';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useThemeStore } from '@/stores/useThemeStore';
 import { useLanguageStore } from '@/stores/useLanguageStore';
-import MickyMascot from '@/components/common/MickyMascot';
 import PremiumModal from '@/components/common/PremiumModal';
 import {
   Home,
+  Route,
   Headphones,
   BookCheck,
   Dumbbell,
@@ -21,375 +21,234 @@ import {
   ChevronRight,
   Flame,
   Gem,
-  FileText,
-  Monitor,
-  Bell,
   Crown,
-  Video,
-  LogOut,
   Trophy,
   PenTool,
   BookOpen,
   Languages,
+  Video,
 } from 'lucide-react';
 
 export default function Sidebar() {
   const pathname = usePathname();
   const { user, isAuthenticated, logout } = useAuthStore();
-  const { theme, isSidebarCollapsed, toggleTheme, toggleSidebar } = useThemeStore();
+  const { theme, isSidebarCollapsed, toggleSidebar } = useThemeStore();
   const { targetLanguage, setTargetLanguage } = useLanguageStore();
   const [showPremiumModal, setShowPremiumModal] = useState(false);
 
   const isChinese = targetLanguage === 'zh';
+  const isLight = theme === 'light';
+  const isAdmin = Boolean(isAuthenticated && user?.role === 'admin');
 
   const englishNavItems = [
     { name: 'Trang chủ', href: '/', icon: Home, badge: null },
-    { name: 'Dictation & Shadowing', href: '/dictation-shadowing', icon: Headphones, badge: null },
-    { name: 'Từ vựng (Oxford/TOEIC)', href: '/vocabulary', icon: BookCheck, badge: null },
-    { name: 'Luyện tập', href: '/practice', icon: Dumbbell, badge: null },
-    { name: 'Trò chơi (Word Order)', href: '/tro-choi', icon: Gamepad2, badge: 'NEW' },
+    { name: 'Lộ trình học', href: '/roadmap', icon: Route, badge: 'HOT' },
+    { name: 'Nghe chép (Dictation)', href: '/dictation-shadowing?mode=dictation', icon: Headphones, badge: null },
+    { name: 'Nhại giọng (Shadowing)', href: '/dictation-shadowing?mode=shadowing', icon: Languages, badge: null },
+    { name: 'Xếp từ & Phản xạ', href: '/tro-choi', icon: Gamepad2, badge: 'NEW' },
+    { name: 'Từ điển 100K+', href: '/vocabulary', icon: BookCheck, badge: null },
     { name: 'Luyện thi (TOEIC/IELTS)', href: '/kho-de', icon: GraduationCap, badge: null },
-    { name: 'Bảng xếp hạng', href: '/bang-xep-hang', icon: Trophy, badge: 'HOT' },
+    { name: 'Kho bài học (4.400+)', href: '/dictation-shadowing', icon: Video, badge: null },
+    { name: 'Bảng xếp hạng', href: '/bang-xep-hang', icon: Trophy, badge: null },
+    { name: 'Cài đặt', href: '/cai-dat', icon: Settings, badge: null },
   ];
 
   const chineseNavItems = [
     { name: 'Trang chủ HSK', href: '/', icon: Home, badge: null },
+    { name: 'Lộ trình HSK 1–6', href: '/roadmap', icon: Route, badge: 'CHUẨN' },
     { name: 'Shadowing Tiếng Trung', href: '/dictation-shadowing', icon: Headphones, badge: null },
-    { name: 'Từ vựng HSK 1 - 6', href: '/vocabulary', icon: BookCheck, badge: null },
-    { name: 'Luyện tập HSK', href: '/practice', icon: Dumbbell, badge: null },
-    { name: 'Tập viết chữ Hán', href: '/practice/hanzi-writer', icon: PenTool, badge: 'MỚI' },
+    { name: 'Từ vựng HSK 1 - 6', href: '/vocabulary', icon: BookCheck, badge: '5.4K' },
+    { name: 'Tập viết chữ Hán', href: '/practice/hanzi-writer', icon: PenTool, badge: 'A4' },
     { name: 'Pinyin & 214 Bộ Thủ', href: '/practice/pinyin-radicals', icon: BookOpen, badge: null },
     { name: 'Bài khoá HSK Reading', href: '/practice/chinese-reading', icon: Languages, badge: null },
     { name: 'Trò chơi chữ Hán', href: '/tro-choi', icon: Gamepad2, badge: 'HOT' },
     { name: 'Thi thử HSK & HSKK', href: '/kho-de', icon: GraduationCap, badge: null },
     { name: 'Bảng xếp hạng HSK', href: '/bang-xep-hang', icon: Trophy, badge: null },
+    { name: 'Cài đặt', href: '/cai-dat', icon: Settings, badge: null },
   ];
 
   const mainNavItems = isChinese ? chineseNavItems : englishNavItems;
 
-  const isAdmin = Boolean(isAuthenticated && user?.role === 'admin');
-  const isLight = theme === 'light';
-
   return (
     <>
       <aside
-        className={`hidden md:flex flex-col justify-between fixed top-0 left-0 bottom-0 z-40 p-4 transition-all duration-300 ${
+        className={`hidden md:flex flex-col justify-between fixed top-0 left-0 bottom-0 z-40 transition-all duration-300 border-r-2 ${
           isLight
-            ? 'bg-white border-r border-slate-200 text-slate-800 shadow-sm'
-            : 'bg-[#0d131d] border-r border-[#1e2d42] text-slate-100'
+            ? 'bg-[#fdfbf7] border-stone-800 text-stone-800'
+            : 'bg-[#181513] border-stone-700 text-stone-100'
         } ${isSidebarCollapsed ? 'w-20' : 'w-64'}`}
       >
-        <div className="space-y-4">
-          {/* Top Brand Logo Header */}
-          <Link href="/" className="flex items-center gap-3 group px-2 py-1">
-            <MickyMascot size={38} />
-            {!isSidebarCollapsed && (
-              <span className={`text-xl font-black tracking-tight transition-colors ${
-                isLight ? 'text-slate-900' : 'text-white'
+        <div className="flex flex-col h-full overflow-y-auto scrollbar-none">
+          {/* App Brand Logo Header */}
+          <div className={`h-20 px-4 flex items-center gap-3 border-b-2 shrink-0 ${
+            isLight ? 'border-stone-800 bg-[#fffdf9]' : 'border-stone-700 bg-[#1e1a17]'
+          }`}>
+            <Link href="/" className="flex items-center gap-3 group">
+              <div className="w-11 h-11 rounded-xl bg-amber-400 border-2 border-stone-800 flex items-center justify-center text-2xl shadow-[2px_2px_0px_#292524] shrink-0">
+                🐼
+              </div>
+              {!isSidebarCollapsed && (
+                <div className="flex flex-col min-w-0">
+                  <span className="font-cartoon text-lg font-bold text-stone-900 dark:text-white tracking-tight leading-none truncate">
+                    Micky {isChinese ? 'Chinese' : 'English'}
+                  </span>
+                  <span className="font-hand text-xs text-stone-600 dark:text-amber-300/80 leading-tight mt-1 truncate">
+                    {isChinese ? 'Học HSK chuẩn NhaiHSK ✨' : 'Sổ tay nhại giọng vui vẻ ✨'}
+                  </span>
+                </div>
+              )}
+            </Link>
+          </div>
+
+          {/* Daily Target Small Notebook Widget */}
+          {!isSidebarCollapsed && (
+            <div className="p-3">
+              <div className={`p-3 rounded-xl border-2 box-sketch-sm ${
+                isLight ? 'bg-[#fff9ea] border-stone-800' : 'bg-[#221c17] border-stone-700'
               }`}>
-                Micky<span className={isChinese ? 'text-rose-500' : 'text-emerald-500'}>{isChinese ? 'Chinese' : 'English'}</span>
-              </span>
-            )}
-          </Link>
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="font-cartoon text-xs font-bold text-stone-700 dark:text-amber-300 uppercase tracking-wider flex items-center gap-1">
+                    <span>🎯</span> Mục tiêu hôm nay
+                  </span>
+                  <span className="font-cartoon text-xs font-extrabold text-[#c53428] bg-amber-200 dark:bg-amber-950/80 px-1.5 py-0.5 rounded border border-stone-800">
+                    80%
+                  </span>
+                </div>
+                <div className="w-full h-3 rounded-full bg-stone-100 dark:bg-stone-800 border border-stone-800 overflow-hidden p-0.5">
+                  <div className="h-full bg-amber-400 rounded-full border-r border-stone-800" style={{ width: '80%' }} />
+                </div>
+                <div className="text-[11px] text-stone-500 dark:text-stone-400 font-semibold mt-1.5 text-right font-hand">
+                  Đã học: 16/20 phút 👏
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Quick Dual Language Switcher in Sidebar */}
           {!isSidebarCollapsed ? (
-            <div className={`p-1 rounded-2xl border flex items-center justify-between gap-1 transition-colors ${
-              isLight ? 'bg-slate-100 border-slate-300' : 'bg-[#121c2b] border-[#1e2d42]'
-            }`}>
-              <button
-                type="button"
-                onClick={() => setTargetLanguage('en')}
-                className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                  !isChinese
-                    ? 'bg-emerald-600 text-white shadow-xs'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                <span>🇬🇧</span>
-                <span>Tiếng Anh</span>
-              </button>
+            <div className="px-3 pb-2">
+              <div className={`p-1 rounded-xl border-2 flex items-center justify-between gap-1 shadow-[2px_2px_0px_#292524] ${
+                isLight ? 'bg-[#ede4d3] border-stone-800' : 'bg-stone-800 border-stone-700'
+              }`}>
+                <button
+                  type="button"
+                  onClick={() => setTargetLanguage('en')}
+                  className={`flex-1 py-1 px-2 rounded-lg text-xs font-cartoon font-bold flex items-center justify-center gap-1 transition-all cursor-pointer ${
+                    !isChinese
+                      ? 'bg-amber-300 text-stone-900 border border-stone-800 shadow-[1px_1px_0px_#292524]'
+                      : 'text-stone-600 dark:text-stone-300 hover:text-stone-900'
+                  }`}
+                >
+                  <span>🇬🇧</span>
+                  <span>Tiếng Anh</span>
+                </button>
 
-              <button
-                type="button"
-                onClick={() => setTargetLanguage('zh')}
-                className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-black flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
-                  isChinese
-                    ? 'bg-rose-600 text-white shadow-xs'
-                    : 'text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                <span>🇨🇳</span>
-                <span>Tiếng Trung</span>
-              </button>
+                <button
+                  type="button"
+                  onClick={() => setTargetLanguage('zh')}
+                  className={`flex-1 py-1 px-2 rounded-lg text-xs font-cartoon font-bold flex items-center justify-center gap-1 transition-all cursor-pointer ${
+                    isChinese
+                      ? 'bg-[#c53428] text-white border border-stone-800 shadow-[1px_1px_0px_#292524]'
+                      : 'text-stone-600 dark:text-stone-300 hover:text-stone-900'
+                  }`}
+                >
+                  <span>🇨🇳</span>
+                  <span>Tiếng Trung</span>
+                </button>
+              </div>
             </div>
           ) : (
-            <button
-              type="button"
-              onClick={() => setTargetLanguage(isChinese ? 'en' : 'zh')}
-              className={`w-full py-2 rounded-xl text-base flex items-center justify-center transition-all cursor-pointer border ${
-                isChinese
-                  ? 'bg-rose-950/60 border-rose-500 text-white'
-                  : 'bg-emerald-950/60 border-emerald-500 text-white'
-              }`}
-              title={isChinese ? 'Đang chọn Tiếng Trung (Bấm để đổi sang Tiếng Anh)' : 'Đang chọn Tiếng Anh (Bấm để đổi sang Tiếng Trung)'}
-            >
-              {isChinese ? '🇨🇳' : '🇬🇧'}
-            </button>
+            <div className="px-2 py-2">
+              <button
+                type="button"
+                onClick={() => setTargetLanguage(isChinese ? 'en' : 'zh')}
+                className="w-full py-2 rounded-xl text-lg flex items-center justify-center transition-all cursor-pointer border-2 border-stone-800 shadow-[2px_2px_0px_#292524] bg-amber-300"
+                title={isChinese ? 'Chuyển sang Tiếng Anh' : 'Chuyển sang Tiếng Trung'}
+              >
+                {isChinese ? '🇨🇳' : '🇬🇧'}
+              </button>
+            </div>
           )}
 
-          {/* User Card Info Box */}
-          <div className={`rounded-2xl p-3 space-y-2.5 transition-colors ${
-            isLight
-              ? 'bg-slate-50 border border-slate-200 shadow-xs'
-              : 'bg-[#131d2b] border border-[#1e2d42] shadow-inner'
-          }`}>
-            {!isAuthenticated ? (
-              <div className="space-y-2">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-full bg-slate-700/60 text-slate-300 flex items-center justify-center font-bold text-sm shadow-md shrink-0 border border-slate-600">
-                      <User className="w-4 h-4" />
-                    </div>
-                    {!isSidebarCollapsed && (
-                      <div className="leading-tight min-w-0">
-                        <span className={`text-[11px] font-semibold block ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>Tài khoản</span>
-                        <span className={`text-xs font-black block ${isLight ? 'text-slate-900' : 'text-white'}`}>Khách (Guest)</span>
-                      </div>
-                    )}
-                  </div>
-
-                  <button
-                    onClick={toggleSidebar}
-                    className={`p-1 rounded-lg transition-colors cursor-pointer ${
-                      isLight ? 'text-slate-500 hover:text-slate-900 hover:bg-slate-200' : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                    }`}
-                    title={isSidebarCollapsed ? 'Mở rộng' : 'Thu gọn'}
-                  >
-                    {isSidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
-                  </button>
-                </div>
-
-                {!isSidebarCollapsed && (
-                  <Link
-                    href="/login"
-                    className="w-full py-2 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-md flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-                  >
-                    <User className="w-3.5 h-3.5" /> Đăng nhập
-                  </Link>
-                )}
-              </div>
-            ) : (
-              <>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold text-sm shadow-md shrink-0 overflow-hidden border border-emerald-400/40">
-                      {user?.avatar ? (
-                        <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
-                      ) : (
-                        <span>{(user?.fullName || user?.username || user?.name || 'U').charAt(0).toUpperCase()}</span>
-                      )}
-                    </div>
-                    {!isSidebarCollapsed && (
-                      <div className="leading-tight min-w-0">
-                        <div className="flex items-center gap-1">
-                          <span className={`text-[11px] font-semibold block ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>Xin chào</span>
-                          {isAdmin && (
-                            <span className="px-1.5 py-0.2 rounded-sm bg-purple-500/20 text-purple-600 dark:text-purple-300 text-[9px] font-black border border-purple-500/40">
-                              ADMIN
-                            </span>
-                          )}
-                        </div>
-                        <span className={`text-xs font-black truncate max-w-[110px] block ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                          {user?.fullName || user?.username}
-                        </span>
-                      </div>
-                    )}
-                  </div>
-
-                  <button
-                    onClick={toggleSidebar}
-                    className={`p-1 rounded-lg transition-colors cursor-pointer ${
-                      isLight ? 'text-slate-500 hover:text-slate-900 hover:bg-slate-200' : 'text-slate-400 hover:text-white hover:bg-slate-800'
-                    }`}
-                    title={isSidebarCollapsed ? 'Mở rộng' : 'Thu gọn'}
-                  >
-                    {isSidebarCollapsed ? (
-                      <ChevronRight className="w-4 h-4" />
-                    ) : (
-                      <ChevronLeft className="w-4 h-4" />
-                    )}
-                  </button>
-                </div>
-
-                {/* Nút Premium Vàng Cam */}
-                {!isSidebarCollapsed && (
-                  <button
-                    onClick={() => setShowPremiumModal(true)}
-                    className="w-full py-2 px-3 rounded-xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-500 hover:brightness-110 text-slate-950 font-black text-xs shadow-md shadow-amber-500/20 flex items-center justify-between transition-all cursor-pointer"
-                  >
-                    <span className="flex items-center gap-1.5">
-                      <Crown className="w-4 h-4 fill-slate-950" /> Premium
-                    </span>
-                    <ChevronLeft className="w-3.5 h-3.5 text-slate-950/70" />
-                  </button>
-                )}
-
-                {/* 5 Biểu tượng chỉ số Gamification: 💎, 🔥, 📝, 🖥️, 🔔 */}
-                {!isSidebarCollapsed && (
-                  <div className={`flex items-center justify-between pt-2 border-t text-[11px] font-black ${
-                    isLight ? 'border-slate-200 text-slate-600' : 'border-[#1e2d42] text-slate-300'
-                  }`}>
-                    <span className="flex items-center gap-1 text-cyan-500 dark:text-cyan-400" title="Kim cương">
-                      <Gem className="w-3.5 h-3.5 fill-cyan-500 dark:fill-cyan-400" /> {user?.diamonds ?? 0}
-                    </span>
-                    <span className="flex items-center gap-1 text-amber-500 dark:text-amber-400" title="Chuỗi ngày streak">
-                      <Flame className="w-3.5 h-3.5 fill-amber-500 dark:fill-amber-400" /> {user?.streak ?? 0}
-                    </span>
-                    <span className="flex items-center gap-1 text-emerald-600 dark:text-emerald-400" title="Sổ từ vựng">
-                      <FileText className="w-3.5 h-3.5" /> {user?.wordsLearned ?? 0}
-                    </span>
-                    <span className="flex items-center gap-1 text-blue-500 dark:text-blue-400" title="Thời gian học">
-                      <Monitor className="w-3.5 h-3.5" /> {user?.dictationMinutes ?? 0}
-                    </span>
-                    <button
-                      onClick={() => alert('Bạn không có thông báo mới.')}
-                      className={`relative p-0.5 rounded transition-colors cursor-pointer ${
-                        isLight ? 'text-slate-500 hover:text-slate-900' : 'text-slate-400 hover:text-white'
-                      }`}
-                      title="Thông báo"
-                    >
-                      <Bell className="w-3.5 h-3.5" />
-                      <span className={`absolute -top-1 -right-1 w-2 h-2 rounded-full ring-2 ${
-                        isLight ? 'bg-emerald-500 ring-white' : 'bg-white ring-[#131d2b]'
-                      }`} />
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-
-          {/* Main Navigation Links */}
-          <nav className="space-y-1">
+          {/* Navigation Links */}
+          <nav className="flex flex-col gap-1 px-2 py-1">
             {mainNavItems.map((item) => {
               const Icon = item.icon;
               const isActive =
-                pathname === item.href ||
-                (item.href !== '/' && pathname.startsWith(item.href)) ||
-                (item.href === '/vocabulary' && pathname.startsWith('/tuvung')) ||
-                (item.href === '/practice' && pathname.startsWith('/ky-nang'));
+                item.href === '/'
+                  ? pathname === '/'
+                  : pathname?.startsWith(item.href.split('?')[0]);
 
               return (
                 <Link
-                  key={item.href}
+                  key={item.name}
                   href={item.href}
-                  className={`flex items-center justify-between px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all ${
+                  className={`flex items-center gap-2.5 px-3 py-2 rounded-xl font-cartoon transition-all text-xs ${
                     isActive
-                      ? isLight
-                        ? 'bg-emerald-50 text-emerald-700 border border-emerald-300 shadow-xs'
-                        : 'bg-[#152e25] text-emerald-400 border border-emerald-500/30 shadow-sm'
+                      ? isChinese
+                        ? 'bg-[#c53428] text-white font-bold border-2 border-stone-800 shadow-[2px_2px_0px_#292524]'
+                        : 'bg-amber-300 text-stone-900 font-bold border-2 border-stone-800 shadow-[2px_2px_0px_#292524]'
                       : isLight
-                      ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                      : 'text-slate-400 hover:text-slate-100 hover:bg-[#131d2b]'
-                  }`}
-                  title={isSidebarCollapsed ? item.name : undefined}
+                      ? 'text-stone-700 hover:bg-[#faebd7] hover:text-stone-900 border-2 border-transparent hover:border-stone-800'
+                      : 'text-stone-300 hover:bg-stone-800 hover:text-white border-2 border-transparent hover:border-stone-700'
+                  } ${isSidebarCollapsed ? 'justify-center px-2' : ''}`}
                 >
-                  <div className="flex items-center gap-3">
-                    <Icon className={`w-4 h-4 shrink-0 ${
-                      isActive
-                        ? isLight ? 'text-emerald-600' : 'text-emerald-400'
-                        : isLight ? 'text-slate-500' : 'text-slate-400'
-                    }`} />
-                    {!isSidebarCollapsed && <span>{item.name}</span>}
-                  </div>
+                  <Icon className="w-4 h-4 shrink-0" />
+                  {!isSidebarCollapsed && (
+                    <span className="truncate flex-1">{item.name}</span>
+                  )}
                   {!isSidebarCollapsed && item.badge && (
-                    <span className="px-1.5 py-0.5 bg-rose-500 text-white text-[9px] font-black rounded-md tracking-wider">
+                    <span className={`px-1.5 py-0.2 rounded text-[10px] font-black border border-stone-800 ${
+                      item.badge === 'HOT'
+                        ? 'bg-rose-400 text-white'
+                        : 'bg-amber-400 text-stone-900'
+                    }`}>
                       {item.badge}
                     </span>
                   )}
                 </Link>
               );
             })}
+          </nav>
 
-            {/* Admin Video Manager Link */}
-            {isAdmin && (
-              <Link
-                href="/admin/videos"
-                className={`flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all ${
-                  pathname.startsWith('/admin')
-                    ? 'bg-purple-600/30 text-purple-300 border border-purple-500/40 shadow-sm'
-                    : 'text-purple-400 hover:text-purple-200 hover:bg-[#131d2b]'
-                }`}
-                title={isSidebarCollapsed ? 'Quản lý Video (Admin)' : undefined}
-              >
-                <Video className="w-4 h-4 shrink-0 text-purple-400" />
+          {/* User Account / Membership Box */}
+          <div className="mt-auto p-3">
+            <div className={`p-3 rounded-xl border-2 flex items-center justify-between shadow-[2px_2px_0px_#292524] ${
+              isLight ? 'bg-[#fff2db] border-stone-800 text-stone-800' : 'bg-[#241c14] border-stone-700 text-stone-100'
+            }`}>
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-full bg-amber-400 border border-stone-800 flex items-center justify-center font-cartoon font-bold text-stone-900 text-xs shrink-0">
+                  {isAuthenticated && user?.avatar ? (
+                    <img src={user.avatar} alt="User" className="w-full h-full rounded-full object-cover" />
+                  ) : (
+                    '🏆'
+                  )}
+                </div>
                 {!isSidebarCollapsed && (
-                  <div className="flex items-center justify-between w-full">
-                    <span>Quản lý Video</span>
-                    <span className="px-1.5 py-0.5 rounded bg-purple-500/30 text-[9px] font-black text-purple-300">
-                      ADMIN
+                  <div className="flex flex-col min-w-0 leading-tight">
+                    <span className="font-cartoon text-xs font-bold truncate">
+                      {isAuthenticated ? user?.fullName || user?.username : 'Khách học tập'}
+                    </span>
+                    <span className="font-hand text-[11px] text-stone-600 dark:text-stone-400 truncate">
+                      {isAuthenticated ? `Cấp ${Math.floor((user?.wordsLearned || 0) / 10) + 1} • Học viên` : 'Đăng nhập để lưu XP'}
                     </span>
                   </div>
                 )}
-              </Link>
-            )}
-          </nav>
-        </div>
+              </div>
 
-        {/* Bottom Account & Settings Links */}
-        <div className={`space-y-1 pt-3 border-t ${isLight ? 'border-slate-200' : 'border-[#1e2d42]'}`}>
-          <Link
-            href={isAuthenticated ? '/tai-khoan' : '/login'}
-            className={`flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all ${
-              pathname === '/tai-khoan'
-                ? isLight
-                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-300'
-                  : 'bg-emerald-600/30 text-emerald-400 border border-emerald-500/40'
-                : isLight
-                ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                : 'text-slate-400 hover:text-slate-100 hover:bg-[#131d2b]'
-            }`}
-          >
-            <User className={`w-4 h-4 shrink-0 ${isLight ? 'text-slate-500' : 'text-slate-400'}`} />
-            {!isSidebarCollapsed && <span>{isAuthenticated ? 'Tài khoản' : 'Đăng nhập'}</span>}
-          </Link>
-
-          <Link
-            href="/cai-dat"
-            className={`flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold transition-all ${
-              pathname === '/cai-dat'
-                ? isLight
-                  ? 'bg-emerald-50 text-emerald-700 border border-emerald-300'
-                  : 'bg-emerald-600/30 text-emerald-400 border border-emerald-500/40'
-                : isLight
-                ? 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                : 'text-slate-400 hover:text-slate-100 hover:bg-[#131d2b]'
-            }`}
-          >
-            <Settings className={`w-4 h-4 shrink-0 ${isLight ? 'text-slate-500' : 'text-slate-400'}`} />
-            {!isSidebarCollapsed && <span>Cài đặt</span>}
-          </Link>
-
-          {isAuthenticated && (
-            <button
-              type="button"
-              onClick={() => {
-                logout();
-                window.location.reload();
-              }}
-              className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-xs font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-950/20 transition-all cursor-pointer text-left"
-            >
-              <LogOut className="w-4 h-4 shrink-0" />
-              {!isSidebarCollapsed && <span>Đăng xuất</span>}
-            </button>
-          )}
+              <button
+                onClick={toggleSidebar}
+                className="p-1 rounded-lg text-stone-700 dark:text-stone-300 hover:bg-black/10 transition-colors cursor-pointer shrink-0"
+                title={isSidebarCollapsed ? 'Mở rộng' : 'Thu gọn'}
+              >
+                {isSidebarCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
+              </button>
+            </div>
+          </div>
         </div>
       </aside>
 
-      {/* Modal Nâng Cấp VIP */}
       <PremiumModal isOpen={showPremiumModal} onClose={() => setShowPremiumModal(false)} />
     </>
   );
 }
-

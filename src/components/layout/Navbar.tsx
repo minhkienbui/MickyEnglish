@@ -16,11 +16,11 @@ import {
   ChevronDown,
   Shield,
   BookOpen,
+  Route,
 } from 'lucide-react';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useThemeStore } from '@/stores/useThemeStore';
 import { useLanguageStore } from '@/stores/useLanguageStore';
-import MickyMascot from '@/components/common/MickyMascot';
 
 export default function Navbar() {
   const router = useRouter();
@@ -60,123 +60,122 @@ export default function Navbar() {
 
   return (
     <header
-      className={`sticky top-0 z-30 w-full transition-all backdrop-blur-md ${
+      className={`sticky top-0 z-30 w-full transition-all backdrop-blur-md border-b-2 ${
         isLight
-          ? 'bg-white/95 border-b border-slate-200 text-slate-800 shadow-xs'
-          : 'bg-[#0b0f17]/90 border-b border-[#1e2d42] text-slate-100'
+          ? 'bg-[#faf6ee]/90 border-stone-800 text-stone-900 shadow-xs'
+          : 'bg-[#12100e]/90 border-stone-700 text-stone-100'
       } ${isSidebarCollapsed ? 'md:pl-20' : 'md:pl-64'}`}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 h-16 flex items-center justify-between gap-3">
         {/* Mobile Logo Brand */}
         <div className="flex md:hidden items-center gap-2">
-          <MickyMascot size={36} />
-          <Link href="/" className={`text-lg font-black tracking-tight ${isLight ? 'text-slate-900' : 'text-white'}`}>
-            Micky<span className={isChinese ? 'text-rose-500' : 'text-emerald-500'}>{isChinese ? 'Chinese' : 'English'}</span>
+          <div className="w-9 h-9 rounded-xl bg-amber-400 border-2 border-stone-800 flex items-center justify-center text-xl shadow-[2px_2px_0px_#292524] shrink-0">
+            🐼
+          </div>
+          <Link href="/" className="font-cartoon text-lg font-bold tracking-tight text-stone-900 dark:text-white">
+            Micky <span className={isChinese ? 'text-[#c53428]' : 'text-amber-500'}>{isChinese ? 'Chinese' : 'English'}</span>
           </Link>
         </div>
 
         {/* Desktop Quick Search Bar */}
-        <div className={`hidden md:flex items-center gap-2 border px-3.5 py-1.5 rounded-full w-80 text-xs focus-within:border-emerald-500 transition-colors ${
-          isLight ? 'bg-slate-100 border-slate-200 text-slate-800' : 'bg-[#121b28] border-[#1e2d42] text-slate-400'
+        <div className={`hidden md:flex items-center gap-2 border-2 px-3.5 py-1.5 rounded-xl w-72 text-xs focus-within:border-stone-800 shadow-[2px_2px_0px_#292524] transition-colors ${
+          isLight ? 'bg-[#fffdf9] border-stone-800 text-stone-800' : 'bg-[#1e1a17] border-stone-700 text-stone-300'
         }`}>
-          <Search className="w-4 h-4 text-slate-400" />
+          <Search className="w-4 h-4 text-stone-500" />
           <input
             type="text"
-            placeholder={isChinese ? "Tra cứu chữ Hán, Pinyin, bài khoá HSK..." : "Tra cứu từ vựng hoặc bài học bất kỳ..."}
-            className={`bg-transparent border-none outline-none w-full text-xs font-medium ${
-              isLight ? 'text-slate-900 placeholder-slate-400' : 'text-slate-200 placeholder-slate-500'
+            placeholder={isChinese ? "Tra cứu chữ Hán, Pinyin, HSK..." : "Tra cứu từ vựng hoặc bài học..."}
+            className={`bg-transparent border-none outline-none w-full text-xs font-semibold ${
+              isLight ? 'text-stone-900 placeholder-stone-400' : 'text-stone-100 placeholder-stone-500'
             }`}
           />
         </div>
 
-        {/* Right Action Icons */}
-        <div className="flex items-center gap-2 sm:gap-3">
-          {/* Dual Language Switcher Pill */}
-          <div className={`flex items-center p-0.5 sm:p-1 rounded-2xl border transition-colors ${
-            isLight ? 'bg-slate-100 border-slate-300' : 'bg-[#121c2b] border-[#1e2d42]'
+        {/* Dual Language Switcher Pill (NhaiHSK Style) */}
+        <div className="hidden sm:flex items-center">
+          <div className={`inline-flex p-1 rounded-xl border-2 shadow-[2px_2px_0px_#292524] gap-1 ${
+            isLight ? 'bg-[#ede4d3] border-stone-800' : 'bg-stone-800 border-stone-700'
           }`}>
             <button
               type="button"
               onClick={() => setTargetLanguage('en')}
-              className={`px-2 sm:px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-black flex items-center gap-1 transition-all cursor-pointer ${
-                targetLanguage === 'en'
-                  ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'text-slate-400 hover:text-slate-200'
+              className={`px-3 py-1 rounded-lg font-cartoon font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                !isChinese
+                  ? 'bg-amber-300 border border-stone-800 text-stone-900 shadow-[1px_1px_0px_#292524]'
+                  : 'text-stone-600 dark:text-stone-300 hover:text-stone-900'
               }`}
-              title="Chuyển sang Tiếng Anh (TOEIC, IELTS, Oxford)"
             >
               <span>🇬🇧</span>
-              <span className="hidden sm:inline">Tiếng Anh</span>
+              <span>Tiếng Anh (EN)</span>
             </button>
+
             <button
               type="button"
               onClick={() => setTargetLanguage('zh')}
-              className={`px-2 sm:px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-black flex items-center gap-1 transition-all cursor-pointer ${
-                targetLanguage === 'zh'
-                  ? 'bg-rose-600 text-white shadow-xs'
-                  : 'text-slate-400 hover:text-slate-200'
+              className={`px-3 py-1 rounded-lg font-cartoon font-bold text-xs flex items-center gap-1.5 transition-all cursor-pointer ${
+                isChinese
+                  ? 'bg-[#c53428] border border-stone-800 text-white shadow-[1px_1px_0px_#292524]'
+                  : 'text-stone-600 dark:text-stone-300 hover:text-stone-900'
               }`}
-              title="Chuyển sang Tiếng Trung (HSK 3.0 & HSKK)"
             >
               <span>🇨🇳</span>
-              <span className="hidden sm:inline">Tiếng Trung</span>
+              <span>Tiếng Trung (ZH)</span>
             </button>
           </div>
-          {/* Admin Shortcut Button (Chỉ Admin mới thấy) */}
+        </div>
+
+        {/* Right Action Icons & Gamification */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Streak pill */}
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-100 dark:bg-red-950/60 border-2 border-stone-800 dark:border-stone-600 shadow-[2px_2px_0px_#292524]">
+            <span className="text-xs">🔥</span>
+            <span className="font-cartoon text-xs font-extrabold text-[#c53428] dark:text-red-400">
+              {user?.streak ?? 7} ngày
+            </span>
+          </div>
+
+          {/* XP pill */}
+          <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-200 dark:bg-amber-950/60 border-2 border-stone-800 dark:border-stone-600 shadow-[2px_2px_0px_#292524]">
+            <span className="text-xs">⚡</span>
+            <span className="font-cartoon text-xs font-extrabold text-amber-900 dark:text-amber-300">
+              {(user?.diamonds ?? 100) * 10} XP
+            </span>
+          </div>
+
+          {/* Admin shortcut */}
           {isAdmin && (
             <Link
               href="/admin/videos"
-              className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-950/80 border border-purple-500/50 text-purple-300 hover:text-white text-xs font-black transition-all shadow-sm"
-              title="Trang quản lý video bài học (Admin)"
+              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-200 dark:bg-purple-950 border-2 border-stone-800 text-purple-950 dark:text-purple-200 text-xs font-cartoon font-bold shadow-[2px_2px_0px_#292524]"
+              title="Admin Panel"
             >
               <Video className="w-3.5 h-3.5" />
-              <span>Admin Video</span>
+              <span>Admin</span>
             </Link>
           )}
 
-          {/* Dark Mode Toggle */}
+          {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
-            className={`p-2 rounded-xl border transition-colors cursor-pointer ${
+            className={`p-2 rounded-xl border-2 transition-all cursor-pointer shadow-[2px_2px_0px_#292524] btn-press ${
               isLight
-                ? 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200 shadow-xs'
-                : 'bg-[#121b28] border-[#1e2d42] text-slate-300 hover:text-white'
+                ? 'bg-[#fffdf9] border-stone-800 text-stone-800 hover:bg-amber-100'
+                : 'bg-[#1e1a17] border-stone-700 text-amber-300 hover:bg-stone-800'
             }`}
             title="Đổi giao diện Sáng / Tối"
           >
-            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-500" />}
+            {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-600" />}
           </button>
 
-          {/* Diamonds & Streak Display (Chỉ hiển thị khi đã đăng nhập) */}
-          {isAuthenticated && user && (
-            <>
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-cyan-950/60 text-cyan-400 border border-cyan-800 text-xs font-black shadow-xs">
-                <Gem className="w-3.5 h-3.5 fill-cyan-400" />
-                <span>{user.diamonds ?? 100}</span>
-              </div>
-
-              <div className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-950/60 text-emerald-400 border border-emerald-800 text-xs font-black shadow-xs">
-                <Flame className="w-3.5 h-3.5 text-emerald-400 fill-emerald-400 animate-pulse" />
-                <span>{user.streak ?? 1} ngày</span>
-              </div>
-            </>
-          )}
-
-          {/* Phần tài khoản góc phải (Người dùng / Admin / Khách) */}
+          {/* User Account / Login Button */}
           {isAuthenticated && user ? (
             <div className="relative" ref={accountMenuRef}>
               <button
                 type="button"
                 onClick={() => setShowAccountMenu(!showAccountMenu)}
-                className={`flex items-center gap-2 p-1.5 rounded-2xl border transition-all cursor-pointer ${
-                  showAccountMenu
-                    ? 'border-emerald-500 ring-2 ring-emerald-500/20 bg-[#121c2b]'
-                    : isLight
-                    ? 'border-slate-200 hover:bg-slate-100'
-                    : 'border-[#1e2d42] hover:bg-[#121c2b]'
-                }`}
+                className="flex items-center gap-2 p-1.5 rounded-xl border-2 border-stone-800 bg-amber-300 shadow-[2px_2px_0px_#292524] btn-press transition-all cursor-pointer"
               >
-                <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black text-xs shadow-md overflow-hidden border border-emerald-400/40 shrink-0">
+                <div className="w-7 h-7 rounded-lg bg-stone-900 text-white flex items-center justify-center font-cartoon font-bold text-xs overflow-hidden shrink-0">
                   {user.avatar ? (
                     <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
                   ) : (
@@ -185,130 +184,81 @@ export default function Navbar() {
                 </div>
 
                 <div className="hidden sm:flex flex-col items-start text-left leading-tight pr-1">
-                  <span className={`font-black text-xs truncate max-w-[100px] ${isLight ? 'text-slate-900' : 'text-slate-100'}`}>
+                  <span className="font-cartoon font-bold text-xs text-stone-900 truncate max-w-[90px]">
                     {user.fullName || user.username}
-                  </span>
-                  <span className={`text-[10px] font-bold ${isAdmin ? 'text-purple-400' : 'text-emerald-500'}`}>
-                    {isAdmin ? 'Quản trị viên' : 'Học viên'}
                   </span>
                 </div>
 
-                <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${showAccountMenu ? 'rotate-180 text-emerald-400' : ''}`} />
+                <ChevronDown className={`w-3.5 h-3.5 text-stone-900 transition-transform ${showAccountMenu ? 'rotate-180' : ''}`} />
               </button>
 
               {/* DROPDOWN MENU TÀI KHOẢN */}
               {showAccountMenu && (
                 <div
-                  className={`absolute right-0 mt-2 w-64 rounded-3xl border shadow-2xl p-2.5 space-y-1.5 animate-fade-in z-50 ${
+                  className={`absolute right-0 mt-2 w-64 rounded-2xl border-2 border-stone-800 shadow-[4px_4px_0px_#292524] p-3 space-y-2 animate-fade-in z-50 ${
                     isLight
-                      ? 'bg-white border-slate-200 text-slate-800'
-                      : 'bg-[#111a28] border-[#1e2d42] text-slate-100'
+                      ? 'bg-[#fffdf9] text-stone-900'
+                      : 'bg-[#1e1a17] text-stone-100'
                   }`}
                 >
-                  {/* User Profile Header */}
-                  <div className={`p-3 rounded-2xl border ${
-                    isLight ? 'bg-slate-50 border-slate-200' : 'bg-[#142033] border-[#1e2d42]'
+                  <div className={`p-2.5 rounded-xl border-2 border-stone-800 ${
+                    isLight ? 'bg-amber-100/60' : 'bg-stone-800/80'
                   }`}>
-                    <div className="flex items-center gap-2.5">
-                      <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-black text-sm shadow-md overflow-hidden border border-emerald-400/40 shrink-0">
-                        {user.avatar ? (
-                          <img src={user.avatar} alt="Avatar" className="w-full h-full object-cover" />
-                        ) : (
-                          <span>{(user.fullName || user.username || 'U').charAt(0).toUpperCase()}</span>
-                        )}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-1.5">
-                          <p className={`font-black text-xs truncate ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                            {user.fullName || user.username}
-                          </p>
-                          {isAdmin && (
-                            <span className="px-1.5 py-0.2 rounded bg-purple-500/20 text-purple-400 text-[9px] font-black border border-purple-500/40">
-                              ADMIN
-                            </span>
-                          )}
-                        </div>
-                        <p className="text-[11px] text-slate-400 truncate">{user.email || 'hocvien@mickyenglish.com'}</p>
-                      </div>
-                    </div>
+                    <p className="font-cartoon font-bold text-xs truncate">
+                      {user.fullName || user.username}
+                    </p>
+                    <p className="font-hand text-xs text-stone-600 dark:text-stone-400 truncate">
+                      {user.email || 'hocvien@mickyenglish.com'}
+                    </p>
                   </div>
 
-                  {/* Menu Items */}
-                  <div className="space-y-0.5 pt-1">
+                  <div className="space-y-1 font-cartoon text-xs">
                     <Link
                       href="/tai-khoan"
                       onClick={() => setShowAccountMenu(false)}
-                      className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-colors ${
-                        isLight ? 'hover:bg-slate-100 text-slate-700' : 'hover:bg-[#16253c] text-slate-200'
-                      }`}
+                      className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-amber-200 dark:hover:bg-stone-800 transition-colors"
                     >
-                      <User className="w-4 h-4 text-emerald-400" />
+                      <User className="w-4 h-4 text-amber-600" />
                       <span>Thông tin tài khoản</span>
+                    </Link>
+
+                    <Link
+                      href="/roadmap"
+                      onClick={() => setShowAccountMenu(false)}
+                      className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-amber-200 dark:hover:bg-stone-800 transition-colors"
+                    >
+                      <Route className="w-4 h-4 text-teal-600" />
+                      <span>Lộ trình học tập</span>
                     </Link>
 
                     <Link
                       href="/cai-dat"
                       onClick={() => setShowAccountMenu(false)}
-                      className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold transition-colors ${
-                        isLight ? 'hover:bg-slate-100 text-slate-700' : 'hover:bg-[#16253c] text-slate-200'
-                      }`}
+                      className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-amber-200 dark:hover:bg-stone-800 transition-colors"
                     >
-                      <Settings className="w-4 h-4 text-blue-400" />
-                      <span>Cài đặt giao diện & học tập</span>
+                      <Settings className="w-4 h-4 text-blue-600" />
+                      <span>Cài đặt hệ thống</span>
                     </Link>
 
-                    {/* Admin Portal Shortcut */}
-                    {isAdmin && (
-                      <Link
-                        href="/admin"
-                        onClick={() => setShowAccountMenu(false)}
-                        className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-purple-400 transition-colors ${
-                          isLight ? 'hover:bg-purple-50' : 'hover:bg-purple-950/30'
-                        }`}
-                      >
-                        <Shield className="w-4 h-4" />
-                        <span>Trang Quản trị Hệ thống</span>
-                      </Link>
-                    )}
+                    <button
+                      onClick={handleLogout}
+                      className="w-full flex items-center gap-2 px-3 py-2 rounded-xl text-[#c53428] hover:bg-red-100 dark:hover:bg-red-950/40 transition-colors cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Đăng xuất</span>
+                    </button>
                   </div>
-
-                  {/* Divider */}
-                  <div className={`border-t my-1 ${isLight ? 'border-slate-200' : 'border-[#1e2d42]'}`} />
-
-                  {/* Logout Action Button */}
-                  <button
-                    type="button"
-                    onClick={handleLogout}
-                    className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-black text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors cursor-pointer text-left"
-                  >
-                    <LogOut className="w-4 h-4 text-rose-400" />
-                    <span>Đăng xuất</span>
-                  </button>
                 </div>
               )}
             </div>
           ) : (
-            /* Khách (Guest) - Các nút Đăng nhập & Đăng ký */
-            <div className="flex items-center gap-2">
-              <Link
-                href="/login"
-                className="btn-micky-primary text-xs px-3.5 py-2 font-black rounded-xl shadow-md"
-              >
-                <User className="w-4 h-4" />
-                <span>Đăng nhập</span>
-              </Link>
-
-              <Link
-                href="/register"
-                className={`hidden sm:inline-flex text-xs font-bold px-3 py-2 rounded-xl border transition-colors ${
-                  isLight
-                    ? 'border-slate-300 hover:bg-slate-100 text-slate-700'
-                    : 'border-[#1e2d42] hover:bg-[#121c2b] text-slate-300'
-                }`}
-              >
-                <span>Đăng ký</span>
-              </Link>
-            </div>
+            <Link
+              href="/login"
+              className="px-4 py-1.5 rounded-xl bg-stone-900 text-amber-200 font-cartoon font-bold text-xs hover:bg-[#c53428] border-2 border-stone-800 shadow-[2px_2px_0px_#292524] btn-press transition-all flex items-center gap-1.5"
+            >
+              <User className="w-3.5 h-3.5" />
+              <span>Đăng nhập</span>
+            </Link>
           )}
         </div>
       </div>

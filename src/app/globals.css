@@ -1,15 +1,112 @@
 @import "tailwindcss";
 
-html, body {
-  background-color: #0b0f17 !important;
-  color: #f1f5f9 !important;
-  font-family: 'Nunito', system-ui, -apple-system, sans-serif;
-  min-height: 100vh;
+@variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  html, body {
+    background-color: #fbf7ee;
+    color: #292524;
+    font-family: 'Nunito', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    min-height: 100vh;
+  }
+
+  html.dark, body.dark {
+    background-color: #12100e !important;
+    color: #f5f5f4 !important;
+  }
 }
 
-html.light, body.light {
-  background-color: #f8fafc !important;
-  color: #0f172a !important;
+/* Warm Notebook Typography */
+.font-cartoon {
+  font-family: 'Fredoka', 'Nunito', sans-serif;
+}
+
+.font-hand {
+  font-family: 'Patrick Hand', cursive, sans-serif;
+}
+
+.font-body {
+  font-family: 'Nunito', 'Plus Jakarta Sans', sans-serif;
+}
+
+/* Hand-drawn notebook squared/graph paper grid matching NhaiHSK */
+.notebook-grid {
+  background-color: #fbf7ee;
+  background-image:
+    linear-gradient(to right, rgba(68, 55, 45, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(68, 55, 45, 0.08) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+.dark .notebook-grid,
+html.dark .notebook-grid,
+body.dark .notebook-grid,
+html.dark body {
+  background-color: #12100e !important;
+  background-image:
+    linear-gradient(to right, rgba(255, 240, 220, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 240, 220, 0.04) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+
+/* Retro cartoon solid offset shadow (Hard stroke & 3D card press) */
+.box-sketch {
+  border: 2px solid #292524;
+  box-shadow: 4px 4px 0px #292524;
+}
+
+.dark .box-sketch {
+  border: 2px solid #57534e;
+  box-shadow: 4px 4px 0px #000000;
+}
+
+.box-sketch-sm {
+  border: 2px solid #292524;
+  box-shadow: 2.5px 2.5px 0px #292524;
+}
+
+.dark .box-sketch-sm {
+  border: 2px solid #57534e;
+  box-shadow: 2.5px 2.5px 0px #000000;
+}
+
+.box-sketch-lg {
+  border: 2.5px solid #292524;
+  box-shadow: 5px 5px 0px #292524;
+}
+
+.dark .box-sketch-lg {
+  border: 2.5px solid #57534e;
+  box-shadow: 5px 5px 0px #000000;
+}
+
+.btn-press:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1.5px 1.5px 0px #292524;
+}
+
+.dark .btn-press:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1.5px 1.5px 0px #000000;
+}
+
+/* Noise/chalkboard texture overlay for vermilion cards */
+.paper-texture-red {
+  background-color: #c53428;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 0);
+  background-size: 8px 8px;
+}
+
+/* Sticker Washi Tape styling */
+.washi-tape-yellow {
+  background-color: #f6b73c;
+  border: 1.5px solid #292524;
+  box-shadow: 2px 2px 0px rgba(41, 37, 36, 0.3);
+}
+
+.dark .washi-tape-yellow {
+  border: 1.5px solid #000000;
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.5);
 }
 
 /* Custom UI Components for MickyNgoaiQuoc Dark Theme */
@@ -82,37 +179,54 @@ html.light, body.light {
 /* Speech bubble tooltip for Mascot */
 .speech-bubble {
   position: relative;
-  background: #201712;
-  border: 2px solid #b85e14;
+  background: #fff9ea;
+  border: 2px solid #292524;
   border-radius: 1.25rem;
   padding: 0.875rem 1.25rem;
-  color: #ffc58d;
+  color: #292524;
   font-size: 0.8125rem;
   font-weight: 700;
-  max-width: 260px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  max-width: 280px;
+  box-shadow: 3px 3px 0px #292524;
 }
+
+.dark .speech-bubble {
+  background: #201712;
+  border: 2px solid #b85e14;
+  color: #ffc58d;
+  box-shadow: 3px 3px 0px #000000;
+}
+
 .speech-bubble::after {
   content: '';
   position: absolute;
-  bottom: -10px;
+  bottom: -9px;
   right: 40px;
-  border-width: 10px 10px 0;
+  border-width: 9px 9px 0;
   border-style: solid;
-  border-color: #201712 transparent;
+  border-color: #fff9ea transparent;
   display: block;
   width: 0;
 }
+
+.dark .speech-bubble::after {
+  border-color: #201712 transparent;
+}
+
 .speech-bubble::before {
   content: '';
   position: absolute;
-  bottom: -13px;
+  bottom: -12px;
   right: 38px;
-  border-width: 12px 12px 0;
+  border-width: 11px 11px 0;
   border-style: solid;
-  border-color: #b85e14 transparent;
+  border-color: #292524 transparent;
   display: block;
   width: 0;
+}
+
+.dark .speech-bubble::before {
+  border-color: #b85e14 transparent;
 }
 
 /* Error Shake Animation for Word Order and Validation */

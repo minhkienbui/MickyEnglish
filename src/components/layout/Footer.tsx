@@ -1,8 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import MickyMascot from '@/components/common/MickyMascot';
 import { useThemeStore } from '@/stores/useThemeStore';
+import { useLanguageStore } from '@/stores/useLanguageStore';
 
 export function Footer() {
   return <MickyFooter />;
@@ -10,47 +10,51 @@ export function Footer() {
 
 export default function MickyFooter() {
   const { theme } = useThemeStore();
+  const { targetLanguage } = useLanguageStore();
   const isLight = theme === 'light';
+  const isChinese = targetLanguage === 'zh';
 
   return (
-    <footer className={`border-t mt-16 py-10 pb-24 md:pb-10 transition-colors ${
-      isLight ? 'bg-white border-slate-200 text-slate-700' : 'bg-[#0b0f17] border-[#1e2d42] text-slate-300'
+    <footer className={`border-t-2 mt-16 py-10 pb-24 md:pb-10 transition-colors ${
+      isLight ? 'bg-[#fffdf9] border-stone-800 text-stone-800' : 'bg-[#181513] border-stone-700 text-stone-300'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Left Brand info */}
           <div className="flex flex-col items-center md:items-start gap-2">
-            <Link href="/" className="flex items-center gap-2">
-              <MickyMascot size={32} />
-              <span className={`text-lg font-black ${isLight ? 'text-slate-900' : 'text-white'}`}>
-                Micky<span className="text-emerald-500">English</span>
+            <Link href="/" className="flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-amber-400 border-2 border-stone-800 flex items-center justify-center text-lg shadow-[1.5px_1.5px_0px_#292524] shrink-0">
+                🐼
+              </div>
+              <span className="font-cartoon text-lg font-bold text-stone-900 dark:text-white">
+                Micky <span className={isChinese ? 'text-[#c53428]' : 'text-amber-500'}>{isChinese ? 'Chinese' : 'English'}</span>
               </span>
             </Link>
-            <p className={`text-xs text-center md:text-left max-w-sm ${isLight ? 'text-slate-500' : 'text-slate-400'}`}>
-              Nền tảng tự học tiếng Anh đa kỹ năng dành cho người Việt – Luyện Nghe, Nói, Đọc, Viết & Ôn thi TOEIC, IELTS, VSTEP mỗi ngày.
+            <p className="font-hand text-sm text-center md:text-left max-w-sm text-stone-600 dark:text-stone-400">
+              {isChinese
+                ? 'Sổ tay học tiếng Trung HSK 3.0 & HSKK phản xạ tự nhiên – Vở tập viết chữ Hán, phát âm Pinyin & luyện thi mỗi ngày.'
+                : 'Sổ tay tự học tiếng Anh đa kỹ năng dành cho người Việt – Luyện Nghe, Nói, Nhại giọng & Ôn thi TOEIC, IELTS mỗi ngày.'}
             </p>
           </div>
 
           {/* Navigation links */}
-          <div className={`flex flex-wrap justify-center gap-6 text-xs font-bold ${
-            isLight ? 'text-slate-600' : 'text-slate-400'
-          }`}>
-            <Link href="/dictation-shadowing" className="hover:text-emerald-500 transition-colors">Luyện nghe</Link>
-            <Link href="/tuvung" className="hover:text-emerald-500 transition-colors">Từ vựng</Link>
-            <Link href="/ky-nang" className="hover:text-emerald-500 transition-colors">Kỹ năng</Link>
-            <Link href="/kho-de" className="hover:text-emerald-500 transition-colors">Kho đề thi</Link>
-            <Link href="/tinh-nang" className="hover:text-emerald-500 transition-colors">Tính năng</Link>
-            <Link href="/huong-dan" className="hover:text-emerald-500 transition-colors">Hướng dẫn</Link>
-            <Link href="/privacy" className="hover:text-emerald-500 transition-colors">Bảo mật</Link>
-            <Link href="/terms" className="hover:text-emerald-500 transition-colors">Điều khoản</Link>
+          <div className="flex flex-wrap justify-center gap-5 text-xs font-cartoon font-bold">
+            <Link href="/roadmap" className="hover:text-[#c53428] transition-colors">Lộ trình học</Link>
+            <Link href="/dictation-shadowing" className="hover:text-[#c53428] transition-colors">Luyện nghe nhại</Link>
+            <Link href="/vocabulary" className="hover:text-[#c53428] transition-colors">Kho từ vựng</Link>
+            <Link href="/practice" className="hover:text-[#c53428] transition-colors">Trung tâm luyện tập</Link>
+            <Link href="/tro-choi" className="hover:text-[#c53428] transition-colors">Đấu trường trò chơi</Link>
+            <Link href="/kho-de" className="hover:text-[#c53428] transition-colors">Kho đề thi</Link>
+            <Link href="/privacy" className="hover:text-[#c53428] transition-colors">Bảo mật</Link>
+            <Link href="/terms" className="hover:text-[#c53428] transition-colors">Điều khoản</Link>
           </div>
         </div>
 
-        <div className={`border-t mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs gap-4 ${
-          isLight ? 'border-slate-200 text-slate-500' : 'border-[#1e2d42] text-slate-500'
-        }`}>
-          <p>© 2026 MickyEnglish. Tất cả quyền được bảo lưu.</p>
-          <p className="text-emerald-500 font-semibold">Tối ưu trải nghiệm Sáng & Tối (Light & Dark Mode)</p>
+        <div className="border-t border-stone-300 dark:border-stone-800 mt-8 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs font-hand text-stone-500 dark:text-stone-400 gap-3">
+          <p>© 2026 Micky Language. Học vui vẻ • Tự nhiên • Không áp lực.</p>
+          <p className="font-cartoon font-bold text-[#c53428] dark:text-amber-300">
+            Phong cách Sổ Tay Hoạt Hình (Warm Notebook Study System)
+          </p>
         </div>
       </div>
     </footer>

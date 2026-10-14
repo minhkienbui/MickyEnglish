@@ -56,8 +56,8 @@ export default function ClientLayoutWrapper({ children }: { children: React.Reac
     }
   }, [isHydrated, isAuthenticated, pathname, router]);
 
-  const bgWrapper = theme === 'light' ? 'bg-[#f8fafc] text-slate-900' : 'bg-[#0b0f17] text-slate-100';
-  const mainBg = theme === 'light' ? 'bg-[#f8fafc]' : 'bg-[#0b0f17]';
+  const bgWrapper = theme === 'light' ? 'notebook-grid bg-[#faf6ee] text-stone-900' : 'notebook-grid bg-[#12100e] text-stone-100';
+  const mainBg = theme === 'light' ? 'bg-[#faf6ee]/70' : 'bg-[#12100e]/80';
 
   // Chờ đọc trạng thái đăng nhập đã lưu trong máy
   if (!isHydrated) {
