@@ -1,3 +1,5 @@
+import radicals214Data from './chinese/radicals214.json';
+
 export interface PinyinItem {
   symbol: string;
   ipa: string;
@@ -10,6 +12,7 @@ export interface PinyinItem {
 export interface RadicalItem {
   id: number;
   radical: string;
+  baseRadical?: string;
   strokes: number;
   pinyin: string;
   sinoVietnamese: string;
@@ -107,52 +110,8 @@ export const strokeRules: StrokeRule[] = [
   },
 ];
 
-// Bộ thủ thường gặp nhất (Top 50 bộ thủ cốt lõi cấu tạo 80% chữ Hán)
-export const topChineseRadicals: RadicalItem[] = [
-  { id: 1, radical: '一', strokes: 1, pinyin: 'yī', sinoVietnamese: 'Nhất', meaning: 'Một, số một, khởi đầu', exampleWords: ['七', '三', '下'] },
-  { id: 2, radical: '丨', strokes: 1, pinyin: 'gǔn', sinoVietnamese: 'Cổn', meaning: 'Nét sổ thẳng đứng từ trên xuống', exampleWords: ['中', '丰', '串'] },
-  { id: 3, radical: '丶', strokes: 1, pinyin: 'zhǔ', sinoVietnamese: 'Chủ', meaning: 'Dấu chấm, điểm xuyết', exampleWords: ['丸', '丹', '主'] },
-  { id: 4, radical: '丿', strokes: 1, pinyin: 'piě', sinoVietnamese: 'Phiệt', meaning: 'Nét phẩy, uốn cong sang trái', exampleWords: ['九', '久', '乏'] },
-  { id: 5, radical: '乙', strokes: 1, pinyin: 'yǐ', sinoVietnamese: 'Ất', meaning: 'Can thứ 2 trong thiên can', exampleWords: ['九', '乞', '也'] },
-  { id: 6, radical: '亅', strokes: 1, pinyin: 'jué', sinoVietnamese: 'Quyết', meaning: 'Nét móc thẳng đứng', exampleWords: ['了', '矛', '事'] },
-  { id: 7, radical: '二', strokes: 2, pinyin: 'èr', sinoVietnamese: 'Nhị', meaning: 'Hai, số 2', exampleWords: ['于', '云', '互'] },
-  { id: 9, radical: '人 (亻)', strokes: 2, pinyin: 'rén', sinoVietnamese: 'Nhân', meaning: 'Người, con người, hành vi con người', exampleWords: ['你', '他', '休', '们'] },
-  { id: 10, radical: '儿', strokes: 2, pinyin: 'ér', sinoVietnamese: 'Nhi', meaning: 'Trẻ con, con người bước đi', exampleWords: ['先', '光', '免'] },
-  { id: 12, radical: '八', strokes: 2, pinyin: 'bā', sinoVietnamese: 'Bát', meaning: 'Tám, số 8, phân tách', exampleWords: ['公', '六', '分'] },
-  { id: 13, radical: '冂', strokes: 2, pinyin: 'jiōng', sinoVietnamese: 'Quynh', meaning: 'Vùng đất xa xôi, biên giới rộng', exampleWords: ['同', '周', '冈'] },
-  { id: 15, radical: '冫', strokes: 2, pinyin: 'bīng', sinoVietnamese: 'Băng', meaning: 'Băng tuyết, giá lạnh', exampleWords: ['冷', '冻', '冰', '凉'] },
-  { id: 18, radical: '刀 (刂)', strokes: 2, pinyin: 'dāo', sinoVietnamese: 'Đao', meaning: 'Con dao, vũ khí chém cắt', exampleWords: ['分', '别', '利', '切'] },
-  { id: 19, radical: '力', strokes: 2, pinyin: 'lì', sinoVietnamese: 'Lực', meaning: 'Sức mạnh, cơ bắp, lao động', exampleWords: ['动', '努', '勇', '加'] },
-  { id: 24, radical: '十', strokes: 2, pinyin: 'shí', sinoVietnamese: 'Thập', meaning: 'Mười, số 10, vẹn toàn', exampleWords: ['千', '升', '午'] },
-  { id: 30, radical: '口', strokes: 3, pinyin: 'kǒu', sinoVietnamese: 'Khẩu', meaning: 'Miệng, lời nói, ăn uống', exampleWords: ['吃', '喝', '叫', '问'] },
-  { id: 31, radical: '囗', strokes: 3, pinyin: 'wéi', sinoVietnamese: 'Vi', meaning: 'Vây quanh, bao bọc kín 4 góc', exampleWords: ['国', '回', '因', '圆'] },
-  { id: 32, radical: '土', strokes: 3, pinyin: 'tǔ', sinoVietnamese: 'Thổ', meaning: 'Đất, đất đai, bùn đất', exampleWords: ['地', '在', '场', '城'] },
-  { id: 37, radical: '大', strokes: 3, pinyin: 'dà', sinoVietnamese: 'Đại', meaning: 'To lớn, người dang tay', exampleWords: ['太', '天', '头', '夫'] },
-  { id: 38, radical: '女', strokes: 3, pinyin: 'nǚ', sinoVietnamese: 'Nữ', meaning: 'Phụ nữ, con gái, giới nữ', exampleWords: ['好', '妈', '妹', '姐'] },
-  { id: 39, radical: '子', strokes: 3, pinyin: 'zǐ', sinoVietnamese: 'Tử', meaning: 'Đứa con, con nít', exampleWords: ['字', '学', '孩', '孙'] },
-  { id: 40, radical: '宀', strokes: 3, pinyin: 'mián', sinoVietnamese: 'Miên', meaning: 'Mái nhà, che chở', exampleWords: ['家', '安', '室', '定'] },
-  { id: 46, radical: '山', strokes: 3, pinyin: 'shān', sinoVietnamese: 'Sơn', meaning: 'Núi non, ngọn núi', exampleWords: ['岁', '岛', '岭', '峰'] },
-  { id: 60, radical: '彳', strokes: 3, pinyin: 'chì', sinoVietnamese: 'Xích', meaning: 'Bước chân trái, đường đi', exampleWords: ['行', '很', '律', '微'] },
-  { id: 61, radical: '心 (忄)', strokes: 4, pinyin: 'xīn', sinoVietnamese: 'Tâm', meaning: 'Trái tim, tình cảm, suy nghĩ', exampleWords: ['想', '忘', '怕', '快'] },
-  { id: 64, radical: '手 (扌)', strokes: 4, pinyin: 'shǒu', sinoVietnamese: 'Thủ', meaning: 'Bàn tay, động tác của tay', exampleWords: ['打', '找', '提', '拿'] },
-  { id: 72, radical: '日', strokes: 4, pinyin: 'rì', sinoVietnamese: 'Nhật', meaning: 'Mặt trời, ban ngày, thời gian', exampleWords: ['时', '明', '早', '昨'] },
-  { id: 74, radical: '月', strokes: 4, pinyin: 'yuè', sinoVietnamese: 'Nguyệt', meaning: 'Mặt trăng, thịt, cơ thể', exampleWords: ['朋', '期', '服', '脚'] },
-  { id: 75, radical: '木', strokes: 4, pinyin: 'mù', sinoVietnamese: 'Mộc', meaning: 'Cây cối, gỗ', exampleWords: ['林', '杯', '校', '本'] },
-  { id: 85, radical: '水 (氵)', strokes: 4, pinyin: 'shuǐ', sinoVietnamese: 'Thủy', meaning: 'Nước, chất lỏng, sông hồ', exampleWords: ['河', '海', '洗', '汉'] },
-  { id: 86, radical: '火 (灬)', strokes: 4, pinyin: 'huǒ', sinoVietnamese: 'Hỏa', meaning: 'Lửa, nhiệt độ, nấu nướng', exampleWords: ['热', '点', '黑', '照'] },
-  { id: 96, radical: '玉 (王)', strokes: 5, pinyin: 'yù', sinoVietnamese: 'Ngọc', meaning: 'Đá quý, vua chúa, quý giá', exampleWords: ['玩', '现', '理', '环'] },
-  { id: 104, radical: '疒', strokes: 5, pinyin: 'nè', sinoVietnamese: 'Nạch', meaning: 'Bệnh tật, đau ốm', exampleWords: ['病', '疼', '痛', '瘦'] },
-  { id: 109, radical: '目', strokes: 5, pinyin: 'mù', sinoVietnamese: 'Mục', meaning: 'Mắt, nhìn ngắm', exampleWords: ['眼', '看', '睡', '睛'] },
-  { id: 112, radical: '石', strokes: 5, pinyin: 'shí', sinoVietnamese: 'Thạch', meaning: 'Hòn đá, khoáng vật', exampleWords: ['破', '码', '确', '硬'] },
-  { id: 115, radical: '禾', strokes: 5, pinyin: 'hé', sinoVietnamese: 'Hòa', meaning: 'Cây lúa, hoa màu', exampleWords: ['秋', '科', '和', '种'] },
-  { id: 120, radical: '糸 (纟)', strokes: 6, pinyin: 'mì', sinoVietnamese: 'Mịch', meaning: 'Sợi tơ, dây nhợ, vải vóc', exampleWords: ['红', '绿', '给', '结'] },
-  { id: 130, radical: '肉 (⺼)', strokes: 6, pinyin: 'ròu', sinoVietnamese: 'Nhục', meaning: 'Thịt, bắp thịt cơ thể', exampleWords: ['肌', '肚', '肩', '肥'] },
-  { id: 140, radical: '艸 (艹)', strokes: 6, pinyin: 'cǎo', sinoVietnamese: 'Thảo', meaning: 'Cỏ cây, thảo mộc, hoa lá', exampleWords: ['茶', '草', '花', '药'] },
-  { id: 149, radical: '言 (讠)', strokes: 7, pinyin: 'yán', sinoVietnamese: 'Ngôn', meaning: 'Lời nói, ngôn ngữ', exampleWords: ['话', '说', '语', '读'] },
-  { id: 162, radical: '辵 (辶)', strokes: 7, pinyin: 'chuò', sinoVietnamese: 'Xước', meaning: 'Chân bước đi, di chuyển', exampleWords: ['进', '这', '道', '运'] },
-  { id: 167, radical: '金 (钅)', strokes: 8, pinyin: 'jīn', sinoVietnamese: 'Kim', meaning: 'Kim loại, tiền bạc', exampleWords: ['钱', '银', '铁', '钟'] },
-  { id: 169, radical: '门 (門)', strokes: 8, pinyin: 'mén', sinoVietnamese: 'Môn', meaning: 'Cửa ra vào, cổng chào', exampleWords: ['间', '开', '关', '闭'] },
-  { id: 172, radical: '隹', strokes: 8, pinyin: 'zhuī', sinoVietnamese: 'Chuy', meaning: 'Chim đuôi ngắn', exampleWords: ['难', '谁', '集', '准'] },
-  { id: 173, radical: '雨', strokes: 8, pinyin: 'yǔ', sinoVietnamese: 'Vũ', meaning: 'Mưa, hiện tượng thời tiết', exampleWords: ['雪', '零', '雷', '需'] },
-  { id: 184, radical: '食 (饣)', strokes: 9, pinyin: 'shí', sinoVietnamese: 'Thực', meaning: 'Thức ăn, ẩm thực', exampleWords: ['饭', '饮', '饱', '饿'] },
-];
+// TOÀN BỘ 214 BỘ THỦ KHANG HY (CHUẨN HỌC BỘ THỦ TIẾNG TRUNG NHAI HSK)
+export const allChineseRadicals214: RadicalItem[] = radicals214Data as RadicalItem[];
+
+// Giữ lại tên export cũ để tương thích 100% với các component
+export const topChineseRadicals: RadicalItem[] = allChineseRadicals214;

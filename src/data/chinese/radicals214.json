@@ -1,0 +1,3391 @@
+[
+  {
+    "id": 1,
+    "radical": "一",
+    "baseRadical": "一",
+    "traditional": "",
+    "strokes": 1,
+    "pinyin": "yī",
+    "sinoVietnamese": "Nhất",
+    "meaning": "Một, thứ nhất, khởi đầu các số đo, thuộc về dương, bao quát hết thảy. 丨 Cổn",
+    "exampleWords": [
+      "七",
+      "三",
+      "下",
+      "不"
+    ]
+  },
+  {
+    "id": 2,
+    "radical": "丨",
+    "baseRadical": "丨",
+    "traditional": "",
+    "strokes": 1,
+    "pinyin": "gǔn",
+    "sinoVietnamese": "Cổn",
+    "meaning": "Nét sổ, đường thẳng đứng trên thông xuống dưới. 丶 Chủ",
+    "exampleWords": [
+      "中",
+      "丰",
+      "串",
+      "临"
+    ]
+  },
+  {
+    "id": 3,
+    "radical": "丶",
+    "baseRadical": "丶",
+    "traditional": "",
+    "strokes": 1,
+    "pinyin": "zhǔ",
+    "sinoVietnamese": "Chủ",
+    "meaning": "Nét chấm, một điểm. 丿 Phiệt",
+    "exampleWords": [
+      "丸",
+      "丹",
+      "主",
+      "凡"
+    ]
+  },
+  {
+    "id": 4,
+    "radical": "丿",
+    "baseRadical": "丿",
+    "traditional": "",
+    "strokes": 1,
+    "pinyin": "piě",
+    "sinoVietnamese": "Phiệt",
+    "meaning": "Nét phẩy, nét nghiêng từ phải qua trái, chỉ động tác.",
+    "exampleWords": [
+      "九",
+      "久",
+      "乏",
+      "乎"
+    ]
+  },
+  {
+    "id": 5,
+    "radical": "乙",
+    "baseRadical": "乙",
+    "traditional": "",
+    "strokes": 1,
+    "pinyin": "yǐ",
+    "sinoVietnamese": "Ất",
+    "meaning": "Can thứ hai trong mười can (Giáp, Ất, Bính, Đinh…). 亅 Quyết",
+    "exampleWords": [
+      "也",
+      "乞",
+      "乾",
+      "乱"
+    ]
+  },
+  {
+    "id": 6,
+    "radical": "亅",
+    "baseRadical": "亅",
+    "traditional": "",
+    "strokes": 1,
+    "pinyin": "jué",
+    "sinoVietnamese": "Quyết",
+    "meaning": "Nét sổ có móc, cái móc.",
+    "exampleWords": [
+      "了",
+      "矛",
+      "事",
+      "于"
+    ]
+  },
+  {
+    "id": 7,
+    "radical": "二",
+    "baseRadical": "二",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "èr",
+    "sinoVietnamese": "Nhị",
+    "meaning": "Số hai, số của đất, thuộc về âm. 亠 Đầu",
+    "exampleWords": [
+      "于",
+      "云",
+      "互",
+      "五"
+    ]
+  },
+  {
+    "id": 8,
+    "radical": "亠",
+    "baseRadical": "亠",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "tóu",
+    "sinoVietnamese": "Đầu",
+    "meaning": "Không có nghĩa, thường là phần trên của một số chữ khác. 人 Nhân",
+    "exampleWords": [
+      "亮",
+      "京",
+      "亭",
+      "亡"
+    ]
+  },
+  {
+    "id": 9,
+    "radical": "人 (亻)",
+    "baseRadical": "人",
+    "traditional": "亻",
+    "strokes": 2,
+    "pinyin": "rén",
+    "sinoVietnamese": "Nhân",
+    "meaning": "Người, có hai chân, là sinh vật đứng thẳng. 儿 Nhân (đi)",
+    "exampleWords": [
+      "你",
+      "他",
+      "休",
+      "们",
+      "会"
+    ]
+  },
+  {
+    "id": 10,
+    "radical": "儿",
+    "baseRadical": "儿",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "ér",
+    "sinoVietnamese": "Nhân (đi)",
+    "meaning": "Người, như hình người đang đi. 入 Nhập",
+    "exampleWords": [
+      "先",
+      "光",
+      "克",
+      "免",
+      "兄"
+    ]
+  },
+  {
+    "id": 11,
+    "radical": "入",
+    "baseRadical": "入",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "rù",
+    "sinoVietnamese": "Nhập",
+    "meaning": "Vào, tượng hình rễ cây đâm sâu vào đất. 八 Bát",
+    "exampleWords": [
+      "内",
+      "全",
+      "两",
+      "入"
+    ]
+  },
+  {
+    "id": 12,
+    "radical": "八",
+    "baseRadical": "八",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "bā",
+    "sinoVietnamese": "Bát",
+    "meaning": "Nguyên nghĩa là phân chia, còn có nghĩa là số tám. 冂 Quynh",
+    "exampleWords": [
+      "公",
+      "六",
+      "分",
+      "共",
+      "兵"
+    ]
+  },
+  {
+    "id": 13,
+    "radical": "冂",
+    "baseRadical": "冂",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "jiōng",
+    "sinoVietnamese": "Quynh",
+    "meaning": "Đất ở xa ngoài bờ cõi, như vòng tường bao quanh thành lũy. 冖 Mịch",
+    "exampleWords": [
+      "同",
+      "周",
+      "冈",
+      "网"
+    ]
+  },
+  {
+    "id": 14,
+    "radical": "冖",
+    "baseRadical": "冖",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "mì",
+    "sinoVietnamese": "Mịch",
+    "meaning": "Khăn trùm lên đồ vật, che đậy, kín không nhìn thấy rõ. 冫 Băng",
+    "exampleWords": [
+      "写",
+      "军",
+      "冠",
+      "冤"
+    ]
+  },
+  {
+    "id": 15,
+    "radical": "冫",
+    "baseRadical": "冫",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "bīng",
+    "sinoVietnamese": "Băng",
+    "meaning": "Nước đóng băng, nước đá. 几 Kỷ",
+    "exampleWords": [
+      "冷",
+      "冻",
+      "冰",
+      "凉",
+      "决"
+    ]
+  },
+  {
+    "id": 16,
+    "radical": "几",
+    "baseRadical": "几",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "jī",
+    "sinoVietnamese": "Kỷ",
+    "meaning": "Cái ghế, bảo thủ không biến đổi, ích kỷ. 凵 Khảm",
+    "exampleWords": [
+      "凡",
+      "凤",
+      "凯",
+      "凭"
+    ]
+  },
+  {
+    "id": 17,
+    "radical": "凵",
+    "baseRadical": "凵",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "kǎn",
+    "sinoVietnamese": "Khảm",
+    "meaning": "Há miệng, vật để đựng đồ như máng, chậu, đấu… 刀 Đao",
+    "exampleWords": [
+      "凶",
+      "凸",
+      "凹",
+      "出"
+    ]
+  },
+  {
+    "id": 18,
+    "radical": "刀 (刂)",
+    "baseRadical": "刀",
+    "traditional": "刂",
+    "strokes": 2,
+    "pinyin": "dāo",
+    "sinoVietnamese": "Đao",
+    "meaning": "Con dao; dạng 刂 thường đứng bên phải các bộ khác.",
+    "exampleWords": [
+      "分",
+      "别",
+      "利",
+      "切",
+      "前"
+    ]
+  },
+  {
+    "id": 19,
+    "radical": "力",
+    "baseRadical": "力",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "lì",
+    "sinoVietnamese": "Lực",
+    "meaning": "Sức, như hình bàn tay đánh xuống. 勹 Bao",
+    "exampleWords": [
+      "动",
+      "努",
+      "勇",
+      "加",
+      "助"
+    ]
+  },
+  {
+    "id": 20,
+    "radical": "勹",
+    "baseRadical": "勹",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "bāo",
+    "sinoVietnamese": "Bao",
+    "meaning": "Bọc, gói, khom lưng ôm một vật. 匕 Tỷ (bỉ)",
+    "exampleWords": [
+      "包",
+      "句",
+      "匀",
+      "旬"
+    ]
+  },
+  {
+    "id": 21,
+    "radical": "匕",
+    "baseRadical": "匕",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "bǐ",
+    "sinoVietnamese": "Tỷ (bỉ)",
+    "meaning": "Cái thìa. 匚 Phương",
+    "exampleWords": [
+      "北",
+      "匙",
+      "比",
+      "旨"
+    ]
+  },
+  {
+    "id": 22,
+    "radical": "匚",
+    "baseRadical": "匚",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "fāng",
+    "sinoVietnamese": "Phương",
+    "meaning": "Đồ đựng, cái hộp, hình khoanh gỗ khoét ở giữa (nét ngang dưới).",
+    "exampleWords": [
+      "匠",
+      "匡",
+      "匪",
+      "匹"
+    ]
+  },
+  {
+    "id": 23,
+    "radical": "匸",
+    "baseRadical": "匸",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "xǐ",
+    "sinoVietnamese": "Hễ (hệ)",
+    "meaning": "Che đậy (nét ngang trên phủ quá sang trái nét sổ vuông).",
+    "exampleWords": [
+      "匹",
+      "医",
+      "匿",
+      "区"
+    ]
+  },
+  {
+    "id": 24,
+    "radical": "十",
+    "baseRadical": "十",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "shí",
+    "sinoVietnamese": "Thập",
+    "meaning": "Số mười, đầy đủ (Đông tây nam bắc trung cung đủ cả). 卜 Bốc",
+    "exampleWords": [
+      "千",
+      "升",
+      "午",
+      "半",
+      "华"
+    ]
+  },
+  {
+    "id": 25,
+    "radical": "卜",
+    "baseRadical": "卜",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "bǔ",
+    "sinoVietnamese": "Bốc",
+    "meaning": "Bói, giống như những vết nứt trên yếm rùa để xem hung cát… 卩 Tiết",
+    "exampleWords": [
+      "占",
+      "卡",
+      "卢",
+      "卦"
+    ]
+  },
+  {
+    "id": 26,
+    "radical": "卩",
+    "baseRadical": "卩",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "jié",
+    "sinoVietnamese": "Tiết",
+    "meaning": "Đốt tre, một chi tiết nhỏ trong một sự vật hoặc hiện tượng. 厂 Hán",
+    "exampleWords": [
+      "却",
+      "即",
+      "印",
+      "危",
+      "卷"
+    ]
+  },
+  {
+    "id": 27,
+    "radical": "厂",
+    "baseRadical": "厂",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "chǎng",
+    "sinoVietnamese": "Hán",
+    "meaning": "Chỗ sườn núi có mái che, người xưa chọn làm chỗ ở. 厶 Tư",
+    "exampleWords": [
+      "历",
+      "原",
+      "厅",
+      "厄"
+    ]
+  },
+  {
+    "id": 28,
+    "radical": "厶",
+    "baseRadical": "厶",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "sī",
+    "sinoVietnamese": "Tư",
+    "meaning": "Riêng tư. 又 Hựu",
+    "exampleWords": [
+      "去",
+      "县",
+      "参",
+      "厷"
+    ]
+  },
+  {
+    "id": 29,
+    "radical": "又",
+    "baseRadical": "又",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "yòu",
+    "sinoVietnamese": "Hựu",
+    "meaning": "Cái tay bắt chéo, trở lại một lần nữa. 廴 Dẫn",
+    "exampleWords": [
+      "双",
+      "反",
+      "发",
+      "取",
+      "友"
+    ]
+  },
+  {
+    "id": 30,
+    "radical": "口",
+    "baseRadical": "口",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "kǒu",
+    "sinoVietnamese": "Khẩu",
+    "meaning": "Miệng (hình cái miệng). 囗 Vi",
+    "exampleWords": [
+      "吃",
+      "喝",
+      "叫",
+      "问",
+      "听"
+    ]
+  },
+  {
+    "id": 31,
+    "radical": "囗",
+    "baseRadical": "囗",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "wéi",
+    "sinoVietnamese": "Vi",
+    "meaning": "Vây quanh (phạm vi, ranh giới bao quanhi. 土 Thổ",
+    "exampleWords": [
+      "国",
+      "回",
+      "因",
+      "圆",
+      "困"
+    ]
+  },
+  {
+    "id": 32,
+    "radical": "土",
+    "baseRadical": "土",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "tǔ",
+    "sinoVietnamese": "Thổ",
+    "meaning": "Đất — gồm bộ nhị 二 với bộ cổn 丨 như hình cây mọc trên mặt đất.",
+    "exampleWords": [
+      "地",
+      "在",
+      "场",
+      "城",
+      "坏"
+    ]
+  },
+  {
+    "id": 33,
+    "radical": "士",
+    "baseRadical": "士",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "shì",
+    "sinoVietnamese": "Sĩ",
+    "meaning": "Học trò, sĩ tử, những người nghiên cứu học vấn. Gồm chữ thập 十 và chữ nhất 一: người có học thì một việc suy ra mười, mười việc hợp lại thành một. 夂 Truy (trĩ)",
+    "exampleWords": [
+      "声",
+      "壶",
+      "壮",
+      "壹"
+    ]
+  },
+  {
+    "id": 34,
+    "radical": "夂",
+    "baseRadical": "夂",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "zhǐ",
+    "sinoVietnamese": "Truy (trĩ)",
+    "meaning": "Theo sau mà đến kịp người đi trước. 夊 Tuy",
+    "exampleWords": [
+      "处",
+      "条",
+      "冬",
+      "务"
+    ]
+  },
+  {
+    "id": 35,
+    "radical": "夊",
+    "baseRadical": "夊",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "suī",
+    "sinoVietnamese": "Tuy",
+    "meaning": "Dáng đi chậm. 夕 Tịch",
+    "exampleWords": [
+      "夏",
+      "夋",
+      "复",
+      "爱"
+    ]
+  },
+  {
+    "id": 36,
+    "radical": "夕",
+    "baseRadical": "夕",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "xī",
+    "sinoVietnamese": "Tịch",
+    "meaning": "Buổi tối (nửa chữ nguyệt — mặt trăng vừa mọc, phần dưới chưa thấy rõ). 大 Đại",
+    "exampleWords": [
+      "外",
+      "名",
+      "多",
+      "夜",
+      "够"
+    ]
+  },
+  {
+    "id": 37,
+    "radical": "大",
+    "baseRadical": "大",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "dà",
+    "sinoVietnamese": "Đại",
+    "meaning": "Lớn — hình người dang rộng hai tay và chân. 女 Nữ",
+    "exampleWords": [
+      "太",
+      "天",
+      "头",
+      "夫",
+      "奖"
+    ]
+  },
+  {
+    "id": 38,
+    "radical": "女",
+    "baseRadical": "女",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "nǚ",
+    "sinoVietnamese": "Nữ",
+    "meaning": "Con gái — như người con gái chắp tay trước bụng thu gọn vạt áo. 子 Tử",
+    "exampleWords": [
+      "好",
+      "妈",
+      "妹",
+      "姐",
+      "奶"
+    ]
+  },
+  {
+    "id": 39,
+    "radical": "子",
+    "baseRadical": "子",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "zǐ",
+    "sinoVietnamese": "Tử",
+    "meaning": "Con — hình đứa trẻ mới sinh cuốn tã lót không thấy chân. 宀 Miên",
+    "exampleWords": [
+      "字",
+      "学",
+      "孩",
+      "孙",
+      "孤"
+    ]
+  },
+  {
+    "id": 40,
+    "radical": "宀",
+    "baseRadical": "宀",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "mián",
+    "sinoVietnamese": "Miên",
+    "meaning": "Mái nhà. 寸 Thốn",
+    "exampleWords": [
+      "家",
+      "安",
+      "室",
+      "定",
+      "完"
+    ]
+  },
+  {
+    "id": 41,
+    "radical": "寸",
+    "baseRadical": "寸",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "cùn",
+    "sinoVietnamese": "Thốn",
+    "meaning": "Tấc, một phần mười của thước. 小 Tiểu",
+    "exampleWords": [
+      "封",
+      "射",
+      "寺",
+      "尊",
+      "寻"
+    ]
+  },
+  {
+    "id": 42,
+    "radical": "小",
+    "baseRadical": "小",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "xiǎo",
+    "sinoVietnamese": "Tiểu",
+    "meaning": "Nhỏ bé, ít (còn nguyên thì to, chia ra thì nhỏi. 尢 Uông",
+    "exampleWords": [
+      "少",
+      "尖",
+      "尔",
+      "尘"
+    ]
+  },
+  {
+    "id": 43,
+    "radical": "尢 (兀)",
+    "baseRadical": "尢",
+    "traditional": "兀",
+    "strokes": 3,
+    "pinyin": "wāng",
+    "sinoVietnamese": "Uông",
+    "meaning": "Què — hình người đứng có chân không thẳng. 尸 Thi",
+    "exampleWords": [
+      "尤",
+      "尴",
+      "尬",
+      "尬"
+    ]
+  },
+  {
+    "id": 44,
+    "radical": "尸",
+    "baseRadical": "尸",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "shī",
+    "sinoVietnamese": "Thi",
+    "meaning": "Thây người chết, thi thể. 屮 Triệt",
+    "exampleWords": [
+      "居",
+      "屋",
+      "局",
+      "层",
+      "尺"
+    ]
+  },
+  {
+    "id": 45,
+    "radical": "屮",
+    "baseRadical": "屮",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "chè",
+    "sinoVietnamese": "Triệt",
+    "meaning": "Cây cỏ mới mọc (mới đâm chồi, có hai lá và rễ cây). 山 Sơn (san)",
+    "exampleWords": [
+      "屯",
+      "出",
+      "山"
+    ]
+  },
+  {
+    "id": 46,
+    "radical": "山",
+    "baseRadical": "山",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "shān",
+    "sinoVietnamese": "Sơn (san)",
+    "meaning": "Núi. 巛 Xuyên",
+    "exampleWords": [
+      "岁",
+      "岛",
+      "岭",
+      "峰",
+      "峡"
+    ]
+  },
+  {
+    "id": 47,
+    "radical": "巛 (川)",
+    "baseRadical": "巛",
+    "traditional": "川",
+    "strokes": 3,
+    "pinyin": "chuān",
+    "sinoVietnamese": "Xuyên",
+    "meaning": "Sông — dòng sông có nhiều nhánh chảy vào. 工 Công",
+    "exampleWords": [
+      "州",
+      "巡",
+      "巢",
+      "顺"
+    ]
+  },
+  {
+    "id": 48,
+    "radical": "工",
+    "baseRadical": "工",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "gōng",
+    "sinoVietnamese": "Công",
+    "meaning": "Việc, người thợ (hình dụng cụ đo góc vuông). 己 Kỷ",
+    "exampleWords": [
+      "左",
+      "巧",
+      "巨",
+      "差"
+    ]
+  },
+  {
+    "id": 49,
+    "radical": "己",
+    "baseRadical": "己",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "jǐ",
+    "sinoVietnamese": "Kỷ",
+    "meaning": "Can thứ sáu trong mười can. 巾 Cân",
+    "exampleWords": [
+      "已",
+      "巴",
+      "巷",
+      "巽"
+    ]
+  },
+  {
+    "id": 50,
+    "radical": "巾",
+    "baseRadical": "巾",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "jīn",
+    "sinoVietnamese": "Cân",
+    "meaning": "Khăn (hình cái khăn cột ở thắt lưng, hai đầu buông xuốngi. 干 Can",
+    "exampleWords": [
+      "市",
+      "布",
+      "帅",
+      "带",
+      "常"
+    ]
+  },
+  {
+    "id": 51,
+    "radical": "干",
+    "baseRadical": "干",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "gān",
+    "sinoVietnamese": "Can",
+    "meaning": "Phạm đến. 幺 Yêu",
+    "exampleWords": [
+      "平",
+      "年",
+      "并",
+      "幸"
+    ]
+  },
+  {
+    "id": 52,
+    "radical": "幺",
+    "baseRadical": "幺",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "yāo",
+    "sinoVietnamese": "Yêu",
+    "meaning": "Nhỏ (hình đứa bé mới sinh). 广 Nghiễm",
+    "exampleWords": [
+      "幻",
+      "幼",
+      "幽",
+      "幽"
+    ]
+  },
+  {
+    "id": 53,
+    "radical": "广",
+    "baseRadical": "广",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "guǎng",
+    "sinoVietnamese": "Nghiễm",
+    "meaning": "Nhân chỗ sườn núi làm nhà (cái chấm ở trên là nóc nhà). 廾 Củng",
+    "exampleWords": [
+      "店",
+      "度",
+      "庭",
+      "座",
+      "底"
+    ]
+  },
+  {
+    "id": 54,
+    "radical": "廴",
+    "baseRadical": "廴",
+    "traditional": "",
+    "strokes": 2,
+    "pinyin": "yǐn",
+    "sinoVietnamese": "Dẫn",
+    "meaning": "Đi xa (chữ 彳 xích — bước, thêm nét dài để chỉ việc đi xa).",
+    "exampleWords": [
+      "延",
+      "建",
+      "廷",
+      "廻"
+    ]
+  },
+  {
+    "id": 55,
+    "radical": "廾",
+    "baseRadical": "廾",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "gǒng",
+    "sinoVietnamese": "Củng",
+    "meaning": "Chắp hai tay cung kính (hai chữ hựu 又 — tay, cùng nửa chữ trúc 竹 là cành cây). 攵 Phốc",
+    "exampleWords": [
+      "弃",
+      "弄",
+      "弊",
+      "弁"
+    ]
+  },
+  {
+    "id": 56,
+    "radical": "弋",
+    "baseRadical": "弋",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "yì",
+    "sinoVietnamese": "Dực (dặc)",
+    "meaning": "Cái cọc; cột dây vào mũi tên mà bắn; cọc buộc súc vật.",
+    "exampleWords": [
+      "式",
+      "弑",
+      "弋"
+    ]
+  },
+  {
+    "id": 57,
+    "radical": "弓",
+    "baseRadical": "弓",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "gōng",
+    "sinoVietnamese": "Cung",
+    "meaning": "Cái cung để bắn tên.",
+    "exampleWords": [
+      "张",
+      "引",
+      "强",
+      "弹",
+      "弱"
+    ]
+  },
+  {
+    "id": 58,
+    "radical": "彐 (彑)",
+    "baseRadical": "彐",
+    "traditional": "彑",
+    "strokes": 3,
+    "pinyin": "jì",
+    "sinoVietnamese": "Kệ (kí)",
+    "meaning": "Đầu con heo.",
+    "exampleWords": [
+      "归",
+      "当",
+      "录",
+      "彗"
+    ]
+  },
+  {
+    "id": 59,
+    "radical": "彡",
+    "baseRadical": "彡",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "shān",
+    "sinoVietnamese": "Sam",
+    "meaning": "Lông dài (đuôi sam).",
+    "exampleWords": [
+      "形",
+      "彩",
+      "影",
+      "须",
+      "彭"
+    ]
+  },
+  {
+    "id": 60,
+    "radical": "彳",
+    "baseRadical": "彳",
+    "traditional": "",
+    "strokes": 3,
+    "pinyin": "chì",
+    "sinoVietnamese": "Xích",
+    "meaning": "Bước ngắn, bước chân trái.",
+    "exampleWords": [
+      "行",
+      "很",
+      "律",
+      "微",
+      "得"
+    ]
+  },
+  {
+    "id": 61,
+    "radical": "心 (忄, ⺗)",
+    "baseRadical": "心",
+    "traditional": "忄, ⺗",
+    "strokes": 4,
+    "pinyin": "xīn",
+    "sinoVietnamese": "Tâm",
+    "meaning": "Tim (hình quả tim).",
+    "exampleWords": [
+      "想",
+      "忘",
+      "怕",
+      "快",
+      "情"
+    ]
+  },
+  {
+    "id": 62,
+    "radical": "戈",
+    "baseRadical": "戈",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "gē",
+    "sinoVietnamese": "Qua",
+    "meaning": "Cái kích bằng đầu.",
+    "exampleWords": [
+      "我",
+      "战",
+      "或",
+      "成",
+      "戏"
+    ]
+  },
+  {
+    "id": 63,
+    "radical": "户 (戶)",
+    "baseRadical": "户",
+    "traditional": "戶",
+    "strokes": 4,
+    "pinyin": "hù",
+    "sinoVietnamese": "Hộ",
+    "meaning": "Cửa một cánh (một nửa chữ môn 门 — cửa rộng hai cánh). (Phồn thể: 戶)",
+    "exampleWords": [
+      "房",
+      "扁",
+      "扇",
+      "扉"
+    ]
+  },
+  {
+    "id": 64,
+    "radical": "手 (扌, 龵)",
+    "baseRadical": "手",
+    "traditional": "扌, 龵",
+    "strokes": 4,
+    "pinyin": "shǒu",
+    "sinoVietnamese": "Thủ",
+    "meaning": "Tay.",
+    "exampleWords": [
+      "打",
+      "找",
+      "提",
+      "拿",
+      "把"
+    ]
+  },
+  {
+    "id": 65,
+    "radical": "支",
+    "baseRadical": "支",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "zhī",
+    "sinoVietnamese": "Chi",
+    "meaning": "Cành cây (hựu 又 — tay, cùng nửa chữ trúc 竹 là cành cây).",
+    "exampleWords": [
+      "翅",
+      "鼓",
+      "支"
+    ]
+  },
+  {
+    "id": 66,
+    "radical": "攵 (攴)",
+    "baseRadical": "攵",
+    "traditional": "攴",
+    "strokes": 4,
+    "pinyin": "pū",
+    "sinoVietnamese": "Phốc",
+    "meaning": "Đánh nhẹ. (Dạng gốc Khang Hy: 攴) 文 Văn",
+    "exampleWords": [
+      "放",
+      "政",
+      "教",
+      "数",
+      "故"
+    ]
+  },
+  {
+    "id": 67,
+    "radical": "文",
+    "baseRadical": "文",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "wén",
+    "sinoVietnamese": "Văn",
+    "meaning": "Nét vẽ, đường giao nhau. 斗 Đấu",
+    "exampleWords": [
+      "斋",
+      "斐",
+      "斑",
+      "文"
+    ]
+  },
+  {
+    "id": 68,
+    "radical": "斗",
+    "baseRadical": "斗",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "dǒu",
+    "sinoVietnamese": "Đấu",
+    "meaning": "Cái đấu, đơn vị đo lường lương thực (đấu thóc, đấu gạo). 斤 Cân",
+    "exampleWords": [
+      "料",
+      "斜",
+      "斟",
+      "斟"
+    ]
+  },
+  {
+    "id": 69,
+    "radical": "斤",
+    "baseRadical": "斤",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "jīn",
+    "sinoVietnamese": "Cân",
+    "meaning": "Cái rìu (hình cái rìu để đốn cây). 方 Phương",
+    "exampleWords": [
+      "新",
+      "断",
+      "斩",
+      "斯"
+    ]
+  },
+  {
+    "id": 70,
+    "radical": "方",
+    "baseRadical": "方",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "fāng",
+    "sinoVietnamese": "Phương",
+    "meaning": "Vuông, phương hướng, phía (hai thuyền đậu chung). 无 Vô (kí)",
+    "exampleWords": [
+      "旅",
+      "放",
+      "族",
+      "旗",
+      "旁"
+    ]
+  },
+  {
+    "id": 71,
+    "radical": "无 (旡)",
+    "baseRadical": "无",
+    "traditional": "旡",
+    "strokes": 4,
+    "pinyin": "wú",
+    "sinoVietnamese": "Vô (kí)",
+    "meaning": "Không — chữ vô 无 xưa cũng viết dạng như chữ kí 旡. 日 Nhật",
+    "exampleWords": [
+      "既",
+      "无",
+      "旡"
+    ]
+  },
+  {
+    "id": 72,
+    "radical": "日",
+    "baseRadical": "日",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "rì",
+    "sinoVietnamese": "Nhật",
+    "meaning": "Mặt trời, ban ngày. 曰 Viết",
+    "exampleWords": [
+      "时",
+      "明",
+      "早",
+      "昨",
+      "晴"
+    ]
+  },
+  {
+    "id": 73,
+    "radical": "曰",
+    "baseRadical": "曰",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "yuē",
+    "sinoVietnamese": "Viết",
+    "meaning": "Nói rằng — miệng khi nói hở răng và phát ra hơi (âm thanh). 月 Nguyệt",
+    "exampleWords": [
+      "曲",
+      "替",
+      "最",
+      "更"
+    ]
+  },
+  {
+    "id": 74,
+    "radical": "月",
+    "baseRadical": "月",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "yuè",
+    "sinoVietnamese": "Nguyệt",
+    "meaning": "Mặt trăng — hình trăng khuyết, ban đêm có trăng. 木 Mộc",
+    "exampleWords": [
+      "朋",
+      "期",
+      "服",
+      "脚",
+      "脸"
+    ]
+  },
+  {
+    "id": 75,
+    "radical": "木",
+    "baseRadical": "木",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "mù",
+    "sinoVietnamese": "Mộc",
+    "meaning": "Cây, gỗ (hình cây có cành và rễ). 欠 Khiếm",
+    "exampleWords": [
+      "林",
+      "杯",
+      "校",
+      "本",
+      "机"
+    ]
+  },
+  {
+    "id": 76,
+    "radical": "欠",
+    "baseRadical": "欠",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "qiàn",
+    "sinoVietnamese": "Khiếm",
+    "meaning": "Há miệng hả hơi ra ngáp; thiếu (khiếm nhã, khiếm khuyết). 止 Chỉ",
+    "exampleWords": [
+      "歌",
+      "欢",
+      "欧",
+      "歉"
+    ]
+  },
+  {
+    "id": 77,
+    "radical": "止",
+    "baseRadical": "止",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "zhǐ",
+    "sinoVietnamese": "Chỉ",
+    "meaning": "Cái chân; cái nền, thế đứng, dừng lại. 歹 Ngạt",
+    "exampleWords": [
+      "正",
+      "此",
+      "步",
+      "武",
+      "岁"
+    ]
+  },
+  {
+    "id": 78,
+    "radical": "歹",
+    "baseRadical": "歹",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "dǎi",
+    "sinoVietnamese": "Ngạt",
+    "meaning": "Xương tàn, rã rượi, tan nát. 殳 Thù",
+    "exampleWords": [
+      "死",
+      "殊",
+      "残",
+      "列"
+    ]
+  },
+  {
+    "id": 79,
+    "radical": "殳",
+    "baseRadical": "殳",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "shū",
+    "sinoVietnamese": "Thù",
+    "meaning": "Cái gậy — hình tay cầm gậy. 毋 Vô",
+    "exampleWords": [
+      "段",
+      "殷",
+      "毁",
+      "毅"
+    ]
+  },
+  {
+    "id": 80,
+    "radical": "毋 (毌)",
+    "baseRadical": "毋",
+    "traditional": "毌",
+    "strokes": 4,
+    "pinyin": "wú",
+    "sinoVietnamese": "Vô",
+    "meaning": "Chớ, đừng — chữ nữ 女 với nét phẩy chỉ lòng gian tà, người như vậy bị cấm chỉ.",
+    "exampleWords": [
+      "每",
+      "毒",
+      "母",
+      "毋"
+    ]
+  },
+  {
+    "id": 81,
+    "radical": "比",
+    "baseRadical": "比",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "bǐ",
+    "sinoVietnamese": "Tỉ (bỉ)",
+    "meaning": "So sánh, so bì — hình hai người đứng ngang nhau để so cao thấp. 毛 Mao",
+    "exampleWords": [
+      "皆",
+      "毖",
+      "毗",
+      "比"
+    ]
+  },
+  {
+    "id": 82,
+    "radical": "毛",
+    "baseRadical": "毛",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "máo",
+    "sinoVietnamese": "Mao",
+    "meaning": "Lông — hình cọng lông có nhiều sợi. 氏 Thị",
+    "exampleWords": [
+      "毫",
+      "毯",
+      "毛",
+      "毽"
+    ]
+  },
+  {
+    "id": 83,
+    "radical": "氏",
+    "baseRadical": "氏",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "shì",
+    "sinoVietnamese": "Thị",
+    "meaning": "Họ, ngành họ mạc trong một gia tộc; phần đệm trong họ tên phái nữ. 气 Khí",
+    "exampleWords": [
+      "民",
+      "氓",
+      "氏"
+    ]
+  },
+  {
+    "id": 84,
+    "radical": "气",
+    "baseRadical": "气",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "qì",
+    "sinoVietnamese": "Khí",
+    "meaning": "Hơi, khí mây làm thành mưa. 水 Thủy",
+    "exampleWords": [
+      "气",
+      "氛",
+      "氧",
+      "氢"
+    ]
+  },
+  {
+    "id": 85,
+    "radical": "水 (氺)",
+    "baseRadical": "水",
+    "traditional": "氵, 氺",
+    "strokes": 4,
+    "pinyin": "shuǐ",
+    "sinoVietnamese": "Thủy",
+    "meaning": "Nước — hình dòng nước chảy. 火 Hỏa",
+    "exampleWords": [
+      "河",
+      "海",
+      "洗",
+      "汉",
+      "湖"
+    ]
+  },
+  {
+    "id": 86,
+    "radical": "火 (灬)",
+    "baseRadical": "火",
+    "traditional": "灬",
+    "strokes": 4,
+    "pinyin": "huǒ",
+    "sinoVietnamese": "Hỏa",
+    "meaning": "Lửa — giống như ngọn lửa bốc cao. 爪 Trảo",
+    "exampleWords": [
+      "热",
+      "点",
+      "黑",
+      "照",
+      "灯"
+    ]
+  },
+  {
+    "id": 87,
+    "radical": "爪 (爫)",
+    "baseRadical": "爪",
+    "traditional": "爫",
+    "strokes": 4,
+    "pinyin": "zhǎo",
+    "sinoVietnamese": "Trảo",
+    "meaning": "Móng vuốt. 父 Phụ",
+    "exampleWords": [
+      "爬",
+      "爱",
+      "采",
+      "受"
+    ]
+  },
+  {
+    "id": 88,
+    "radical": "父",
+    "baseRadical": "父",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "fù",
+    "sinoVietnamese": "Phụ",
+    "meaning": "Cha — tay cầm roi đánh dạy con cái. 爻 Hào",
+    "exampleWords": [
+      "爸",
+      "爹",
+      "爷",
+      "父"
+    ]
+  },
+  {
+    "id": 89,
+    "radical": "爻",
+    "baseRadical": "爻",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "yáo",
+    "sinoVietnamese": "Hào",
+    "meaning": "Giao nhau — mỗi quẻ trong Kinh Dịch có sáu hào. 片 Phiến",
+    "exampleWords": [
+      "爽",
+      "尔",
+      "爻"
+    ]
+  },
+  {
+    "id": 90,
+    "radical": "丬 (爿)",
+    "baseRadical": "丬",
+    "traditional": "爿",
+    "strokes": 3,
+    "pinyin": "qiáng",
+    "sinoVietnamese": "Tường",
+    "meaning": "Tấm ván — hình nửa bên trái của chữ mộc. (Dạng gốc Khang Hy: 爿)",
+    "exampleWords": [
+      "床",
+      "墙",
+      "版",
+      "戕"
+    ]
+  },
+  {
+    "id": 91,
+    "radical": "片",
+    "baseRadical": "片",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "piàn",
+    "sinoVietnamese": "Phiến",
+    "meaning": "Mảnh vật mỏng và phẳng — hình nửa bên phải của chữ mộc. 牙 Nha",
+    "exampleWords": [
+      "牌",
+      "版",
+      "牒",
+      "片"
+    ]
+  },
+  {
+    "id": 92,
+    "radical": "牙",
+    "baseRadical": "牙",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "yá",
+    "sinoVietnamese": "Nha",
+    "meaning": "Răng — hình răng hai hàm cắn vào nhau. 牛 Ngưu",
+    "exampleWords": [
+      "鸦",
+      "雅",
+      "牙"
+    ]
+  },
+  {
+    "id": 93,
+    "radical": "牛 (牜)",
+    "baseRadical": "牛",
+    "traditional": "牜",
+    "strokes": 4,
+    "pinyin": "niú",
+    "sinoVietnamese": "Ngưu",
+    "meaning": "Con bò. 犬 Khuyển",
+    "exampleWords": [
+      "特",
+      "物",
+      "牧",
+      "牵",
+      "牲"
+    ]
+  },
+  {
+    "id": 94,
+    "radical": "犬 (犭)",
+    "baseRadical": "犬",
+    "traditional": "犭",
+    "strokes": 4,
+    "pinyin": "quǎn",
+    "sinoVietnamese": "Khuyển",
+    "meaning": "Con chó. 瓦 Ngõa",
+    "exampleWords": [
+      "狗",
+      "猫",
+      "狠",
+      "狂",
+      "独"
+    ]
+  },
+  {
+    "id": 95,
+    "radical": "玄",
+    "baseRadical": "玄",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "xuán",
+    "sinoVietnamese": "Huyền",
+    "meaning": "Sâu kín xa xôi; màu đen có lằn sắc đỏ — màu của trời, của Phật. 玉 Ngọc",
+    "exampleWords": [
+      "率",
+      "玄",
+      "兹"
+    ]
+  },
+  {
+    "id": 96,
+    "radical": "玉 (⺩)",
+    "baseRadical": "玉",
+    "traditional": "王, ⺩",
+    "strokes": 5,
+    "pinyin": "yù",
+    "sinoVietnamese": "Ngọc",
+    "meaning": "Đá quý (hình viên ngọc xâu chuỗi với nhau làm đồ trang sức). 瓜 Qua",
+    "exampleWords": [
+      "玩",
+      "现",
+      "理",
+      "环",
+      "班"
+    ]
+  },
+  {
+    "id": 97,
+    "radical": "瓜",
+    "baseRadical": "瓜",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "guā",
+    "sinoVietnamese": "Qua",
+    "meaning": "Dưa — hình dây dưa bò lan trên đất và có quả. 甘 Cam",
+    "exampleWords": [
+      "瓣",
+      "瓢",
+      "瓜"
+    ]
+  },
+  {
+    "id": 98,
+    "radical": "瓦",
+    "baseRadical": "瓦",
+    "traditional": "",
+    "strokes": 4,
+    "pinyin": "wǎ",
+    "sinoVietnamese": "Ngõa",
+    "meaning": "Ngói, gạch nung (thợ nề gọi là thợ ngõa); đồ vật liệu bằng đất nung. 见 Kiến",
+    "exampleWords": [
+      "瓶",
+      "瓷",
+      "甄",
+      "瓦"
+    ]
+  },
+  {
+    "id": 99,
+    "radical": "甘",
+    "baseRadical": "甘",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "gān",
+    "sinoVietnamese": "Cam",
+    "meaning": "Ngọt — vật ngon ngọt ngậm trong miệng. 生 Sinh",
+    "exampleWords": [
+      "甜",
+      "甚",
+      "甘"
+    ]
+  },
+  {
+    "id": 100,
+    "radical": "生",
+    "baseRadical": "生",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "shēng",
+    "sinoVietnamese": "Sinh",
+    "meaning": "Sống, mọc, sinh ra — hình cỏ cây mọc trên đất. 用 Dụng",
+    "exampleWords": [
+      "产",
+      "甥",
+      "苏",
+      "生"
+    ]
+  },
+  {
+    "id": 101,
+    "radical": "用",
+    "baseRadical": "用",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "yòng",
+    "sinoVietnamese": "Dụng",
+    "meaning": "Dùng, có thể thi hành — bốc 卜 (bói) với trung 中 (trúng): việc gì bói đúng thì theo đó mà thi hành. 田 Điền",
+    "exampleWords": [
+      "甫",
+      "甭",
+      "用"
+    ]
+  },
+  {
+    "id": 102,
+    "radical": "田",
+    "baseRadical": "田",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "tián",
+    "sinoVietnamese": "Điền",
+    "meaning": "Ruộng (hình thửa ruộng chia bờ xung quanh). 疋 Sơ",
+    "exampleWords": [
+      "男",
+      "画",
+      "界",
+      "留",
+      "略"
+    ]
+  },
+  {
+    "id": 103,
+    "radical": "疋 (⺪)",
+    "baseRadical": "疋",
+    "traditional": "⺪",
+    "strokes": 5,
+    "pinyin": "pǐ",
+    "sinoVietnamese": "Sơ",
+    "meaning": "Cái chân — hình bắp chân. 疒 Nạch",
+    "exampleWords": [
+      "疏",
+      "疑",
+      "疋"
+    ]
+  },
+  {
+    "id": 104,
+    "radical": "疒",
+    "baseRadical": "疒",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "nè",
+    "sinoVietnamese": "Nạch",
+    "meaning": "Tật bệnh (người bệnh phải nằm trên giường). 癶 Bát (bát đạp)",
+    "exampleWords": [
+      "病",
+      "疼",
+      "痛",
+      "瘦",
+      "疲"
+    ]
+  },
+  {
+    "id": 105,
+    "radical": "癶",
+    "baseRadical": "癶",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "bō",
+    "sinoVietnamese": "Bát (bát đạp)",
+    "meaning": "Đạp ra — nhiều nét hơn bát 八 (tám).",
+    "exampleWords": [
+      "登",
+      "发",
+      "癸"
+    ]
+  },
+  {
+    "id": 106,
+    "radical": "白",
+    "baseRadical": "白",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "bái",
+    "sinoVietnamese": "Bạch",
+    "meaning": "Trắng, màu của phương Tây. 皮 Bì",
+    "exampleWords": [
+      "百",
+      "的",
+      "皇",
+      "皆"
+    ]
+  },
+  {
+    "id": 107,
+    "radical": "皮",
+    "baseRadical": "皮",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "pí",
+    "sinoVietnamese": "Bì",
+    "meaning": "Da (tay cầm dao lột da từ thây con vật). 皿 Mãnh",
+    "exampleWords": [
+      "皱",
+      "皲",
+      "皮"
+    ]
+  },
+  {
+    "id": 108,
+    "radical": "皿",
+    "baseRadical": "皿",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "mǐn",
+    "sinoVietnamese": "Mãnh",
+    "meaning": "Đồ bát đĩa để ăn cơm. 目 Mục",
+    "exampleWords": [
+      "盆",
+      "盒",
+      "盖",
+      "盘",
+      "盗"
+    ]
+  },
+  {
+    "id": 109,
+    "radical": "目",
+    "baseRadical": "目",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "mù",
+    "sinoVietnamese": "Mục",
+    "meaning": "Mắt (hình con mắt). 矛 Mâu",
+    "exampleWords": [
+      "眼",
+      "看",
+      "睡",
+      "睛",
+      "盲"
+    ]
+  },
+  {
+    "id": 110,
+    "radical": "矛",
+    "baseRadical": "矛",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "máo",
+    "sinoVietnamese": "Mâu",
+    "meaning": "Cái mâu — binh khí ngày xưa dùng để chiến đấu với kẻ thù. 矢 Thỉ",
+    "exampleWords": [
+      "矜",
+      "矛"
+    ]
+  },
+  {
+    "id": 111,
+    "radical": "矢",
+    "baseRadical": "矢",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "shǐ",
+    "sinoVietnamese": "Thỉ",
+    "meaning": "Mũi tên — mũi nhọn có ngạnh, đuôi có lông định hướng bay. 石 Thạch",
+    "exampleWords": [
+      "短",
+      "矮",
+      "知",
+      "矩"
+    ]
+  },
+  {
+    "id": 112,
+    "radical": "石",
+    "baseRadical": "石",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "shí",
+    "sinoVietnamese": "Thạch",
+    "meaning": "Đá (chữ hán 厂 — sườn núi, chữ khẩu 口 — hòn, tảng đá). 示 Kỳ (thị)",
+    "exampleWords": [
+      "破",
+      "码",
+      "确",
+      "硬",
+      "研"
+    ]
+  },
+  {
+    "id": 113,
+    "radical": "示 (礻)",
+    "baseRadical": "示",
+    "traditional": "礻",
+    "strokes": 5,
+    "pinyin": "shì",
+    "sinoVietnamese": "Kỳ (thị)",
+    "meaning": "Thần đất; báo cho biết trước mọi điều một cách thần kỳ. 禸 Nhữu (nhựu)",
+    "exampleWords": [
+      "祝",
+      "神",
+      "视",
+      "礼",
+      "社"
+    ]
+  },
+  {
+    "id": 114,
+    "radical": "禸",
+    "baseRadical": "禸",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "róu",
+    "sinoVietnamese": "Nhữu (nhựu)",
+    "meaning": "Vết chân thú giẫm xuống đất (nhại lại, lặp lại, nói nhựu). 禾 Hòa",
+    "exampleWords": [
+      "禹",
+      "离",
+      "禽"
+    ]
+  },
+  {
+    "id": 115,
+    "radical": "禾",
+    "baseRadical": "禾",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "hé",
+    "sinoVietnamese": "Hòa",
+    "meaning": "Cây lúa. 穴 Huyệt",
+    "exampleWords": [
+      "秋",
+      "科",
+      "和",
+      "种",
+      "积"
+    ]
+  },
+  {
+    "id": 116,
+    "radical": "穴",
+    "baseRadical": "穴",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "xué",
+    "sinoVietnamese": "Huyệt",
+    "meaning": "Cái hang. 立 Lập",
+    "exampleWords": [
+      "空",
+      "穿",
+      "穷",
+      "突",
+      "窗"
+    ]
+  },
+  {
+    "id": 117,
+    "radical": "立",
+    "baseRadical": "立",
+    "traditional": "",
+    "strokes": 5,
+    "pinyin": "lì",
+    "sinoVietnamese": "Lập",
+    "meaning": "Đứng — hình người đứng trên mặt đất. 鸟 Điểu",
+    "exampleWords": [
+      "站",
+      "端",
+      "童",
+      "竭"
+    ]
+  },
+  {
+    "id": 118,
+    "radical": "竹 (⺮)",
+    "baseRadical": "竹",
+    "traditional": "⺮",
+    "strokes": 6,
+    "pinyin": "zhú",
+    "sinoVietnamese": "Trúc",
+    "meaning": "Cây tre. 米 Mễ",
+    "exampleWords": [
+      "等",
+      "答",
+      "简",
+      "笔",
+      "筷"
+    ]
+  },
+  {
+    "id": 119,
+    "radical": "米",
+    "baseRadical": "米",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "mǐ",
+    "sinoVietnamese": "Mễ",
+    "meaning": "Gạo (hạt lúa đã được chế biếni. 缶 Phữu (phẫu)",
+    "exampleWords": [
+      "粮",
+      "糖",
+      "类",
+      "粉",
+      "粗"
+    ]
+  },
+  {
+    "id": 120,
+    "radical": "纟 (糸, 糹)",
+    "baseRadical": "纟",
+    "traditional": "糸, 糹",
+    "strokes": 3,
+    "pinyin": "mì",
+    "sinoVietnamese": "Mịch",
+    "meaning": "Sợi tơ (hình lọn tơ được thắt lại). (Dạng gốc Khang Hy: 糸)",
+    "exampleWords": [
+      "红",
+      "绿",
+      "给",
+      "结",
+      "细"
+    ]
+  },
+  {
+    "id": 121,
+    "radical": "缶",
+    "baseRadical": "缶",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "fǒu",
+    "sinoVietnamese": "Phữu (phẫu)",
+    "meaning": "Đồ sành như: vò, chum, vại, be có nắp đậy. 网 Võng",
+    "exampleWords": [
+      "缺",
+      "罐",
+      "缸"
+    ]
+  },
+  {
+    "id": 122,
+    "radical": "网 (罓)",
+    "baseRadical": "网",
+    "traditional": "罒, 罓",
+    "strokes": 6,
+    "pinyin": "wǎng",
+    "sinoVietnamese": "Võng",
+    "meaning": "Lưới để bắt thú hay đánh cá. 羊 Dương",
+    "exampleWords": [
+      "罗",
+      "罚",
+      "罪",
+      "置",
+      "署"
+    ]
+  },
+  {
+    "id": 123,
+    "radical": "羊",
+    "baseRadical": "羊",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "yáng",
+    "sinoVietnamese": "Dương",
+    "meaning": "Con dê. 羭 Vũ",
+    "exampleWords": [
+      "美",
+      "着",
+      "群",
+      "羡",
+      "翔"
+    ]
+  },
+  {
+    "id": 124,
+    "radical": "羽",
+    "baseRadical": "羽",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "yǔ",
+    "sinoVietnamese": "Vũ",
+    "meaning": "Lông chim (hai cánh chim có lông vũ). 老 Lão",
+    "exampleWords": [
+      "习",
+      "翅",
+      "翔",
+      "翻"
+    ]
+  },
+  {
+    "id": 125,
+    "radical": "老 (耂)",
+    "baseRadical": "老",
+    "traditional": "耂",
+    "strokes": 6,
+    "pinyin": "lǎo",
+    "sinoVietnamese": "Lão",
+    "meaning": "Già — người cao tuổi râu tóc đã biến đổi. 而 Nhi",
+    "exampleWords": [
+      "者",
+      "考",
+      "耆",
+      "老"
+    ]
+  },
+  {
+    "id": 126,
+    "radical": "而",
+    "baseRadical": "而",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "ér",
+    "sinoVietnamese": "Nhi",
+    "meaning": "Râu. 耒 Lỗi",
+    "exampleWords": [
+      "耍",
+      "耐",
+      "而"
+    ]
+  },
+  {
+    "id": 127,
+    "radical": "耒",
+    "baseRadical": "耒",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "lěi",
+    "sinoVietnamese": "Lỗi",
+    "meaning": "Cái cày 0làm bằng gỗ, khi cày làm cỏ rậm bị vạch ra). 耳 Nhĩ",
+    "exampleWords": [
+      "耕",
+      "耘",
+      "耗"
+    ]
+  },
+  {
+    "id": 128,
+    "radical": "耳",
+    "baseRadical": "耳",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "ěr",
+    "sinoVietnamese": "Nhĩ",
+    "meaning": "Tai để nghe. 聿 Duật",
+    "exampleWords": [
+      "闻",
+      "联",
+      "聪",
+      "聘",
+      "聚"
+    ]
+  },
+  {
+    "id": 129,
+    "radical": "聿",
+    "baseRadical": "聿",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "yù",
+    "sinoVietnamese": "Duật",
+    "meaning": "Cây bút — hình tay cầm cây bút viết. 肉 Nhục",
+    "exampleWords": [
+      "肃",
+      "肆",
+      "肇"
+    ]
+  },
+  {
+    "id": 130,
+    "radical": "肉 (⺼)",
+    "baseRadical": "肉",
+    "traditional": "⺼",
+    "strokes": 6,
+    "pinyin": "ròu",
+    "sinoVietnamese": "Nhục",
+    "meaning": "Thịt — dạng ⺼ gần giống chữ nguyệt 月. 臣 Thần",
+    "exampleWords": [
+      "肌",
+      "肚",
+      "肩",
+      "肥",
+      "胃"
+    ]
+  },
+  {
+    "id": 131,
+    "radical": "臣",
+    "baseRadical": "臣",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "chén",
+    "sinoVietnamese": "Thần",
+    "meaning": "Bề tôi (hình ông quan cúi mình khuất phục). 自 Tự",
+    "exampleWords": [
+      "卧",
+      "臣",
+      "临"
+    ]
+  },
+  {
+    "id": 132,
+    "radical": "自",
+    "baseRadical": "自",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "zì",
+    "sinoVietnamese": "Tự",
+    "meaning": "Cái mũi (hình cái mũi ở trên miệng); còn có nghĩa là tự mình. 至 Chí",
+    "exampleWords": [
+      "臭",
+      "鼻",
+      "息",
+      "自"
+    ]
+  },
+  {
+    "id": 133,
+    "radical": "至",
+    "baseRadical": "至",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "zhì",
+    "sinoVietnamese": "Chí",
+    "meaning": "Đến (hình con chim từ trên trời bay xuống đất — đến nơi); chí hướng. 臼 Cữu",
+    "exampleWords": [
+      "致",
+      "臻",
+      "至"
+    ]
+  },
+  {
+    "id": 134,
+    "radical": "臼",
+    "baseRadical": "臼",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "jiù",
+    "sinoVietnamese": "Cữu",
+    "meaning": "Cái cối giã gạo. 舌 Thiệt",
+    "exampleWords": [
+      "舆",
+      "舂",
+      "舅"
+    ]
+  },
+  {
+    "id": 135,
+    "radical": "舌",
+    "baseRadical": "舌",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "shé",
+    "sinoVietnamese": "Thiệt",
+    "meaning": "Cái lưỡi. 舛 Suyễn",
+    "exampleWords": [
+      "舍",
+      "舒",
+      "舐"
+    ]
+  },
+  {
+    "id": 136,
+    "radical": "舛",
+    "baseRadical": "舛",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "chuǎn",
+    "sinoVietnamese": "Suyễn",
+    "meaning": "Trái nhau, nằm đối nhau, ngược lại. 舟 Chu",
+    "exampleWords": [
+      "舞",
+      "舛"
+    ]
+  },
+  {
+    "id": 137,
+    "radical": "舟",
+    "baseRadical": "舟",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "zhōu",
+    "sinoVietnamese": "Chu",
+    "meaning": "Thuyền. 艮 Cấn",
+    "exampleWords": [
+      "船",
+      "航",
+      "般",
+      "盘"
+    ]
+  },
+  {
+    "id": 138,
+    "radical": "艮",
+    "baseRadical": "艮",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "gèn",
+    "sinoVietnamese": "Cấn",
+    "meaning": "Không nghe theo, chưa nhất trí, ngăn trở; quẻ Cấn trong bát quái. 色 Sắc",
+    "exampleWords": [
+      "艰",
+      "良",
+      "艮"
+    ]
+  },
+  {
+    "id": 139,
+    "radical": "色",
+    "baseRadical": "色",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "sè",
+    "sinoVietnamese": "Sắc",
+    "meaning": "Sắc mặt, diện mạo. 虍 Hô",
+    "exampleWords": [
+      "艳",
+      "色"
+    ]
+  },
+  {
+    "id": 140,
+    "radical": "艹 (艸)",
+    "baseRadical": "艹",
+    "traditional": "艸",
+    "strokes": 3,
+    "pinyin": "cǎo",
+    "sinoVietnamese": "Thảo",
+    "meaning": "Cỏ. (Dạng gốc Khang Hy: 艸)",
+    "exampleWords": [
+      "茶",
+      "草",
+      "花",
+      "药",
+      "节"
+    ]
+  },
+  {
+    "id": 141,
+    "radical": "虍",
+    "baseRadical": "虍",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "hū",
+    "sinoVietnamese": "Hô",
+    "meaning": "Vằn lông con cọp. 虫 Trùng",
+    "exampleWords": [
+      "虎",
+      "虚",
+      "虑",
+      "虐"
+    ]
+  },
+  {
+    "id": 142,
+    "radical": "虫",
+    "baseRadical": "虫",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "chóng",
+    "sinoVietnamese": "Trùng",
+    "meaning": "Côn trùng, rắn rết. 血 Huyết",
+    "exampleWords": [
+      "虽",
+      "蛇",
+      "虾",
+      "蛋",
+      "蛮"
+    ]
+  },
+  {
+    "id": 143,
+    "radical": "血",
+    "baseRadical": "血",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "xuè",
+    "sinoVietnamese": "Huyết",
+    "meaning": "Máu (máu đựng trong bát để tế thần). 行 Hành",
+    "exampleWords": [
+      "衄",
+      "衅",
+      "血"
+    ]
+  },
+  {
+    "id": 144,
+    "radical": "行",
+    "baseRadical": "行",
+    "traditional": "",
+    "strokes": 6,
+    "pinyin": "xíng",
+    "sinoVietnamese": "Hành",
+    "meaning": "Đi (hai chân lần lượt bước tới). 衣 Y",
+    "exampleWords": [
+      "街",
+      "衡",
+      "卫",
+      "衙"
+    ]
+  },
+  {
+    "id": 145,
+    "radical": "衣 (衤)",
+    "baseRadical": "衣",
+    "traditional": "衤",
+    "strokes": 6,
+    "pinyin": "yī",
+    "sinoVietnamese": "Y",
+    "meaning": "Áo. 西 Á",
+    "exampleWords": [
+      "被",
+      "裙",
+      "裤",
+      "衬",
+      "衫"
+    ]
+  },
+  {
+    "id": 146,
+    "radical": "西 (襾)",
+    "baseRadical": "西",
+    "traditional": "覀, 襾",
+    "strokes": 6,
+    "pinyin": "yà",
+    "sinoVietnamese": "Á",
+    "meaning": "Che đậy, cái nắp. (Dạng gốc Khang Hy: 襾) 页 Hiệt",
+    "exampleWords": [
+      "要",
+      "票",
+      "覆",
+      "贾"
+    ]
+  },
+  {
+    "id": 147,
+    "radical": "见 (見)",
+    "baseRadical": "见",
+    "traditional": "見",
+    "strokes": 4,
+    "pinyin": "jiàn",
+    "sinoVietnamese": "Kiến",
+    "meaning": "Thấy, xem, nhìn. (Phồn thể: 見) 贝 Bối",
+    "exampleWords": [
+      "规",
+      "视",
+      "觉",
+      "观",
+      "览"
+    ]
+  },
+  {
+    "id": 148,
+    "radical": "角",
+    "baseRadical": "角",
+    "traditional": "",
+    "strokes": 7,
+    "pinyin": "jiǎo",
+    "sinoVietnamese": "Giác",
+    "meaning": "Cái sừng. 谷 Cốc",
+    "exampleWords": [
+      "解",
+      "触",
+      "触",
+      "触"
+    ]
+  },
+  {
+    "id": 149,
+    "radical": "讠 (訁)",
+    "baseRadical": "讠",
+    "traditional": "言, 訁",
+    "strokes": 2,
+    "pinyin": "yán",
+    "sinoVietnamese": "Ngôn",
+    "meaning": "Nói (thoại). (Dạng gốc Khang Hy: 言)",
+    "exampleWords": [
+      "话",
+      "说",
+      "语",
+      "读",
+      "记"
+    ]
+  },
+  {
+    "id": 150,
+    "radical": "谷",
+    "baseRadical": "谷",
+    "traditional": "",
+    "strokes": 7,
+    "pinyin": "gǔ",
+    "sinoVietnamese": "Cốc",
+    "meaning": "Khe suối chảy thông ra sông. 豆 Đậu",
+    "exampleWords": [
+      "豁",
+      "谷"
+    ]
+  },
+  {
+    "id": 151,
+    "radical": "豆",
+    "baseRadical": "豆",
+    "traditional": "",
+    "strokes": 7,
+    "pinyin": "dòu",
+    "sinoVietnamese": "Đậu",
+    "meaning": "Cái bát có nắp đậy. 豕 Thỉ",
+    "exampleWords": [
+      "岂",
+      "豌",
+      "豉"
+    ]
+  },
+  {
+    "id": 152,
+    "radical": "豕",
+    "baseRadical": "豕",
+    "traditional": "",
+    "strokes": 7,
+    "pinyin": "shǐ",
+    "sinoVietnamese": "Thỉ",
+    "meaning": "Con heo (lợn). 豸 Trĩ",
+    "exampleWords": [
+      "象",
+      "豪",
+      "豫",
+      "豕"
+    ]
+  },
+  {
+    "id": 153,
+    "radical": "豸",
+    "baseRadical": "豸",
+    "traditional": "",
+    "strokes": 7,
+    "pinyin": "zhì",
+    "sinoVietnamese": "Trĩ",
+    "meaning": "Loài thú có xương sống, lưng dài. 赤 Xích",
+    "exampleWords": [
+      "貌",
+      "豹",
+      "豺"
+    ]
+  },
+  {
+    "id": 154,
+    "radical": "贝 (貝)",
+    "baseRadical": "贝",
+    "traditional": "貝",
+    "strokes": 4,
+    "pinyin": "bèi",
+    "sinoVietnamese": "Bối",
+    "meaning": "Con sò — ngày xưa dùng vỏ sò làm tiền, tượng trưng cho của quý. (Phồn thể: 貝) 车 Xa",
+    "exampleWords": [
+      "贵",
+      "买",
+      "卖",
+      "货",
+      "费"
+    ]
+  },
+  {
+    "id": 155,
+    "radical": "赤",
+    "baseRadical": "赤",
+    "traditional": "",
+    "strokes": 7,
+    "pinyin": "chì",
+    "sinoVietnamese": "Xích",
+    "meaning": "Màu đỏ, màu của phương Nam. 走 Tẩu",
+    "exampleWords": [
+      "赫",
+      "赦",
+      "赭"
+    ]
+  },
+  {
+    "id": 156,
+    "radical": "走",
+    "baseRadical": "走",
+    "traditional": "",
+    "strokes": 7,
+    "pinyin": "zǒu",
+    "sinoVietnamese": "Tẩu",
+    "meaning": "Chạy. 足 Túc",
+    "exampleWords": [
+      "超",
+      "起",
+      "赶",
+      "趣",
+      "越"
+    ]
+  },
+  {
+    "id": 157,
+    "radical": "足 (⻊)",
+    "baseRadical": "足",
+    "traditional": "⻊",
+    "strokes": 7,
+    "pinyin": "zú",
+    "sinoVietnamese": "Túc",
+    "meaning": "Chân. 身 Thân",
+    "exampleWords": [
+      "跑",
+      "跳",
+      "路",
+      "踢",
+      "跟"
+    ]
+  },
+  {
+    "id": 158,
+    "radical": "身",
+    "baseRadical": "身",
+    "traditional": "",
+    "strokes": 7,
+    "pinyin": "shēn",
+    "sinoVietnamese": "Thân",
+    "meaning": "Thân mình. 辛 Tân",
+    "exampleWords": [
+      "躺",
+      "躬",
+      "躲",
+      "身"
+    ]
+  },
+  {
+    "id": 159,
+    "radical": "车 (車)",
+    "baseRadical": "车",
+    "traditional": "車",
+    "strokes": 4,
+    "pinyin": "chē",
+    "sinoVietnamese": "Xa",
+    "meaning": "Cái xe. (Phồn thể: 車) 长 Trường",
+    "exampleWords": [
+      "转",
+      "轻",
+      "轮",
+      "软",
+      "辆"
+    ]
+  },
+  {
+    "id": 160,
+    "radical": "辛",
+    "baseRadical": "辛",
+    "traditional": "",
+    "strokes": 7,
+    "pinyin": "xīn",
+    "sinoVietnamese": "Tân",
+    "meaning": "Vị cay; cay đắng, nhọc nhằn, lo toan, tần tảo. 辰 Thần",
+    "exampleWords": [
+      "辣",
+      "辩",
+      "辞",
+      "辜"
+    ]
+  },
+  {
+    "id": 161,
+    "radical": "辰",
+    "baseRadical": "辰",
+    "traditional": "",
+    "strokes": 7,
+    "pinyin": "chén",
+    "sinoVietnamese": "Thần",
+    "meaning": "Thì giờ, sấm sét, chuyển giao mùa từ xuân sang hạ (tháng ba). 邑 Ấp",
+    "exampleWords": [
+      "辱",
+      "农",
+      "辰"
+    ]
+  },
+  {
+    "id": 162,
+    "radical": "辶 (辵)",
+    "baseRadical": "辶",
+    "traditional": "辵",
+    "strokes": 3,
+    "pinyin": "chuò",
+    "sinoVietnamese": "Sước",
+    "meaning": "Chợt đi chợt đứng. (Dạng gốc Khang Hy: 辵)",
+    "exampleWords": [
+      "进",
+      "这",
+      "道",
+      "运",
+      "过"
+    ]
+  },
+  {
+    "id": 163,
+    "radical": "邑 (阝(phải))",
+    "baseRadical": "邑",
+    "traditional": "阝(phải)",
+    "strokes": 7,
+    "pinyin": "yì",
+    "sinoVietnamese": "Ấp",
+    "meaning": "阝(phải) Nước nhỏ trong nước lớn, lãnh thổ vua ban cho chư hầu; làng, thôn… Dạng 阝đứng BÊN PHẢI chữ. 酉 Dậu",
+    "exampleWords": [
+      "都",
+      "邻",
+      "部",
+      "郭",
+      "邮"
+    ]
+  },
+  {
+    "id": 164,
+    "radical": "酉",
+    "baseRadical": "酉",
+    "traditional": "",
+    "strokes": 7,
+    "pinyin": "yǒu",
+    "sinoVietnamese": "Dậu",
+    "meaning": "Rượu (phương Tây trong địa chi: Tí, Ngọ, Mão, Dậu). 釆 Biện",
+    "exampleWords": [
+      "酸",
+      "醒",
+      "醉",
+      "配",
+      "酒"
+    ]
+  },
+  {
+    "id": 165,
+    "radical": "釆",
+    "baseRadical": "釆",
+    "traditional": "",
+    "strokes": 7,
+    "pinyin": "biàn",
+    "sinoVietnamese": "Biện",
+    "meaning": "Phân biệt (biện luận, phản biện, biện bàn). 里 Lí",
+    "exampleWords": [
+      "释",
+      "采"
+    ]
+  },
+  {
+    "id": 166,
+    "radical": "里",
+    "baseRadical": "里",
+    "traditional": "",
+    "strokes": 7,
+    "pinyin": "lǐ",
+    "sinoVietnamese": "Lí",
+    "meaning": "Làng; quãng đường (điền 田 và thổ 土). 卤 Lỗ",
+    "exampleWords": [
+      "重",
+      "野",
+      "量",
+      "里"
+    ]
+  },
+  {
+    "id": 167,
+    "radical": "金 (釒)",
+    "baseRadical": "金",
+    "traditional": "钅, 釒",
+    "strokes": 8,
+    "pinyin": "jīn",
+    "sinoVietnamese": "Kim",
+    "meaning": "Vàng, kim loại nói chung. 阜 Phụ",
+    "exampleWords": [
+      "钱",
+      "银",
+      "铁",
+      "钟",
+      "错"
+    ]
+  },
+  {
+    "id": 168,
+    "radical": "长 (長)",
+    "baseRadical": "长",
+    "traditional": "長",
+    "strokes": 4,
+    "pinyin": "cháng",
+    "sinoVietnamese": "Trường",
+    "meaning": "Dài, lâu. (Phồn thể: 長) 韦 Vi",
+    "exampleWords": [
+      "肆",
+      "长"
+    ]
+  },
+  {
+    "id": 169,
+    "radical": "门 (門)",
+    "baseRadical": "门",
+    "traditional": "門",
+    "strokes": 3,
+    "pinyin": "mén",
+    "sinoVietnamese": "Môn",
+    "meaning": "Cửa. (Phồn thể: 門)",
+    "exampleWords": [
+      "间",
+      "开",
+      "关",
+      "闭",
+      "问"
+    ]
+  },
+  {
+    "id": 170,
+    "radical": "阜 (阝(trái))",
+    "baseRadical": "阜",
+    "traditional": "阝(trái)",
+    "strokes": 8,
+    "pinyin": "fù",
+    "sinoVietnamese": "Phụ",
+    "meaning": "阝(trái) Núi đất không có đá. Dạng 阝đứng BÊN TRÁI chữ. 隶 Đãi",
+    "exampleWords": [
+      "院",
+      "队",
+      "阳",
+      "阴",
+      "阿"
+    ]
+  },
+  {
+    "id": 171,
+    "radical": "隶",
+    "baseRadical": "隶",
+    "traditional": "",
+    "strokes": 8,
+    "pinyin": "dài",
+    "sinoVietnamese": "Đãi",
+    "meaning": "Kịp (chạy cho nhanh theo kịp người đi trước). 隹 Chuy",
+    "exampleWords": [
+      "隶",
+      "隶"
+    ]
+  },
+  {
+    "id": 172,
+    "radical": "隹",
+    "baseRadical": "隹",
+    "traditional": "",
+    "strokes": 8,
+    "pinyin": "zhuī",
+    "sinoVietnamese": "Chuy",
+    "meaning": "Giống chim đuôi ngắn. 雨 Vũ",
+    "exampleWords": [
+      "难",
+      "谁",
+      "集",
+      "准",
+      "虽"
+    ]
+  },
+  {
+    "id": 173,
+    "radical": "雨",
+    "baseRadical": "雨",
+    "traditional": "",
+    "strokes": 8,
+    "pinyin": "yǔ",
+    "sinoVietnamese": "Vũ",
+    "meaning": "Mưa. 青 Thanh",
+    "exampleWords": [
+      "雪",
+      "零",
+      "雷",
+      "需",
+      "震"
+    ]
+  },
+  {
+    "id": 174,
+    "radical": "青",
+    "baseRadical": "青",
+    "traditional": "",
+    "strokes": 8,
+    "pinyin": "qīng",
+    "sinoVietnamese": "Thanh",
+    "meaning": "Xanh — màu của phương Đông, ngược với màu trắng phương Tây. 非 Phi",
+    "exampleWords": [
+      "靓",
+      "静",
+      "青"
+    ]
+  },
+  {
+    "id": 175,
+    "radical": "非",
+    "baseRadical": "非",
+    "traditional": "",
+    "strokes": 8,
+    "pinyin": "fēi",
+    "sinoVietnamese": "Phi",
+    "meaning": "Không phải, trái, trái ngược (hai cánh chim đối nhau). 鱼 Ngư",
+    "exampleWords": [
+      "靠",
+      "靡",
+      "非"
+    ]
+  },
+  {
+    "id": 176,
+    "radical": "面",
+    "baseRadical": "面",
+    "traditional": "",
+    "strokes": 9,
+    "pinyin": "miàn",
+    "sinoVietnamese": "Diện",
+    "meaning": "Mặt. 革 Cách",
+    "exampleWords": [
+      "靥",
+      "面"
+    ]
+  },
+  {
+    "id": 177,
+    "radical": "革",
+    "baseRadical": "革",
+    "traditional": "",
+    "strokes": 9,
+    "pinyin": "gé",
+    "sinoVietnamese": "Cách",
+    "meaning": "Da thú thuộc, bỏ sạch lông. 韭 Cửu",
+    "exampleWords": [
+      "鞋",
+      "靴",
+      "鞍",
+      "革"
+    ]
+  },
+  {
+    "id": 178,
+    "radical": "韦 (韋)",
+    "baseRadical": "韦",
+    "traditional": "韋",
+    "strokes": 4,
+    "pinyin": "wéi",
+    "sinoVietnamese": "Vi",
+    "meaning": "Da thuộc; trái ngược nhau. (Phồn thể: 韋) 风 Phong",
+    "exampleWords": [
+      "韧",
+      "韩",
+      "韦"
+    ]
+  },
+  {
+    "id": 179,
+    "radical": "韭",
+    "baseRadical": "韭",
+    "traditional": "",
+    "strokes": 9,
+    "pinyin": "jiǔ",
+    "sinoVietnamese": "Cửu",
+    "meaning": "Cây hẹ. 音 Âm",
+    "exampleWords": [
+      "韭"
+    ]
+  },
+  {
+    "id": 180,
+    "radical": "音",
+    "baseRadical": "音",
+    "traditional": "",
+    "strokes": 9,
+    "pinyin": "yīn",
+    "sinoVietnamese": "Âm",
+    "meaning": "Tiếng, âm thanh phát ra tai nghe được. 食 Thực",
+    "exampleWords": [
+      "韵",
+      "韶",
+      "音"
+    ]
+  },
+  {
+    "id": 181,
+    "radical": "页 (頁)",
+    "baseRadical": "页",
+    "traditional": "頁",
+    "strokes": 6,
+    "pinyin": "yè",
+    "sinoVietnamese": "Hiệt",
+    "meaning": "Cái đầu. (Phồn thể: 頁) 齐 Tề",
+    "exampleWords": [
+      "题",
+      "颜",
+      "顶",
+      "顺",
+      "顿"
+    ]
+  },
+  {
+    "id": 182,
+    "radical": "风 (風)",
+    "baseRadical": "风",
+    "traditional": "風",
+    "strokes": 4,
+    "pinyin": "fēng",
+    "sinoVietnamese": "Phong",
+    "meaning": "Gió. (Phồn thể: 風)",
+    "exampleWords": [
+      "飘",
+      "飙",
+      "风"
+    ]
+  },
+  {
+    "id": 183,
+    "radical": "飞 (飛)",
+    "baseRadical": "飞",
+    "traditional": "飛",
+    "strokes": 3,
+    "pinyin": "fēi",
+    "sinoVietnamese": "Phi",
+    "meaning": "Bay. (Phồn thể: 飛)",
+    "exampleWords": [
+      "飞"
+    ]
+  },
+  {
+    "id": 184,
+    "radical": "食 (飠)",
+    "baseRadical": "食",
+    "traditional": "饣, 飠",
+    "strokes": 9,
+    "pinyin": "shí",
+    "sinoVietnamese": "Thực",
+    "meaning": "Ăn. 首 Thủ",
+    "exampleWords": [
+      "饭",
+      "饮",
+      "饱",
+      "饿",
+      "餐"
+    ]
+  },
+  {
+    "id": 185,
+    "radical": "首",
+    "baseRadical": "首",
+    "traditional": "",
+    "strokes": 9,
+    "pinyin": "shǒu",
+    "sinoVietnamese": "Thủ",
+    "meaning": "Đầu. 香 Hương",
+    "exampleWords": [
+      "馗",
+      "首"
+    ]
+  },
+  {
+    "id": 186,
+    "radical": "香",
+    "baseRadical": "香",
+    "traditional": "",
+    "strokes": 9,
+    "pinyin": "xiāng",
+    "sinoVietnamese": "Hương",
+    "meaning": "Mùi thơm. 骨 Cốt",
+    "exampleWords": [
+      "馨",
+      "香"
+    ]
+  },
+  {
+    "id": 187,
+    "radical": "马 (馬)",
+    "baseRadical": "马",
+    "traditional": "馬",
+    "strokes": 3,
+    "pinyin": "mǎ",
+    "sinoVietnamese": "Mã",
+    "meaning": "Con ngựa. (Phồn thể: 馬)",
+    "exampleWords": [
+      "骑",
+      "验",
+      "骂",
+      "驻",
+      "驾"
+    ]
+  },
+  {
+    "id": 188,
+    "radical": "骨",
+    "baseRadical": "骨",
+    "traditional": "",
+    "strokes": 9,
+    "pinyin": "gǔ",
+    "sinoVietnamese": "Cốt",
+    "meaning": "Xương. 鬼 Quỷ",
+    "exampleWords": [
+      "髓",
+      "骼",
+      "骸",
+      "骨"
+    ]
+  },
+  {
+    "id": 189,
+    "radical": "高",
+    "baseRadical": "高",
+    "traditional": "",
+    "strokes": 10,
+    "pinyin": "gāo",
+    "sinoVietnamese": "Cao",
+    "meaning": "Trái lại với thấp là cao. 髟 Tiêu",
+    "exampleWords": [
+      "高"
+    ]
+  },
+  {
+    "id": 190,
+    "radical": "髟",
+    "baseRadical": "髟",
+    "traditional": "",
+    "strokes": 10,
+    "pinyin": "biāo",
+    "sinoVietnamese": "Tiêu",
+    "meaning": "Tóc dài — hình chữ trường 长 và chữ sam 彡 (lông dài). 鬥 Đấu",
+    "exampleWords": [
+      "鬓",
+      "髯",
+      "髦"
+    ]
+  },
+  {
+    "id": 191,
+    "radical": "鬥",
+    "baseRadical": "鬥",
+    "traditional": "",
+    "strokes": 10,
+    "pinyin": "dòu",
+    "sinoVietnamese": "Đấu",
+    "meaning": "Đánh nhau, chiến đấu, đấu tranh… (giản thể thường nhập vào chữ đấu 斗). 鬯 Sướng",
+    "exampleWords": [
+      "闹",
+      "斗"
+    ]
+  },
+  {
+    "id": 192,
+    "radical": "鬯",
+    "baseRadical": "鬯",
+    "traditional": "",
+    "strokes": 10,
+    "pinyin": "chàng",
+    "sinoVietnamese": "Sướng",
+    "meaning": "Loại rượu lễ để cầu thần. 鬲 Lịch (cách)",
+    "exampleWords": [
+      "鬯"
+    ]
+  },
+  {
+    "id": 193,
+    "radical": "鬲",
+    "baseRadical": "鬲",
+    "traditional": "",
+    "strokes": 10,
+    "pinyin": "lì",
+    "sinoVietnamese": "Lịch (cách)",
+    "meaning": "Cái đỉnh hương; ngăn cách âm dương.",
+    "exampleWords": [
+      "融",
+      "鬲"
+    ]
+  },
+  {
+    "id": 194,
+    "radical": "鬼",
+    "baseRadical": "鬼",
+    "traditional": "",
+    "strokes": 9,
+    "pinyin": "guǐ",
+    "sinoVietnamese": "Quỷ",
+    "meaning": "Ma quỷ.",
+    "exampleWords": [
+      "魄",
+      "魂",
+      "魅",
+      "鬼"
+    ]
+  },
+  {
+    "id": 195,
+    "radical": "鱼 (魚)",
+    "baseRadical": "鱼",
+    "traditional": "魚",
+    "strokes": 8,
+    "pinyin": "yú",
+    "sinoVietnamese": "Ngư",
+    "meaning": "Cá. (Phồn thể: 魚) 黾 Mãnh",
+    "exampleWords": [
+      "鲜",
+      "鲁",
+      "鲍",
+      "鱼"
+    ]
+  },
+  {
+    "id": 196,
+    "radical": "鸟 (鳥)",
+    "baseRadical": "鸟",
+    "traditional": "鳥",
+    "strokes": 5,
+    "pinyin": "niǎo",
+    "sinoVietnamese": "Điểu",
+    "meaning": "Chim. (Phồn thể: 鳥) 龙 Long",
+    "exampleWords": [
+      "鸣",
+      "鸡",
+      "鸭",
+      "鸽",
+      "鹅"
+    ]
+  },
+  {
+    "id": 197,
+    "radical": "卤 (鹵)",
+    "baseRadical": "卤",
+    "traditional": "鹵",
+    "strokes": 7,
+    "pinyin": "lǔ",
+    "sinoVietnamese": "Lỗ",
+    "meaning": "Đất mặn, muối trong đất. (Phồn thể: 鵵) 麦 Mạch",
+    "exampleWords": [
+      "咸",
+      "碱",
+      "卤"
+    ]
+  },
+  {
+    "id": 198,
+    "radical": "鹿",
+    "baseRadical": "鹿",
+    "traditional": "",
+    "strokes": 11,
+    "pinyin": "lù",
+    "sinoVietnamese": "Lộc",
+    "meaning": "Con nai. 麻 Ma",
+    "exampleWords": [
+      "麝",
+      "麟",
+      "鹿"
+    ]
+  },
+  {
+    "id": 199,
+    "radical": "麦 (麥)",
+    "baseRadical": "麦",
+    "traditional": "麥",
+    "strokes": 7,
+    "pinyin": "mài",
+    "sinoVietnamese": "Mạch",
+    "meaning": "Lúa mạch. (Phồn thể: 麥) 龟 Quy",
+    "exampleWords": [
+      "曲",
+      "麦"
+    ]
+  },
+  {
+    "id": 200,
+    "radical": "麻",
+    "baseRadical": "麻",
+    "traditional": "",
+    "strokes": 11,
+    "pinyin": "má",
+    "sinoVietnamese": "Ma",
+    "meaning": "Cây gai. 黄 Hoàng",
+    "exampleWords": [
+      "靡",
+      "磨",
+      "摩",
+      "麻"
+    ]
+  },
+  {
+    "id": 201,
+    "radical": "黄 (黃)",
+    "baseRadical": "黄",
+    "traditional": "黃",
+    "strokes": 11,
+    "pinyin": "huáng",
+    "sinoVietnamese": "Hoàng",
+    "meaning": "Màu vàng. (Phồn thể: 黃)",
+    "exampleWords": [
+      "黄"
+    ]
+  },
+  {
+    "id": 202,
+    "radical": "黍",
+    "baseRadical": "黍",
+    "traditional": "",
+    "strokes": 12,
+    "pinyin": "shǔ",
+    "sinoVietnamese": "Thử",
+    "meaning": "Lúa nếp. 黑 Hắc",
+    "exampleWords": [
+      "黍",
+      "黏"
+    ]
+  },
+  {
+    "id": 203,
+    "radical": "黑",
+    "baseRadical": "黑",
+    "traditional": "",
+    "strokes": 12,
+    "pinyin": "hēi",
+    "sinoVietnamese": "Hắc",
+    "meaning": "Màu đen. 黹 Chí (phất)",
+    "exampleWords": [
+      "默",
+      "黛",
+      "黑"
+    ]
+  },
+  {
+    "id": 204,
+    "radical": "黹",
+    "baseRadical": "黹",
+    "traditional": "",
+    "strokes": 12,
+    "pinyin": "zhǐ",
+    "sinoVietnamese": "Chí (phất)",
+    "meaning": "Thêu may. 鼎 Đỉnh",
+    "exampleWords": [
+      "黼",
+      "黹"
+    ]
+  },
+  {
+    "id": 205,
+    "radical": "黾 (黽)",
+    "baseRadical": "黾",
+    "traditional": "黽",
+    "strokes": 8,
+    "pinyin": "mǐn",
+    "sinoVietnamese": "Mãnh",
+    "meaning": "Con ếch. (Phồn thể: 黽) 齿 Xỉ",
+    "exampleWords": [
+      "黾"
+    ]
+  },
+  {
+    "id": 206,
+    "radical": "鼎",
+    "baseRadical": "鼎",
+    "traditional": "",
+    "strokes": 12,
+    "pinyin": "dǐng",
+    "sinoVietnamese": "Đỉnh",
+    "meaning": "Cái vạc.",
+    "exampleWords": [
+      "鼎"
+    ]
+  },
+  {
+    "id": 207,
+    "radical": "鼓",
+    "baseRadical": "鼓",
+    "traditional": "",
+    "strokes": 13,
+    "pinyin": "gǔ",
+    "sinoVietnamese": "Cổ",
+    "meaning": "Cái trống. 鼠 Thử",
+    "exampleWords": [
+      "瞽",
+      "鼓"
+    ]
+  },
+  {
+    "id": 208,
+    "radical": "鼠",
+    "baseRadical": "鼠",
+    "traditional": "",
+    "strokes": 13,
+    "pinyin": "shǔ",
+    "sinoVietnamese": "Thử",
+    "meaning": "Con chuột.",
+    "exampleWords": [
+      "鼠"
+    ]
+  },
+  {
+    "id": 209,
+    "radical": "鼻",
+    "baseRadical": "鼻",
+    "traditional": "",
+    "strokes": 14,
+    "pinyin": "bí",
+    "sinoVietnamese": "Tỵ",
+    "meaning": "Cái mũi.",
+    "exampleWords": [
+      "鼻"
+    ]
+  },
+  {
+    "id": 210,
+    "radical": "齐 (齊)",
+    "baseRadical": "齐",
+    "traditional": "齊",
+    "strokes": 6,
+    "pinyin": "qí",
+    "sinoVietnamese": "Tề",
+    "meaning": "Lúa trổ đều bông; chỉnh tề. (Phồn thể: 齊)",
+    "exampleWords": [
+      "齐"
+    ]
+  },
+  {
+    "id": 211,
+    "radical": "齿 (齒)",
+    "baseRadical": "齿",
+    "traditional": "齒",
+    "strokes": 8,
+    "pinyin": "chǐ",
+    "sinoVietnamese": "Xỉ",
+    "meaning": "Răng; lẻ loi. (Phồn thể: 齒)",
+    "exampleWords": [
+      "龄",
+      "啮",
+      "齿"
+    ]
+  },
+  {
+    "id": 212,
+    "radical": "龙 (龍)",
+    "baseRadical": "龙",
+    "traditional": "龍",
+    "strokes": 5,
+    "pinyin": "lóng",
+    "sinoVietnamese": "Long",
+    "meaning": "Con rồng. (Phồn thể: 龍)",
+    "exampleWords": [
+      "龙"
+    ]
+  },
+  {
+    "id": 213,
+    "radical": "龟 (龜)",
+    "baseRadical": "龟",
+    "traditional": "龜",
+    "strokes": 7,
+    "pinyin": "guī",
+    "sinoVietnamese": "Quy",
+    "meaning": "Con rùa. (Phồn thể: 龜)",
+    "exampleWords": [
+      "龟"
+    ]
+  },
+  {
+    "id": 214,
+    "radical": "龠",
+    "baseRadical": "龠",
+    "traditional": "",
+    "strokes": 17,
+    "pinyin": "yuè",
+    "sinoVietnamese": "Dược",
+    "meaning": "Nhạc khí như ống sáo có lỗ.",
+    "exampleWords": [
+      "龠"
+    ]
+  }
+]
