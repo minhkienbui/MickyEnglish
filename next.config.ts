@@ -37,7 +37,7 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com data:",
       "img-src 'self' data: blob: https://images.unsplash.com https://img.youtube.com https://i.ytimg.com https://res.cloudinary.com https://lh3.googleusercontent.com https://trumtuvung.com",
-      "media-src 'self' data: blob: https://*.storage.*.neon.tech https://cdn.freesound.org https://trumtuvung.com https://res.cloudinary.com",
+      "media-src 'self' data: blob: https://*.neon.tech https://cdn.freesound.org https://trumtuvung.com https://res.cloudinary.com",
       "frame-src 'self' https://www.youtube.com https://www.youtube-nocookie.com https://accounts.google.com",
       "connect-src 'self' https://*.neon.tech https://*.googleapis.com https://www.youtube.com https://accounts.google.com https://translate.googleapis.com",
     ].join("; "),
